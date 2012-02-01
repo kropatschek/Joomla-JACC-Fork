@@ -26,7 +26,7 @@ class JFormField##Component####name## extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$db		= &JFactory::getDbo();
+		$db		= JFactory::getDbo();
 		$query	= new JQuery;
 
 		$query->select('##primary## AS value, ##hident## AS text');

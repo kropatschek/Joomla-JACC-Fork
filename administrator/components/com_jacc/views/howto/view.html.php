@@ -18,7 +18,7 @@ class JaccViewHowto  extends JView
 
 	public function display($tpl = null) 
 	{
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		JToolBarHelper::title( JText::_( 'Jacc' ).' - '.JText::_( 'Howto' ), 'generic.png' );
 		JToolBarHelper::preferences('com_jacc', '550');
 		JToolBarHelper::cancel();		

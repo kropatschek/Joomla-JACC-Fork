@@ -33,19 +33,19 @@ class ##Component##Controller extends JController
 	public function __construct($config = array ()) 
 	{
 		
-		parent :: __construct($config);
+		parent::__construct($config);
 		
 		if (isset($config['viewname'])) $this->_viewname = $config['viewname'];
 		if (isset($config['mainmodel'])) $this->_mainmodel = $config['mainmodel'];
 		if (isset($config['itemname'])) $this->_itemname = $config['itemname']; 		
-		JRequest :: setVar('view', $this->_viewname);
+		JRequest::setVar('view', $this->_viewname);
 
 	}
 	
 	/*
 	 * Overloaded Method display
 	 */
-	function display() 
+	function display($cachable = false, $urlparams = false)
 	{
 
 		switch($this->getTask())
@@ -67,7 +67,7 @@ class ##Component##Controller extends JController
 
 			} break;
 		}
-		parent :: display();
+		parent::display($cachable, $urlparams);
 	}
 
  	/**
@@ -86,19 +86,19 @@ class ##Component##Controller extends JController
 	function save() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 		
-		$db = & JFactory::getDBO();  
+		$db = JFactory::getDBO();  
 
-		$post = JRequest :: getVar('jform', array(), 'post', 'array');
-		$cid = JRequest :: getVar('cid', array (
+		$post = JRequest::getVar('jform', array(), 'post', 'array');
+		$cid = JRequest::getVar('cid', array (
 			0
 		), 'post', 'array');
 		$post['id'] = (int) $cid[0];	
 		
 		$model = $this->getModel($this->_mainmodel);
 		if ($model->store($post)) {
-			$msg = JText :: _($this->_itemname .' Saved');
+			$msg = JText::_($this->_itemname .' Saved');
 		} else {
 			$msg = $model->getError(); 
 		}
@@ -126,14 +126,14 @@ class ##Component##Controller extends JController
 	{
 		
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$db = & JFactory::getDBO();  
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
+		$db = JFactory::getDBO();  
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
 		$msg = JText::_($this->_itemname.' deleted');
 		if (count($cid) < 1) {
-			JError :: raiseError(500, JText :: _('Select a '.$this->_itemname.' to delete'));
+			JError::raiseError(500, JText::_('Select a '.$this->_itemname.' to delete'));
 		}
     	$model = $this->getModel($this->_mainmodel);			
 		if (!$model->delete($cid)) {

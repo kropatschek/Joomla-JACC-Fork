@@ -322,8 +322,8 @@ class JaccHelper
 	public static function export_table_structure($table,  $break = "\n")
 	{
 
-		$db = &JFactory::getDBO();
-		$config =& JFactory::getConfig();
+		$db = JFactory::getDBO();
+		$config =JFactory::getConfig();
 		$dbprefix= $config->getValue('config.dbprefix');
 
 		$break = ($break == "\n" OR $break == "\r\n" OR $break == "\r") ? $break : "\n";
@@ -469,10 +469,10 @@ Replace INTO `#__".$lcomponent."_categories`  VALUES(1, 0, 0, 0, 5, 0, '', 'syst
 	public static function getcategorytask () 
 	{
 		return "
-if (JRequest :: getWord('task') == 'categoryedit') {
+if (JRequest::getWord('task') == 'categoryedit') {
 	".'$'."controller = 'category';
-	JRequest :: setVar('task', 'edit');
-	JRequest :: setVar('view', 'category');
+	JRequest::setVar('task', 'edit');
+	JRequest::setVar('view', 'category');
 	".'$'."task = 'edit';
 }
 		";
@@ -506,7 +506,7 @@ abstract class JHtmlJacc
 	{
 
 		$config	= (array) $config;
-		$db		= &JFactory::getDbo();
+		$db		= JFactory::getDbo();
 
 		jimport('joomla.database.query');
 		$query	= new JQuery;

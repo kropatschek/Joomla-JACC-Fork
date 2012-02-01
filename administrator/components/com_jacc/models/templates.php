@@ -50,7 +50,7 @@ class JaccModelTemplates  extends JaccModel {
 	 */
 	public function store($data)
 	{
-		$row =& $this->getTable();
+		$row =$this->getTable();
 		/**
 		 * Example: get text from editor 
 		 * $Text  = JRequest::getVar( 'text', '', 'post', 'string', JREQUEST_ALLOWRAW );
@@ -91,7 +91,7 @@ class JaccModelTemplates  extends JaccModel {
 	
 	protected function _buildContentOrderBy() 
 	{
-		$app = &JFactory::getApplication('');
+		$app = JFactory::getApplication('');
 		$context			= $this->option.'.'.strtolower($this->getName()).'.list.';
 		$filter_order = $app ->getUserStateFromRequest($context . 'filter_order', 'filter_order', $this->getDefaultFilter(), 'cmd');
 		$filter_order_Dir = $app ->getUserStateFromRequest($context . 'filter_order_Dir', 'filter_order_Dir', '', 'word');
@@ -108,7 +108,7 @@ class JaccModelTemplates  extends JaccModel {
 	protected function _buildContentWhere() 
 	{
 		
-		$app = &JFactory::getApplication('');
+		$app = JFactory::getApplication('');
 		$context			= $this->option.'.'.strtolower($this->getName()).'.list.';		
 		$filter_state = $app ->getUserStateFromRequest($context . 'filter_state', 'filter_state', '', 'word');		
 		$filter_order = $app ->getUserStateFromRequest($context . 'filter_order', 'filter_order', $this->getDefaultFilter(), 'cmd');

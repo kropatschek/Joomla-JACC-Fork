@@ -79,7 +79,7 @@ class JaccModelJacc  extends JaccModel {
 	{			
 		static $instance;
 		if($instance) return $instance; 
-	    $item = & $this->getTable();				
+	    $item =  $this->getTable();				
 		$item->load($this->_id);		
 		$item->tables = json_decode($item->tables);				
 		$params = json_decode($item->params);					
@@ -177,9 +177,9 @@ class JaccModelJacc  extends JaccModel {
 		$lname = strtolower(str_replace('com_', '', $item->name ));	
 		$this->_Fields['foreigns'] = array();
 		foreach ($this->_Tables as $table) {
-			$fields = & $this->_Fields[$table];
+			$fields =  $this->_Fields[$table];
 			
-			$fieldlist = & $fields->all;
+			$fieldlist =  $fields->all;
 			$this->_TablesHas[$table] = new JObject();			
 			foreach ($fieldlist  as &$field) {				
 			
@@ -253,7 +253,7 @@ class JaccModelJacc  extends JaccModel {
 	 */
 	public function store($data)
 	{
-		$row =& $this->getTable();
+		$row =$this->getTable();
 		/**
 		 * Example: get text from editor 
 		 * $Text  = JRequest::getVar( 'text', '', 'post', 'string', JREQUEST_ALLOWRAW );
@@ -294,7 +294,7 @@ class JaccModelJacc  extends JaccModel {
 	
 	protected function _buildContentOrderBy() 
 	{
-		$app = &JFactory::getApplication('');
+		$app = JFactory::getApplication('');
 		$context			= $this->option.'.'.strtolower($this->getName()).'.list.';
 		$filter_order = $app ->getUserStateFromRequest($context . 'filter_order', 'filter_order', 'a.name', 'cmd');
 		$filter_order_Dir = $app ->getUserStateFromRequest($context . 'filter_order_Dir', 'filter_order_Dir', '', 'word');
@@ -312,7 +312,7 @@ class JaccModelJacc  extends JaccModel {
 	protected function _buildContentWhere() 
 	{
 		
-		$app = &JFactory::getApplication('');
+		$app = JFactory::getApplication('');
 		$context			= $this->option.'.'.strtolower($this->getName()).'.list.';
 		$filter_state = $app ->getUserStateFromRequest($context . 'filter_state', 'filter_state', '', 'word');
 		$filter_order = $app ->getUserStateFromRequest($context . 'filter_order', 'filter_order', 'a.name', 'cmd');

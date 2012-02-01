@@ -40,7 +40,7 @@ class ##Component##ModelCategories extends JModel
 		parent::__construct();
 		if (!isset($this->_state) and isset($this->state) ) $this->_state = $this->state;
 		
-		$app = &JFactory::getApplication('administrator');
+		$app = JFactory::getApplication('administrator');
 		
 		if (empty($this->option)) {
 			$r = null;
@@ -113,7 +113,7 @@ class ##Component##ModelCategories extends JModel
 	private function _populateState()
 	{
 		
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 
 		$search = $app->getUserStateFromRequest($this->_context.'.search', 'filter_search');
 		$this->setState('filter.search', $search);

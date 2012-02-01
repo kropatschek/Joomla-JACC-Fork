@@ -29,14 +29,14 @@ class JaccControllerSql extends JController
 	public function __construct($config = array ()) 
 	{
 		
-		parent :: __construct($config);
+		parent::__construct($config);
 	
 	}
 	
-	function display() 
+	function display($cachable = false, $urlparams = false) 
 	{
 		
-		$config =& JFactory::getConfig();
+		$config =JFactory::getConfig();
 		$dbprefix= $config->getValue('config.dbprefix');
 		$sqlFile =  JPATH_COMPONENT_ADMINISTRATOR.DS.'sql'.DS.'example.sql';
 		$sql = file_get_contents($sqlFile);

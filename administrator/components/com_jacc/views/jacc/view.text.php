@@ -24,9 +24,9 @@ class  JaccViewJacc   extends JView
 		$this->addTemplatePath(JPATH_COMPONENT.DS.'templates'.DS.'mvctriple');
 		$db =  & JFactory::getDBO();
 		
-		$config =& JFactory::getConfig();
+		$config =JFactory::getConfig();
 		$dbprefix= $config->getValue('config.dbprefix');
-		$model= &$this->getModel();
+		$model= $this->getModel();
 		
 		//get the Component to create
 		$item= $this->get('Item');
@@ -112,7 +112,7 @@ class  JaccViewJacc   extends JView
 		}
 
 		$com_component = $item->name;
-		$date = &JFactory::getDate();
+		$date = JFactory::getDate();
 		
 		//last part of table name as (lowercase) name
 		$name = substr(strrchr($mvcTable, '_'), 1);

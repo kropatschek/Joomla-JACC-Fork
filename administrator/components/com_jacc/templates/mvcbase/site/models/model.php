@@ -76,7 +76,7 @@ class ##Component##Model  extends JModel {
 	public function __construct()
 	{
 		parent::__construct();
-			$app = &JFactory::getApplication('site');
+			$app = JFactory::getApplication('site');
 			// Guess the option from the class name (Option)Model(View).
 		if (empty($this->option)) {
 			$r = null;
@@ -98,10 +98,10 @@ class ##Component##Model  extends JModel {
 			$this->_context = $this->option.'.'.$this->getName();
 		}
 		
-		$array = JRequest :: getVar('cid', array (
+		$array = JRequest::getVar('cid', array (
 			0
 		), '', 'array');
-		$edit = JRequest :: getVar('edit', true);
+		$edit = JRequest::getVar('edit', true);
 		if ($edit) {
 			$this->setId((int) $array[0]);
 		}
@@ -167,7 +167,7 @@ class ##Component##Model  extends JModel {
 	 */
 	
 	public function getItem() {			
-		$item = & $this->getTable();				
+		$item = $this->getTable();				
 		$item->load($this->_id);
 		if(isset($item->params)) {					
 			$params = json_decode($item->params);					
@@ -185,7 +185,7 @@ class ##Component##Model  extends JModel {
     * @return $affected int
     */
      public function  delete($cid) {
-        $db = & JFactory::getDBO();     
+        $db = JFactory::getDBO();     
 	    $query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
         $db->setQuery( $query);
 
@@ -253,9 +253,9 @@ class ##Component##Model  extends JModel {
 	
 	*/
 	public function publish($cid = array (), $publish = 1) {
-		$user = & JFactory :: getUser();
+		$user = JFactory::getUser();
 		if (count($cid)) {
-			JArrayHelper :: toInteger($cid);
+			JArrayHelper::toInteger($cid);
 			$cids = implode(',', $cid);
 			$query = 'UPDATE '.$this->_default_table.' SET published = ' . (int) $publish . ' WHERE id IN ( ' . $cids . ' )';
 			$this->_db->setQuery($query);
@@ -276,7 +276,7 @@ class ##Component##Model  extends JModel {
 	
 	*/
 	public function saveorder($cid = array (), $order) {
-		$row = & $this->getTable();
+		$row = $this->getTable();
 		$groupings = array ();
 		// update ordering values
 		for ($i = 0; $i < count($cid); $i++) {
@@ -302,7 +302,7 @@ class ##Component##Model  extends JModel {
 	 */
 	public function move($direction)
 	{
-		$row =& $this->getTable();
+		$row =$this->getTable();
 		if (!$row->load($this->_id)) {
 			$this->setError($this->_db->getErrorMsg());
 			return false;
@@ -330,7 +330,7 @@ class ##Component##Model  extends JModel {
 	*/
 	public function checkin() {
 		if ($this->_id) {
-			$item = & $this->getTable();
+			$item = $this->getTable();
 			if (!$item->checkin($this->_id)) {
 				$this->setError($this->_db->getErrorMsg());
 				return false;
@@ -350,11 +350,11 @@ class ##Component##Model  extends JModel {
 		if ($this->_id) {
 			// Make sure we have a user id to checkout the vendor with
 			if (is_null($uid)) {
-				$user = & JFactory :: getUser();
+				$user = JFactory::getUser();
 				$uid = $user->get('id');
 			}
 			// Lets get to it and checkout the thing...
-			$item = & $this->getTable();
+			$item = $this->getTable();
 			if (!$item->checkout($uid, $this->_id)) {
 				$this->setError($this->_db->getErrorMsg());
 				return false;
@@ -400,7 +400,7 @@ class ##Component##Model  extends JModel {
 	*/
 	
 	protected function _buildContentOrderBy() {
-		$app = &JFactory::getApplication('site');
+		$app = JFactory::getApplication('site');
 		$context			= $this->option.'.'.strtolower($this->getName()).'.list.';
 		$filter_order = $app->getUserStateFromRequest($context . 'filter_order', 'filter_order', $this->_default_filter, 'cmd');
 		$filter_order_Dir = $app->getUserStateFromRequest($context . 'filter_order_Dir', 'filter_order_Dir', '', 'word');

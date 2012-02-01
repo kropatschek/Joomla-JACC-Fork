@@ -367,7 +367,7 @@ class JCategoryNode extends JObject
 		if ($category) {
 			$this->setProperties($category);
 			if ($constructor) {
-				$this->_constructor = &$constructor;
+				$this->_constructor = $constructor;
 			}
 			return true;
 		}
@@ -389,9 +389,9 @@ class JCategoryNode extends JObject
 				unset($this->_parent->_children[$key]);
 			}
 			if (!is_null($parent)) {
-				$parent->_children[] = & $this;
+				$parent->_children[] = $this;
 			}
-			$this->_parent = & $parent;
+			$this->_parent = $parent;
 			if ($this->id != 'root') {
 				$this->_path = $parent->getPath();
 				$this->_path[] = $this->id.':'.$this->alias;
@@ -400,7 +400,7 @@ class JCategoryNode extends JObject
 			if (count($parent->_children) > 1) {
 				end($parent->_children);
 				$this->_leftSibling = prev($parent->_children);
-				$this->_leftSibling->_rightsibling = &$this;
+				$this->_leftSibling->_rightsibling = $this;
 			}
 		}
 	}

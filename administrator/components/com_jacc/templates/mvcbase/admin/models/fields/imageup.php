@@ -27,7 +27,7 @@ class JFormFieldImageup extends JFormField
 	protected function getInput()
 	{
 		// Initialize some field attributes.
-		$config 	=& JComponentHelper::getParams( 'com_##component##' );
+		$config 	=JComponentHelper::getParams( 'com_##component##' );
 	    $width = $config->get('imgwidth3',60);
 	    $height = $config->get('imgheight3',80);
 		$class		= $this->element['class'] ? ' class="'.(string) $this->element['class'].'"' : '';

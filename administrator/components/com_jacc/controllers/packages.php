@@ -28,8 +28,8 @@ class JaccControllerPackages extends JaccController
 	protected $_itemname = 'Package';	 
 	public function __construct($config = array ()) 
 	{
-		parent :: __construct($config);
-		JRequest :: setVar('view', $this->_viewname);
+		parent::__construct($config);
+		JRequest::setVar('view', $this->_viewname);
 
 	}		
 	
@@ -54,7 +54,7 @@ class JaccControllerPackages extends JaccController
 		$model->addPath('archive',$zipdir.DS.$archive);
 		//some basic variables to replace the template patterns
 		//now
-		$date = &JFactory::getDate();		
+		$date = JFactory::getDate();		
 
 		$package = $item->name;
 
@@ -132,12 +132,12 @@ class JaccControllerPackages extends JaccController
 	public function save()
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
-		$app = &JFactory::getApplication('administrator');
-		$db = & JFactory::getDBO();
+		JRequest::checkToken() or jexit('Invalid Token');
+		$app = JFactory::getApplication('administrator');
+		$db =  JFactory::getDBO();
 
-		$post = JRequest :: getVar('jform', array(), 'post', 'array');
-		$cid = JRequest :: getVar('cid', array (
+		$post = JRequest::getVar('jform', array(), 'post', 'array');
+		$cid = JRequest::getVar('cid', array (
 		0
 		), 'post', 'array');
 		$post['id'] = (int) $cid[0];
@@ -146,7 +146,7 @@ class JaccControllerPackages extends JaccController
 		
 		JRequest::setVar('mode', 'return');
 		// Validate the posted data.
-		$form	= &$model->getForm();
+		$form	= $model->getForm();
 
 		if (!$form) {
 			JError::raiseError(500, $model->getError());
@@ -176,7 +176,7 @@ class JaccControllerPackages extends JaccController
 		}
 
 		if ($model->store($post)) {
-			$msg = JText :: _($this->_itemname .' Saved');
+			$msg = JText::_($this->_itemname .' Saved');
 			JRequest::setVar("cid",array($model->getId()));			
 		} else {
 			$msg = $model->getError();
@@ -205,13 +205,13 @@ class JaccControllerPackages extends JaccController
 	public function publish() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
 
 		if (count($cid) < 1) {
-			JError :: raiseError(500, JText :: _('Select an item to publish'));
+			JError::raiseError(500, JText::_('Select an item to publish'));
 		}
 
 		$model = $this->getModel('packages');
@@ -225,13 +225,13 @@ class JaccControllerPackages extends JaccController
 	public function unpublish() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
 
 		if (count($cid) < 1) {
-			JError :: raiseError(500, JText :: _('Select an item to unpublish'));
+			JError::raiseError(500, JText::_('Select an item to unpublish'));
 		}
 
 		$model = $this->getModel('packages');
@@ -244,7 +244,7 @@ class JaccControllerPackages extends JaccController
 	public function orderup() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
 		$model = $this->getModel('packages');
 		$model->move(-1);
@@ -255,7 +255,7 @@ class JaccControllerPackages extends JaccController
 	public function orderdown() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
 		$model = $this->getModel('packages');
 		$model->move(1);
@@ -266,17 +266,17 @@ class JaccControllerPackages extends JaccController
 	public function saveorder() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		$order = JRequest :: getVar('order', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
-		JArrayHelper :: toInteger($order);
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		$order = JRequest::getVar('order', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
+		JArrayHelper::toInteger($order);
 
 		$model = $this->getModel('packages');
 		$model->saveorder($cid, $order);
 
-		$msg = JText :: _('New ordering saved');
+		$msg = JText::_('New ordering saved');
 		$this->setRedirect('index.php?option=com_jacc&view='.$this->_viewname, $msg);
 	}	
 }// class

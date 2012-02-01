@@ -51,7 +51,7 @@ class ##Component##ViewCategories extends JView
 			return JError::raiseWarning(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
 
-		$params = &$state->params;
+		$params = $state->params;
 
 		$items = array($parent->id => $items);
 

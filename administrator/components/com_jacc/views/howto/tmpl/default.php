@@ -3,7 +3,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.html.pane');
-$tabs	=& JPane::getInstance('tabs');
+$tabs	=JPane::getInstance('tabs');
 
 $style = "
 div.yacc table { 

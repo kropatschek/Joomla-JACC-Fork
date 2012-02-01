@@ -1281,7 +1281,7 @@ class ##Component##JTableNested extends JTable
 		}
 
 		// Make a shortcut to database object.
-		$db = &$this->_db;
+		$db = $this->_db;
 
 		// Assemble the query to find all children of this node.
 		$db->setQuery(sprintf($this->_cache['rebuild.sql'], (int) $parentId));

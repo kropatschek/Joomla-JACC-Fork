@@ -28,8 +28,8 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	 
 	public function __construct($config = array ()) 
 	{
-		parent :: __construct($config);
-		JRequest :: setVar('view', $this->_viewname);
+		parent::__construct($config);
+		JRequest::setVar('view', $this->_viewname);
 
 	}
 	
@@ -50,20 +50,20 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	
 	function edit() 
 	{
-		$document =& JFactory::getDocument();
+		$document =JFactory::getDocument();
 
 		$viewType	= $document->getType();
 		$viewType	= $document->getType();
 		$viewName	= JRequest::getCmd( 'view', $this->_viewname);
 				
-		$view = & $this->getView( $viewName, $viewType);
+		$view = $this->getView( $viewName, $viewType);
 		$view->setLayout('form');
-		$cid = JRequest :: getVar('cid', array (
+		$cid = JRequest::getVar('cid', array (
 			0
 		), 'get', 'array');
 		$id = $cid[0];
 		if ($id  > 0) {
-			$model = &$this->getModel($this->_viewname);
+			$model = $this->getModel($this->_viewname);
 
 			// If not already checked out, do so.
 			$model->setId($id); 
@@ -95,19 +95,19 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	function save() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 		
-		$db = & JFactory::getDBO();  
+		$db = JFactory::getDBO();  
 
-		$post = JRequest :: getVar('jform', array(), 'post', 'array');
-		$cid = JRequest :: getVar('cid', array (
+		$post = JRequest::getVar('jform', array(), 'post', 'array');
+		$cid = JRequest::getVar('cid', array (
 			0
 		), 'post', 'array');
 		$post['id'] = (int) $cid[0];	
 		
 		$model = $this->getModel('##name##');
 		if ($model->store($post)) {
-			$msg = JText :: _($this->_itemname .' Saved');
+			$msg = JText::_($this->_itemname .' Saved');
 			$model->checkin();
 		} else {
 			$msg = $model->getError(); 
@@ -135,13 +135,13 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	public function publish() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
 
 		if (count($cid) < 1) {
-			JError :: raiseError(500, JText :: _('Select an item to publish'));
+			JError::raiseError(500, JText::_('Select an item to publish'));
 		}
 
 		$model = $this->getModel('##name##');
@@ -155,13 +155,13 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	public function unpublish() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
 
 		if (count($cid) < 1) {
-			JError :: raiseError(500, JText :: _('Select an item to unpublish'));
+			JError::raiseError(500, JText::_('Select an item to unpublish'));
 		}
 
 		$model = $this->getModel('##name##');
@@ -176,7 +176,7 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	public function orderup() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
 		$model = $this->getModel('##name##');
 		$model->move(-1);
@@ -187,7 +187,7 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	public function orderdown() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
 		$model = $this->getModel('##name##');
 		$model->move(1);
@@ -198,17 +198,17 @@ class ##Component##Controller##Name## extends ##Component##Controller
 	public function saveorder() 
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
+		JRequest::checkToken() or jexit('Invalid Token');
 
-		$cid = JRequest :: getVar('cid', array (), 'post', 'array');
-		$order = JRequest :: getVar('order', array (), 'post', 'array');
-		JArrayHelper :: toInteger($cid);
-		JArrayHelper :: toInteger($order);
+		$cid = JRequest::getVar('cid', array (), 'post', 'array');
+		$order = JRequest::getVar('order', array (), 'post', 'array');
+		JArrayHelper::toInteger($cid);
+		JArrayHelper::toInteger($order);
 
 		$model = $this->getModel('##name##');
 		$model->saveorder($cid, $order);
 
-		$msg = JText :: _('New ordering saved');
+		$msg = JText::_('New ordering saved');
 		$this->setRedirect('index.php?option=##com_component##&view='.$this->_viewname, $msg);
 	}
 ##ifdefFieldorderingEnd##	

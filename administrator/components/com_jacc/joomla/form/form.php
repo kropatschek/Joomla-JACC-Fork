@@ -400,7 +400,7 @@ class JForm
 		if ($group) {
 
 			// Get the fields elements for a given group.
-			$elements = & $this->findGroup($group);
+			$elements =  $this->findGroup($group);
 			foreach ($elements as & $element) {
 
 				// Get an array of <fieldset /> elements and fieldset attributes within the fields element.
@@ -667,7 +667,7 @@ class JForm
 				$groups	= array_map('strval', $attrs ? $attrs : array());
 
 				// Check to see if the field exists in the current form.
-				if ($current = & $this->findField((string) $field['name'], implode('.', $groups))) {
+				if ($current =  $this->findField((string) $field['name'], implode('.', $groups))) {
 
 					// If set to replace found fields remove it from the current definition.
 					if ($replace) {
@@ -773,7 +773,7 @@ class JForm
 		}
 
 		// Get the fields elements for a given group.
-		$elements = & $this->findGroup($group);
+		$elements =  $this->findGroup($group);
 		foreach ($elements as & $element) {
 			$dom = dom_import_simplexml($element);
 			$dom->parentNode->removeChild($dom);
@@ -830,7 +830,7 @@ class JForm
 		}
 
 		// Find the form field element from the definition.
-		$old = & $this->findField((string) $element['name'], $group);
+		$old =  $this->findField((string) $element['name'], $group);
 
 		// If an existing field is found and replace flag is false do nothing and return true.
 		if (!$replace && !empty($old)) {
@@ -848,7 +848,7 @@ class JForm
 		if ($group) {
 
 			// Get the fields elements for a given group.
-			$fields = & $this->findGroup($group);
+			$fields =  $this->findGroup($group);
 
 			// If an appropriate fields element was found for the group, add the element.
 			if (isset($fields[0]) && ($fields[0] instanceof JXMLElement)) {
@@ -886,7 +886,7 @@ class JForm
 		}
 
 		// Find the form field element from the definition.
-		$element = & $this->findField($name, $group);
+		$element =  $this->findField($name, $group);
 
 		// If the element doesn't exist return false.
 		if (!$element instanceof JXMLElement) {
@@ -1183,7 +1183,7 @@ class JForm
 		if ($group) {
 
 			// Get the fields elements for a given group.
-			$elements = & $this->findGroup($group);
+			$elements =  $this->findGroup($group);
 
 			// Get all of the field elements with the correct name for the fields elements.
 			foreach ($elements as $element) {
@@ -1208,7 +1208,7 @@ class JForm
 
 				// If the field is in the exact group use it and break out of the loop.
 				if ($names == (array) $groupNames) {
-					$element = & $field;
+					$element =  $field;
 					break;
 				}
 			}
@@ -1230,7 +1230,7 @@ class JForm
 				}
 				// Found it!
 				else {
-					$element = & $field;
+					$element =  $field;
 					break;
 				}
 			}
@@ -1295,7 +1295,7 @@ class JForm
 		if ($group) {
 
 			// Get the fields elements for a given group.
-			$elements = & $this->findGroup($group);
+			$elements =  $this->findGroup($group);
 
 			// Get all of the field elements for the fields elements.
 			foreach ($elements as $element) {
@@ -1666,7 +1666,7 @@ class JForm
 	{
 
 		// Reference to array with form instances
-		$forms = &self::$forms;
+		$forms = self::$forms;
 
 		// Only instantiate the form if it does not already exist.
 		if (!isset($forms[$name])) {

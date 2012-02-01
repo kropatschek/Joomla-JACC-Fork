@@ -18,7 +18,7 @@ jimport( 'joomla.application.component.controller' );
  */
 class ##Component##ControllerCategory extends JController
 {
-	
+
 	private $_context = "com_##component##_categories";
 	/**
 	 * Constructor.
@@ -28,20 +28,20 @@ class ##Component##ControllerCategory extends JController
 	 */
 	public function __construct($config = array())
 	{
-		
+
 
 		$this->_viewname = 'category';
 		$this->_mainmodel = 'category';
-		$this->_itemname = 'Category';  		
+		$this->_itemname = 'Category';
 		parent::__construct($config);
-		
+
 		// Register proxy tasks.
 		$this->registerTask('save2copy', 'save');
 		$this->registerTask('save2new', 'save');
 		$this->registerTask('apply', 'save');
 		$this->registerTask('cancel', 'cancel');
 	}
-	
+
 
 
 	/**
@@ -49,7 +49,7 @@ class ##Component##ControllerCategory extends JController
 	 *
 	 * @return	void
 	 */
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 			switch($this->getTask())
 		{
@@ -70,7 +70,7 @@ class ##Component##ControllerCategory extends JController
 
 			} break;
 			}
-		parent :: display();
+		parent::display();
 	}
 
 	/**
@@ -81,7 +81,7 @@ class ##Component##ControllerCategory extends JController
 	public function add()
 	{
 		// Initialize variables.
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 
 		// Clear the row edit information from the session.
 		$app->setUserState('com_categories.edit.category.id', null);
@@ -103,15 +103,15 @@ class ##Component##ControllerCategory extends JController
 	public function edit()
 	{
 		// Initialize variables.
-	
-		$app	= &JFactory::getApplication();
+
+		$app	= JFactory::getApplication();
 		$pks	= JRequest::getVar('cid', array(), '', 'array');
 
 		// Get the id of the group to edit.
 		$id		=  (empty($pks) ? JRequest::getInt('item_id') : (int) array_pop($pks));
 
 		// Get the model.
-		$model	= &$this->getModel('Category');
+		$model	= $this->getModel('Category');
 
 		$extension = $app->getUserStateFromRequest('com_##component##_categories.filter.extension', 'extension', 'com_##component##');
 		// Check that this is not a new category.
@@ -130,10 +130,10 @@ class ##Component##ControllerCategory extends JController
 		}
 
 		// Check if we are adding for a particular extension
-		
+
 		// Push the new row id into the session.
 		$app->setUserState('com_##component##_categories.edit.category.id', $id);
-		
+
 		$app->setUserState('com_##component##_categories.edit.category.data', null);
 		$app->setUserState('com_##component##_categories.edit.category.type', null);
 
@@ -154,13 +154,13 @@ class ##Component##ControllerCategory extends JController
 		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
 
 		// Initialize variables.
-		$app	= &JFactory::getApplication();
-		$model	= &$this->getModel('Category');
+		$app	= JFactory::getApplication();
+		$model	= $this->getModel('Category');
 
 		// Get the previous row id.
 		$previousId	= (int) $app->getUserState('com_##component##_categories.edit.category.id');
 		$extension = $app->getUserStateFromRequest('com_##component##_categories.filter.extension', 'extension');
-		
+
 
 		// If rows ids do not match, checkin previous row.
 		if ($model->checkin($previousId)) {
@@ -189,11 +189,11 @@ class ##Component##ControllerCategory extends JController
 		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
 
 		// Initialize variables.
-		$app	= &JFactory::getApplication();
-		$model	= &$this->getModel('Category');
+		$app	= JFactory::getApplication();
+		$model	= $this->getModel('Category');
 		$task	= $this->getTask();
 
-		
+
 		// Get the posted values from the request.
 		$data	= JRequest::getVar('jform', array(), 'post', 'array');
 
@@ -217,7 +217,7 @@ class ##Component##ControllerCategory extends JController
 		}
 
 		// Validate the posted data.
-		$form	= &$model->getForm();
+		$form	= $model->getForm();
 		if (!$form) {
 			JError::raiseError(500, $model->getError());
 			return false;
@@ -312,8 +312,8 @@ class ##Component##ControllerCategory extends JController
 		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
 
 		// Initialize variables.
-		$app	= &JFactory::getApplication();
-		$model	= &$this->getModel('Category');
+		$app	= JFactory::getApplication();
+		$model	= $this->getModel('Category');
 		$vars	= JRequest::getVar('batch', array(), 'post', 'array');
 		$cid	= JRequest::getVar('cid', array(), 'post', 'array');
 		$extension = $app->getUserStateFromRequest('com_##component##_categories.filter.extension', 'extension');

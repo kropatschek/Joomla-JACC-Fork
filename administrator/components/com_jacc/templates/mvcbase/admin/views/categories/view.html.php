@@ -76,7 +76,7 @@ class ##Component##ViewCategories extends JView
 		$extension	= $state->get('filter.extension');
 
 		// Need to load the menu language file as mod_menu hasn't been loaded yet.
-		$lang = &JFactory::getLanguage();
+		$lang = JFactory::getLanguage();
 		$lang->load($extension.'.menu');
 
 		JToolBarHelper::title(

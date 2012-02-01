@@ -32,9 +32,9 @@ class JFormFieldTableList extends JFormFieldList
 	protected function getOptions()
 	{
 	
-		$db =& JFactory::getDBO();
+		$db =JFactory::getDBO();
 		$tables= $db->getTableList();
-		$config =& JFactory::getConfig();
+		$config =JFactory::getConfig();
 		$options = array();
 		$db = JFactory::getDBO();		
 		for ($i=0;$i<count($tables);$i++) {

@@ -49,7 +49,7 @@ class ##Component##ModelCategory extends JModel
 	{
 		parent::__construct();
 		//Compatibility
-		if (!isset($this->_state) and isset($this->state) ) $this->_state = &$this->state;
+		if (!isset($this->_state) and isset($this->state) ) $this->_state = $this->state;
 	}
 	/**
 	 * Returns a reference to the a Table object, always creating it
@@ -61,7 +61,7 @@ class ##Component##ModelCategory extends JModel
 	*/
 	public function &getTable($type = 'Category', $prefix = 'JTable', $config = array())
 	{
-		$table = & JTable::getInstance($type, $prefix, $config);
+		$table = JTable::getInstance($type, $prefix, $config);
 		return $table ;
 	}
 
@@ -126,7 +126,7 @@ class ##Component##ModelCategory extends JModel
 	 */
 	protected function _populateState()
 	{
-		$app = &JFactory::getApplication('administrator');
+		$app = JFactory::getApplication('administrator');
 
 		// Load the User state.
 		if (!($pk = (int) $app->getUserState('com_##component##_categories.edit.category.id'))) {
@@ -147,7 +147,7 @@ class ##Component##ModelCategory extends JModel
 		JRequest::setVar('extension', $extension);
 
 		// Load the parameters.
-		$params	= &JComponentHelper::getParams('com_##component##');
+		$params	= JComponentHelper::getParams('com_##component##');
 		$this->setState('params', $params);
 	}
 
@@ -166,7 +166,7 @@ class ##Component##ModelCategory extends JModel
 		$pk = (!empty($pk)) ? $pk : (int)$this->getState('category.id');
 
 		// Get a level row instance.
-		$table = &$this->getTable();
+		$table = $this->getTable();
 
 		// Attempt to load the row.
 		$table->load($pk);
@@ -202,7 +202,7 @@ class ##Component##ModelCategory extends JModel
 	public function getForm()
 	{
 		// Initialize variables.
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 
 		// Get the form.
 	
@@ -288,7 +288,7 @@ class ##Component##ModelCategory extends JModel
 		$isNew	= true;
 
 		// Get a row instance.
-		$table = &$this->getTable();
+		$table = $this->getTable();
 
 		// Load the row if saving an existing category.
 		if ($pk > 0) {
@@ -351,7 +351,7 @@ class ##Component##ModelCategory extends JModel
 		$pks = (array) $pks;
 
 		// Get a row instance.
-		$table = &$this->getTable();
+		$table = $this->getTable();
 		
 		// Iterate the items to delete each one.
 		foreach ($pks as $pk) {
@@ -379,10 +379,10 @@ class ##Component##ModelCategory extends JModel
 		$pks = (array) $pks;
 
 		// Get the current user object.
-		$user = &JFactory::getUser();
+		$user = JFactory::getUser();
 
 		// Get an instance of the table row.
-		$table = &$this->getTable();
+		$table = $this->getTable();
 
 		// Attempt to publish the items.
 		if (!$table->publish($pks, $value, $user->get('id'))) {
@@ -411,7 +411,7 @@ class ##Component##ModelCategory extends JModel
 		}
 
 		// Get a row instance.
-		$table = &$this->getTable();
+		$table = $this->getTable();
 
 		// Move the row down in the ordering.
 		if ($direction > 0) {
@@ -437,7 +437,7 @@ class ##Component##ModelCategory extends JModel
 	public function rebuild()
 	{
 		// Get an instance of the table obejct.
-		$table = &$this->getTable();
+		$table = $this->getTable();
 
 		if (!$table->rebuild()) {
 			$this->setError($table->getError());
@@ -509,7 +509,7 @@ class ##Component##ModelCategory extends JModel
 	 */
 	protected function _batchAccess($value, $pks)
 	{
-		$table = &$this->getTable();
+		$table = $this->getTable();
 		foreach ($pks as $pk) {
 			$table->reset();
 			$table->load($pk);
@@ -559,10 +559,10 @@ class ##Component##ModelCategory extends JModel
 		// Only attempt to check the row in if it exists.
 		if ($pk) {
 			// Get a row instance.
-			$table = &$this->getTable();
+			$table = $this->getTable();
 
 			// Get the current user object.
-			$user = &JFactory::getUser();
+			$user = JFactory::getUser();
 
 			// Attempt to check the row out.
 			if (!$table->checkout($user->get('id'), $pk)) {

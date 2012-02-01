@@ -133,7 +133,7 @@ class ##Component##ModelCategory extends JModelList
 	    $fields	= $db->getTableFields(str_replace('#__',$db->getPrefix(),$this->getState('filter.extensiontable')), false);            
         $table = $fields[str_replace('#__',$db->getPrefix(),$this->getState('filter.extensiontable'))];
 	       
-	    $query = & $this->query;
+	    $query = $this->query;
 		$query->select('a.*');
 		$query->select('a.'.$this->getState('filter.itemfield').' as title');
 		$query->from($this->getState('filter.extensiontable').' as a');

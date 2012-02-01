@@ -29,8 +29,8 @@ class JaccControllerTemplates extends JaccController
 	
 	public function __construct($config = array ()) 
 	{
-		parent :: __construct($config);
-		JRequest :: setVar('view', $this->_viewname);
+		parent::__construct($config);
+		JRequest::setVar('view', $this->_viewname);
 
 	}		
 
@@ -44,7 +44,7 @@ class JaccControllerTemplates extends JaccController
 		jimport('joomla.filesystem.file');
 
 
-		$item = & $model->getItem();
+		$item =  $model->getItem();
 
 		$item->name = strtolower($item->name);
 		//Create TempFolders
@@ -123,7 +123,7 @@ class JaccControllerTemplates extends JaccController
 		
 		//some basic variables to replace the template patterns
 		//now
-		$date = &JFactory::getDate();		
+		$date = JFactory::getDate();		
 		
 		$tmpl_template = $item->name;
 
@@ -181,12 +181,12 @@ class JaccControllerTemplates extends JaccController
 	public function save()
 	{
 		// Check for request forgeries
-		JRequest :: checkToken() or jexit('Invalid Token');
-		$app = &JFactory::getApplication('administrator');
-		$db = & JFactory::getDBO();
+		JRequest::checkToken() or jexit('Invalid Token');
+		$app = JFactory::getApplication('administrator');
+		$db =  JFactory::getDBO();
 
-		$post = JRequest :: getVar('jform', array(), 'post', 'array');
-		$cid = JRequest :: getVar('cid', array (
+		$post = JRequest::getVar('jform', array(), 'post', 'array');
+		$cid = JRequest::getVar('cid', array (
 		0
 		), 'post', 'array');
 		$post['id'] = (int) $cid[0];
@@ -195,7 +195,7 @@ class JaccControllerTemplates extends JaccController
 		
 		JRequest::setVar('mode', 'return');
 		// Validate the posted data.
-		$form	= &$model->getForm();
+		$form	= $model->getForm();
 
 		if (!$form) {
 			JError::raiseError(500, $model->getError());
@@ -225,7 +225,7 @@ class JaccControllerTemplates extends JaccController
 		}
 
 		if ($model->store($post)) {
-			$msg = JText :: _($this->_itemname .' Saved');
+			$msg = JText::_($this->_itemname .' Saved');
 			JRequest::setVar("cid",array($model->getId()));			
 		} else {
 			$msg = $model->getError();

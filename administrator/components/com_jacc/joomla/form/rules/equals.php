@@ -39,7 +39,7 @@ class JFormRuleEquals extends JFormRule
 
 		// Check the rule.
 		if (!$field2) {
-			return new JException('Invalid Form Rule :: '.get_class($this));
+			return new JException('Invalid Form Rule::'.get_class($this));
 		}
 
 		// Test the two values against each other.

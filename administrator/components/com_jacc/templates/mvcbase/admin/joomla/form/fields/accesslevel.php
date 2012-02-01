@@ -42,7 +42,7 @@ class JFormFieldAccessLevel extends JFormFieldList
 
 		// Get the field options.
 		$options = $this->getOptions();
-	    $db =& JFactory::getDBO();
+	    $db =JFactory::getDBO();
 
 		$query = 'SELECT id AS value, name AS text'
 		. ' FROM #__groups'

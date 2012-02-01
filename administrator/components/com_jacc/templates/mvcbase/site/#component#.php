@@ -24,7 +24,7 @@ $jv = new JVersion();
 $GLOBALS['alt_libdir'] = ($jv->RELEASE < 1.6) ? JPATH_COMPONENT_ADMINISTRATOR : null;
 
 
-$config 	=& JComponentHelper::getParams( 'com_##component##' );
+$config 	=JComponentHelper::getParams( 'com_##component##' );
 
 $controller = JRequest::getWord('view', '##defaultview##');
 

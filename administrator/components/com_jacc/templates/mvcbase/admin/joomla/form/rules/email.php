@@ -63,11 +63,11 @@ class JFormRuleEmail extends JFormRule
 
 			// Check the rule.
 			if (!$key) {
-				return new JException('Invalid Form Rule :: '.get_class($this));
+				return new JException('Invalid Form Rule::'.get_class($this));
 			}
 
 			// Check if the username is unique.
-			$db = &JFactory::getDbo();
+			$db = JFactory::getDbo();
 			$db->setQuery(
 				'SELECT count(*) FROM `#__users`' .
 				' WHERE `email` = '.$db->Quote($values[$name]) .
@@ -77,7 +77,7 @@ class JFormRuleEmail extends JFormRule
 
 			// Check for a database error.
 			if ($db->getErrorNum()) {
-				return new JException('Database Error :: '.$db->getErrorMsg());
+				return new JException('Database Error::'.$db->getErrorMsg());
 			}
 
 			// Test the value against the regular expression.

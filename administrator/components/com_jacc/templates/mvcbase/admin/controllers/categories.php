@@ -28,16 +28,16 @@ class ##Component##ControllerCategories extends JController
 	 */
 	public function __construct($config = array())
 	{
-		parent:: __construct($config);	
-		
-		
+		parent:: __construct($config);
+
+
 		$db = JFactory::getDBO();
 		$db->setQuery('SELECT * FROM #__##component##_categories');
 		$rows = $db->loadObjectList();
 
 		$this->_viewname = 'categories';
 		$this->_mainmodel = 'categories';
-		$this->_itemname = 'Category';  		
+		$this->_itemname = 'Category';
 		// Register proxy tasks.
 		$this->registerTask('unpublish', 'publish');
 		$this->registerTask('trash', 'publish');
@@ -51,35 +51,35 @@ class ##Component##ControllerCategories extends JController
 	/**
 	 * shows the categories mulit select (for com_menu)
 	 */
-	public function element() 
+	public function element()
 	{
 		JRequest::setVar( 'layout', 'element'  );
 		JRequest::setVar( 'view', $this->_viewname);
 		parent::display();
-		 
+
 	}
-	
+
 	/**
 	 * Display the view
 	 */
-	public function display() 
+	public function display($cachable = false, $urlparams = false)
 	{
-	
-		$document =& JFactory::getDocument();
+
+		$document = JFactory::getDocument();
 		$layout		= 'default';
-		
+
 		$viewType	= $document->getType();
-		$view = &$this->getView('categories', $viewType);
-        //get the model
+		$view = $this->getView('categories', $viewType);
+		//get the model
 		$model = $this->getModel('Categories');
-	
+
 		$view->setModel( $model, true );
 		$view->display();
 	}
 
 
 
-	function access() 
+	function access()
 	{
 			// Check for request forgeries
 		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
@@ -89,7 +89,7 @@ class ##Component##ControllerCategories extends JController
 		$values	= array('accessregistered' => 1, 'accesspublic' => 0, 'accessspecial' => 2);
 		$task	= $this->getTask();
 		$value	= JArrayHelper::getValue($values, $task, 0, 'int');
-		
+
 		if (empty($pks)) {
 			JError::raiseWarning(500, JText::_('JError_No_items_selected'));
 		} else {
@@ -101,12 +101,12 @@ class ##Component##ControllerCategories extends JController
 				$this->setMessage($model->getError());
 			}
 		}
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$extension = $app->getUserStateFromRequest($this->_context.'.filter.extension', 'extension', 'com_##component##');
 
 		$this->setRedirect('index.php?option=com_##component##&view=categories&extension='.$extension);
 	}
-	
+
 	/**
 	 * Removes an item
 	 */
@@ -118,12 +118,12 @@ class ##Component##ControllerCategories extends JController
 		// Get items to remove from the request.
 		$pks	= JRequest::getVar('cid', array(), 'post', 'array');
 		$n		= count($pks);
-	
+
 		if (empty($pks)) {
 			JError::raiseWarning(500, JText::_('JError_No_items_selected'));
-			
+
 		} else {
-			
+
 			// Get the model.
 			$model = $this->getModel('Category');
 
@@ -134,7 +134,7 @@ class ##Component##ControllerCategories extends JController
 				$this->setMessage($model->getError());
 			}
 		}
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$extension = $app->getUserStateFromRequest($this->_context.'.filter.extension', 'extension', 'com_##component##');
 
 		$this->setRedirect('index.php?option=com_##component##&view=categories&extension='.$extension);
@@ -147,7 +147,7 @@ class ##Component##ControllerCategories extends JController
 	 */
 	public function publish()
 	{
-		
+
 
 		// Check for request forgeries
 		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
@@ -166,16 +166,16 @@ class ##Component##ControllerCategories extends JController
 
 			// Publish the items.
 			if ($model->publish($pks, $value)) {
-				
+
 				$this->setMessage($value ? JText::_('JSuccess_N_items_published') : JText::_('JSuccess_N_items_unpublished'));
-				
+
 			} else {
-				
+
 				$this->setMessage($model->getError());
-				
+
 			}
 		}
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$extension = $app->getUserStateFromRequest($this->_context.'.filter.extension', 'extension', 'com_content');
 		$this->setRedirect('index.php?option=com_##component##&view=categories&extension='.$extension);
 	}
@@ -191,11 +191,11 @@ class ##Component##ControllerCategories extends JController
 
 		// Initialize variables.
 		$pks	= JRequest::getVar('cid', null, 'post', 'array');
-		$model	= &$this->getModel('Category');
+		$model	= $this->getModel('Category');
 
 		// Attempt to move the row.
 		$return = $model->ordering(array_pop($pks), $this->getTask() == 'orderup' ? -1 : 1);
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$extension = $app->getUserStateFromRequest($this->_context.'.filter.extension', 'extension', 'com_content');
 
 		if ($return === false) {
@@ -219,12 +219,12 @@ class ##Component##ControllerCategories extends JController
 	public function rebuild()
 	{
 		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
-		$app = &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$extension = $app->getUserStateFromRequest($this->_context.'.filter.extension', 'extension', 'com_content');
 		$this->setRedirect('index.php?option=com_##component##&view=categories&extension='.$extension);
 
 		// Initialize variables.
-		$model = &$this->getModel('Category');
+		$model = $this->getModel('Category');
 
 		if ($model->rebuild()) {
 			// Reorder succeeded.

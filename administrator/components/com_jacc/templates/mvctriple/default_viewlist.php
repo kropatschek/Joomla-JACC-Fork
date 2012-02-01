@@ -18,13 +18,13 @@ class ##Component##View##Name##list  extends JView
 	public function display($tpl = null)
 	{
 		
-		$app = &JFactory::getApplication('site');
-		$document	= &JFactory::getDocument();
-		$uri 		= &JFactory::getURI();
-		$user 		= &JFactory::getUser();
-		$pagination	= &$this->get('pagination');
+		$app = JFactory::getApplication('site');
+		$document	= JFactory::getDocument();
+		$uri 		= JFactory::getURI();
+		$user 		= JFactory::getUser();
+		$pagination	= $this->get('pagination');
 		$params		= $app ->getParams();				
-		$menus	= &JSite::getMenu();
+		$menus	= JSite::getMenu();
 		
 		$menu	= $menus->getActive();
 		if (is_object( $menu )) {

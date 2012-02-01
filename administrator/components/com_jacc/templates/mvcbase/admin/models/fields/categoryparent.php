@@ -37,7 +37,7 @@ class JFormFieldCategoryParent extends JFormFieldList
 	{
 		$app = JFactory::getApplication();
 		
-		$db		= &JFactory::getDbo();
+		$db		= JFactory::getDbo();
 		$query	= new JQuery;
 
 		$query->select('a.id AS value, a.title AS text, a.level');

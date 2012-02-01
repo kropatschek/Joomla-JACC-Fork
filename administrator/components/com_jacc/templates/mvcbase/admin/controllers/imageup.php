@@ -28,7 +28,7 @@ class ##Component##ControllerImageup extends ##Component##Controller
 	 
 	public function __construct($config = array ()) 
 	{
-		parent :: __construct($config);
+		parent::__construct($config);
 
 	}
 
@@ -43,7 +43,7 @@ class ##Component##ControllerImageup extends ##Component##Controller
 
 		$folder		= JRequest::getVar( 'folder', 'com_##component##', '', 'path' );
         
-		$config 	=& JComponentHelper::getParams( 'com_##component##' );
+		$config 	=JComponentHelper::getParams( 'com_##component##' );
 		// Set FTP credentials, if given
 		jimport('joomla.client.helper');
 		JClientHelper::setCredentialsFromRequest('ftp');
@@ -70,7 +70,7 @@ class ##Component##ControllerImageup extends ##Component##Controller
 	            exit;
 			} else {
 	
-					$post = JRequest :: get('post');
+					$post = JRequest::get('post');
 					$post['filename'] = $file['name'];
 
 					$extension = JFile::getExt($file['name']);

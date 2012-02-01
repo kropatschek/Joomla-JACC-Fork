@@ -89,7 +89,7 @@ abstract class JHtml##Component##
 	{
 
 			$config	= (array) $config;
-			$db		= &JFactory::getDbo();
+			$db		= JFactory::getDbo();
 
 			jimport('joomla.database.query');
 			$query	= new JQuery;

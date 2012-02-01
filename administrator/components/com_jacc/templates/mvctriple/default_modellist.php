@@ -41,7 +41,7 @@ class ##Component##Model##Name##list extends JModelList
 		//check the version
 		$jv = new JVersion();
 		if ($jv->RELEASE < 1.6) {
-			$query = & $this->query;	
+			$query = $this->query;	
 		} else {
 				$db		= $this->getDbo();
 				$query	= $db->getQuery(true);			
