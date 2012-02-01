@@ -9,8 +9,8 @@ defined('JPATH_BASE') or die;
 
 jimport('joomla.html.html');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'joomla'.DS.'form'.DS.'fields'.DS.'list.php');
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'query.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/joomla/form/fields/list.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
 
 /**
  * Form Field class for the Joomla Framework.

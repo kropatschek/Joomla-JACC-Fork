@@ -14,7 +14,7 @@ class JElement##Name## extends JElement
 
 	function fetchElement($name, $value, &$node, $control_name)
 	{
-		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_##component##'.DS.'tables');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_##component##/tables');
 		$app		= JFactory::getApplication();
 		$db			= JFactory::getDbo();
 		$doc		= JFactory::getDocument();

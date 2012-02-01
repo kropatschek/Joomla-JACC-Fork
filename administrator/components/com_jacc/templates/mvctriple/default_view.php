@@ -41,7 +41,7 @@ class ##Component##View##Name##  extends JView {
 ##ifdefFieldpublishedStart##
 		//create the lists
 		$lists = array();
-		$lists['state'] = JHTML::_('grid.state', $filter_state);
+		$lists['state'] = JHtml::_('grid.state', $filter_state);
 ##ifdefFieldpublishedEnd##
 		// table ordering
 		$lists['order_Dir'] = $filter_order_Dir;
@@ -68,10 +68,10 @@ class ##Component##View##Name##  extends JView {
 	 */
 	public function _displayForm($tpl)
 	{
-		global  $alt_libdir;
+		//-global  $alt_libdir;
 
-		JLoader::import('joomla.form.formvalidator', $alt_libdir);
-		JHTML::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/' );
+		JLoader::import('joomla.form.formvalidator');//-, $alt_libdir);
+		JHtml::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/' );
 
 		$db			=JFactory::getDBO();
 		$uri 		=JFactory::getURI();
@@ -94,7 +94,7 @@ class ##Component##View##Name##  extends JView {
 			$item->published = 1;
 		}
 
-		$lists['published'] 		= JHTML::_('select.booleanlist', 'published', 'class="inputbox"', $item->published );
+		$lists['published'] 		= JHtml::_('select.booleanlist', 'published', 'class="inputbox"', $item->published );
 
 		$this->assign('form', $form);
 

@@ -43,7 +43,7 @@ class JFormFieldTemplates extends JFormField {
         	array_unshift( $data, $default );
 
 		$selected = $this->_getSelected();
-		$html = JHTML::_( 'select.genericlist', $data, $this->inputName, 'class="inputbox" size="1"', 'id', 'description', $this->value );
+		$html = JHtml::_( 'select.genericlist', $data, $this->inputName, 'class="inputbox" size="1"', 'id', 'description', $this->value );
 		return $html;
 	}
 

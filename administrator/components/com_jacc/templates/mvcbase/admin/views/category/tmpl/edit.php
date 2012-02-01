@@ -25,8 +25,8 @@ JHtml::_('behavior.formvalidation');
 
 	function submitbutton(task)
 	{
-         var form = document.adminForm;
-	    if (task == 'cancel' || document.formvalidator.isValid(form)) {
+		 var form = document.adminForm;
+		if (task == 'cancel' || document.formvalidator.isValid(form)) {
 			submitform(task);
 		}
 	}
@@ -54,41 +54,41 @@ JHtml::_('behavior.formvalidation');
 
 					<?php echo $this->form->getLabel('extension'); ?>
 					<?php echo $this->form->getInput('extension'); ?>
-					
+
 					<?php echo $this->form->getLabel('parent_id'); ?>
 					<?php echo $this->form->getInput('parent_id'); ?>
-					
+
 					<?php echo $this->form->getLabel('published'); ?>
 					<?php echo $this->form->getInput('published'); ?>
 
 					<?php echo $this->form->getLabel('access'); ?>
 					<?php echo $this->form->getInput('access'); ?>
-					
+
 					<?php echo $this->loadTemplate('options'); ?>
-					
+
 					<div class="clr"></div>
 					<?php echo $this->form->getLabel('description'); ?>
 					<div class="clr"></div>
 					<?php echo $this->form->getInput('description'); ?>
 		</fieldset>
 	</div>
-<?php $jv = new JVersion(); 
-      if($jv->RELEASE > 1.5):
-?>	
+<?php //-$jv = new JVersion();
+	//-if($jv->RELEASE > 1.5):
+?>
 	<div class="clr"></div>
-		<div  class="width-100 fltlft">
+		<div class="width-100 fltlft">
 
 			<?php echo JHtml::_('sliders.start','permissions-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
-	
-			<?php echo JHtml::_('sliders.panel',JText::_('COM_CATEGORIES_FIELDSET_RULES'), 'access-rules'); ?>	
+
+			<?php echo JHtml::_('sliders.panel',JText::_('COM_CATEGORIES_FIELDSET_RULES'), 'access-rules'); ?>
 				<fieldset class="panelform">
 					<?php echo $this->form->getLabel('rules'); ?>
 					<?php echo $this->form->getInput('rules'); ?>
 				</fieldset>
-			
+
 			<?php echo JHtml::_('sliders.end'); ?>
 		</div>
-<?php endif;?>		
+<?php //-endif;?>
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

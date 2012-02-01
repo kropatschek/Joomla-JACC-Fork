@@ -53,11 +53,11 @@ class ##Component##ControllerImageup extends ##Component##Controller
 		$file['name']	= strtolower(JFile::makeSafe($file['name']));
 		
 		//create the folder, if not exists 
-		$folder_path = JPath::clean(JPATH_ROOT.DS.'images'.DS.$folder);
+		$folder_path = JPath::clean(JPATH_ROOT.'/images/'.$folder);
 		if (!JFolder::exists($folder_path)) JFolder::create($folder_path); 
 
 		if (isset($file['name'])) {
-			$filepath = JPath::clean(JPATH_ROOT.DS.'images'.DS.$folder.DS.strtolower($file['name']));
+			$filepath = JPath::clean(JPATH_ROOT.'/images/'.$folder.DS.strtolower($file['name']));
 			
 			$imageTypes = 'gif|jpg|png|jpeg';
 			$isImage = preg_match("/$imageTypes/i",$file['name']);

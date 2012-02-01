@@ -50,7 +50,7 @@ class JFormFieldAccessLevel extends JFormFieldList
 		;
 		$db->setQuery( $query );
 		$groups = $db->loadObjectList();
-		$access = JHTML::_('select.genericlist',   $groups, $this->name, 'class="inputbox" size="3"', 'value', 'text', intval( $this->value ), '', 1 );
+		$access = JHtml::_('select.genericlist',   $groups, $this->name, 'class="inputbox" size="3"', 'value', 'text', intval( $this->value ), '', 1 );
 
 		return $access;
 		

@@ -28,29 +28,30 @@ class ##Component##ViewCategories extends JView
 	 */
 	public function display($tpl = null)
 	{
-		global $alt_libdir;		
-		
-		JHTML::addIncludePath( $alt_libdir.DS.'joomla'.DS.'html'.DS.'html');	
-		
-		JHTML::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/') ;
+		//-global $alt_libdir;
 
-		//Show a categories multi select (called from com_menu) 
-		if ($this->getLayout() == 'element') {		
-			parent::display($tpl);	
+		//-JHtml::addIncludePath( $alt_libdir.'/joomla/html/html');
+		JHtml::addIncludePath(JPATH_PLATFORM . '/joomla/html/html');
+
+		JHtml::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/') ;
+
+		//Show a categories multi select (called from com_menu)
+		if ($this->getLayout() == 'element') {
+			parent::display($tpl);
 			return;
 		}
-		
+
 		$state		= $this->get('State');
 		$items		= $this->get('Items');
 		$pagination	= $this->get('Pagination');
-	
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-		
-	
+
+
 
 		// Preprocess the list of items to find ordering divisions.
 		foreach ($items as $i => &$item) {
@@ -93,7 +94,7 @@ class ##Component##ViewCategories extends JView
 			JToolBarHelper::deleteList('', 'delete');
 		} else {
 			JToolBarHelper::trash('trash');
-		} 
+		}
 		JToolBarHelper::divider();
 		JToolBarHelper::custom('rebuild', 'refresh.png', 'refresh_f2.png', 'JToolbar_Rebuild', false);
 		JToolBarHelper::divider();

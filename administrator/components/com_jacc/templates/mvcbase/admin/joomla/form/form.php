@@ -10,10 +10,10 @@
 defined('JPATH_BASE') or die;
 
 jimport('joomla.filesystem.path');
-JLoader::import('joomla.form.formfield',$GLOBALS['alt_libdir']);		
-JLoader::import('joomla.form.formrule',$GLOBALS['alt_libdir']);		
+JLoader::import('joomla.form.formfield');//-,$GLOBALS['alt_libdir']);
+JLoader::import('joomla.form.formrule');//-,$GLOBALS['alt_libdir']);
 jimport('joomla.registry.registry');
-JLoader::import('joomla.form.helper',$GLOBALS['alt_libdir']);		
+JLoader::import('joomla.form.helper');//-,$GLOBALS['alt_libdir']);
 
 
 /**
@@ -196,21 +196,21 @@ class JForm
 		if (!$this->xml instanceof JXMLElement) {
 			return false;
 		}
-	
+
 		// Initialize variables.
 		$input	= new JRegistry();
-		
+
 		// like JRegistry->loadArray() in 1.6
 		foreach ($data as $k => $v) {
-			if ((is_array($v) && JFormHelper::isAssociative($v)) || is_object($v)) {				
+			if ((is_array($v) && JFormHelper::isAssociative($v)) || is_object($v)) {
 				JFormHelper::regbindData($input,$v,$k);
 			}
 			else {
 				$input->setValue('default.'.$k, $v);
 			}
 		}
-		
-		//$input->loadArray($data);	
+
+		//$input->loadArray($data);
 		$output	= new JRegistry();
 
 		// Get the fields for which to filter the data.
@@ -230,7 +230,7 @@ class JForm
 
 			$groups	= array_map('strval', $attrs ? $attrs : array());
 			$group	= implode('.', $groups);
-			
+
 			// Get the field value from the data input.
 			if ($group) {
 				// Filter the value if it exists.
@@ -244,7 +244,7 @@ class JForm
 				//}
 			}
 		}
-		
+
 		// like JRegistry->toArray() in 1.6
 		$groups = $output->getNameSpaces();
 		$return = array();
@@ -253,7 +253,7 @@ class JForm
 				if($group == 'default') {
 					$return = array_merge($return,$output->toArray());
 				} else {
-					$return[$group] = $output->toArray($group); 
+					$return[$group] = $output->toArray($group);
 				}
 			}
 		}
@@ -1009,7 +1009,7 @@ class JForm
 
 		// Validate the fields.
 		foreach ($fields as $field) {
-	
+
 			// Initialize variables.
 			$value	= null;
 			$name	= (string) $field['name'];
@@ -1017,9 +1017,9 @@ class JForm
 			// Get the group names as strings for anscestor fields elements.
 			$attrs	= $field->xpath('ancestor::fields[@name]/@name');
 			$groups	= array_map('strval', $attrs ? $attrs : array());
-			
+
 			$group	= implode('.', $groups);
-			
+
 			// Get the value from the input data.
 			if ($group) {
 				$value = $input->get($group.'.'.$name);

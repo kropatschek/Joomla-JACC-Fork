@@ -9,7 +9,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.model');
-require_once JPATH_COMPONENT.DS.'helpers'.DS.'category.php';
+require_once JPATH_COMPONENT.'/helpers/category.php';
 
 
 /**

@@ -21,7 +21,7 @@ defined('_JEXEC') or die;
 			window.parent.document.getElementById('sbox-window').close();
 			}
 ";
-		JHTML::_('behavior.mootools');
+		JHtml::_('behavior.mootools');
 		$document->addScriptDeclaration($js);
 	
 		$values = explode(',',JRequest::getVar('value'));

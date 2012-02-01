@@ -87,20 +87,20 @@ class JFormFieldModuleLayout extends JFormFieldList
 			$path2 = JPath::clean($client->path.'/templates/'.$template.'/html/'.$module);
 
 			// Add the default option.
-			$options[]	= JHTML::_('select.option', '', JText::_('JOPTION_USE_DEFAULT_MODULE_SETTING'));
+			$options[]	= JHtml::_('select.option', '', JText::_('JOPTION_USE_DEFAULT_MODULE_SETTING'));
 
 			// Add the layout options from the first path.
 			if (is_dir($path1) && ($files = JFolder::files($path1, '^[^_]*\.php$'))) {
 				foreach ($files as $file) {
-					$options[]	= JHTML::_('select.option', JFile::stripExt($file));
+					$options[]	= JHtml::_('select.option', JFile::stripExt($file));
 				}
 			}
 
 			// Add the layout options from the second path.
 			if (is_dir($path2) && ($files = JFolder::files($path2, '^[^_]*\.php$'))) {
-				$options[]	= JHTML::_('select.optgroup', JText::_('JOPTION_FROM_DEFAULT_TEMPLATE'));
+				$options[]	= JHtml::_('select.optgroup', JText::_('JOPTION_FROM_DEFAULT_TEMPLATE'));
 				foreach ($files as $file) {
-					$options[]	= JHTML::_('select.option', JFile::stripExt($file));
+					$options[]	= JHtml::_('select.option', JFile::stripExt($file));
 				}
 			}
 		}

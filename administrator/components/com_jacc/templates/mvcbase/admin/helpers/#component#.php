@@ -10,36 +10,36 @@
 // no direct access
 defined('_JEXEC') or die;
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_##component##'.DS.'helpers'.DS.'query.php');
+require_once(JPATH_ADMINISTRATOR.'/components/com_##component##/helpers/query.php');
 
 class ##Component##Helper
 {
-	
+
 	/*
 	 * Submenu for Joomla 1.6
 	 */
 	public static function addSubmenu($vName = '##defaultview##')
 	{
-        ##menuhelper##
+		##menuhelper##
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Get the Extensions for Categories
 	 */
-	public static function getExtensions() 
+	public static function getExtensions()
 	{
-				
-		$jv = new JVersion();
-		$alt_libdir = ($jv->RELEASE < 1.6) ? JPATH_ADMINISTRATOR.DS.'components'.DS.'com_##component##' : null;
-		JLoader::import('joomla.utilities.xmlelement', $alt_libdir);
-		
-		$xml = simplexml_load_file(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_##component##'.DS.'elements'.DS.'extensions.xml', 'JXMLElement');		        
+
+		//-$jv = new JVersion();
+		//-$alt_libdir = ($jv->RELEASE < 1.6) ? JPATH_ADMINISTRATOR.'/components/com_##component##' : null;
+		JLoader::import('joomla.utilities.xmlelement');//-, $alt_libdir);
+
+		$xml = simplexml_load_file(JPATH_ADMINISTRATOR.'/components/com_##component##/elements/extensions.xml', 'JXMLElement');
 		$elements = $xml->xpath('extensions');
 		$extensions = $xml->extensions->xpath('descendant-or-self::extension');
-		
+
 		return $extensions;
-	} 	
+	}
 }
 
 /**
@@ -56,27 +56,27 @@ abstract class JHtml##Component##
 	 * @var	array	Cached array of the category items.
 	 */
 	protected static $items = array();
-	
+
 	/**
 	 * Returns the options for extensions list
-	 * 
+	 *
 	 * @param string $ext - the extension
 	 */
-	public static function extensions($ext) 
+	public static function extensions($ext)
 	{
 		$extensions = ##Component##Helper::getExtensions();
 		$options = array();
-		
-		foreach ($extensions as $extension) {   
-		
+
+		foreach ($extensions as $extension) {
+
 			$option = new stdClass();
 			$option->text = JText::_(ucfirst($extension->name));
 			$option->value = 'com_##component##.'.$extension->name;
-			$options[] = $option;			
-		}		
+			$options[] = $option;
+		}
 		return JHtml::_('select.options', $options, 'value', 'text', $ext, true);
 	}
-	
+
 	/**
 	 * Returns an array of categories for the given extension.
 	 *
@@ -100,26 +100,26 @@ abstract class JHtml##Component##
 
 			// Filter on extension.
 			if($extension)
-			    $query->where('extension = '.$db->quote($extension));
-			
+				$query->where('extension = '.$db->quote($extension));
+
 			$attributes = "";
-			
+
 			if (isset($config['attributes'])) {
 				$attributes = $config['attributes'];
 			}
-			
+
 			// Filter on the published state
 			if (isset($config['filter.published'])) {
-				
+
 				if (is_numeric($config['filter.published'])) {
-					
+
 					$query->where('a.published = '.(int) $config['filter.published']);
-					
+
 				} else if (is_array($config['filter.published'])) {
-					
+
 					JArrayHelper::toInteger($config['filter.published']);
 					$query->where('a.published IN ('.implode(',', $config['filter.published']).')');
-					
+
 				}
 			}
 
@@ -127,12 +127,12 @@ abstract class JHtml##Component##
 
 			$db->setQuery($query);
 			$items = $db->loadObjectList();
-			
+
 			// Assemble the list options.
 			self::$items = array();
 			self::$items[] = JHtml::_('select.option', '', JText::_($title));
 			foreach ($items as &$item) {
-								
+
 				$item->title = str_repeat('- ', $item->level - 1).$item->title;
 				self::$items[] = JHtml::_('select.option', $item->id, $item->title);
 			}

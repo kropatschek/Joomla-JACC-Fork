@@ -8,7 +8,7 @@
 
 defined('JPATH_BASE') or die;
 
-require_once dirname(__FILE__).DS.'list.php';
+require_once dirname(__FILE__).'/list.php';
 
 /**
  * Form Field to display a list of the layouts for a module view from the module or default template overrides.
@@ -46,9 +46,9 @@ class JFormFieldModuleLayouts extends JFormFieldList
 		if ($module = $this->_element->attributes('module'))
 		{
 			$module	= preg_replace('#\W#', '', $module);
-			$path1	= JPATH_SITE.DS.'modules'.DS.$module.DS.'tmpl';
-			$path2	= JPATH_SITE.DS.'templates'.DS.$template.DS.'html'.DS.$module;
-			$options[]	= JHTML::_('select.option', '', '');
+			$path1	= JPATH_SITE.'/modules/'.$module.'/tmpl';
+			$path2	= JPATH_SITE.'/templates/'.$template.'/html/'.$module;
+			$options[]	= JHtml::_('select.option', '', '');
 		}
 
 		if ($path1 && $path2)
@@ -59,14 +59,14 @@ class JFormFieldModuleLayouts extends JFormFieldList
 
 			$files	= JFolder::files($path1, '^[^_]*\.php$');
 			foreach ($files as $file) {
-				$options[]	= JHTML::_('select.option', JFile::stripExt($file));
+				$options[]	= JHtml::_('select.option', JFile::stripExt($file));
 			}
 
 			if (is_dir($path2) && $files = JFolder::files($path2, '^[^_]*\.php$'))
 			{
-				$options[]	= JHTML::_('select.optgroup', JText::_('JOption_From_Default'));
+				$options[]	= JHtml::_('select.optgroup', JText::_('JOption_From_Default'));
 				foreach ($files as $file) {
-					$options[]	= JHTML::_('select.option', JFile::stripExt($file));
+					$options[]	= JHtml::_('select.option', JFile::stripExt($file));
 				}
 			}
 		}

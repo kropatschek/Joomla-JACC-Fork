@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
  
 jimport( 'joomla.application.component.model' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'query.php'); 
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php'); 
 
 class ##Component##Model  extends JModel { 
 

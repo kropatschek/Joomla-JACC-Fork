@@ -26,7 +26,7 @@ class ##Component##ModelCategory extends JModel
 	 */
 	private $_context		= 'com_##component##_categories';
 
-	 
+
 	/**
 	 * An state object
 	 *
@@ -41,11 +41,11 @@ class ##Component##ModelCategory extends JModel
 	 * @since	1.6
 	 */
 	public $__state_set	= null;
-	 
+
 	/**
 	 * Constructor
 	 */
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct();
 		//Compatibility
@@ -95,29 +95,29 @@ class ##Component##ModelCategory extends JModel
 		}
 
 		return $property === null ? $this->_state : $this->_state->get($property, $default);
-	}	
-	
+	}
 
-	
+
+
 	public function access($ids, $value)
 	{
 		// Initialize variables
-	
-	   foreach ($ids as $id) {
-	   		$row = $this->getTable();
+
+	foreach ($ids as $id) {
+			$row = $this->getTable();
 			$row->load( $id );
 			$row->access = $value;
 			if ( !$row->check() ) {
-				$this->setError($row->getError());				
+				$this->setError($row->getError());
 				return false;
 			}
 			if ( !$row->store() ) {
-				$this->setError($row->getError());				
-				return false;			
+				$this->setError($row->getError());
+				return false;
 			}
-	   }
-	}	
-	
+	}
+	}
+
 
 	/**
 	 * Auto-populate the model state.
@@ -138,12 +138,12 @@ class ##Component##ModelCategory extends JModel
 			$parentId = JRequest::getInt('parent_id');
 		}
 		$this->setState('category.parent_id', $parentId);
-		
+
 		if (!($extension = $app->getUserState('com_##component##_categories.filter.extension'))) {
 			$extension = JRequest::getCmd('extension', 'com_##component##.##component##');
 		}
 		$this->setState('category.extension', $extension);
-		
+
 		JRequest::setVar('extension', $extension);
 
 		// Load the parameters.
@@ -160,8 +160,8 @@ class ##Component##ModelCategory extends JModel
 	 */
 	public function &getItem($pk = null)
 	{
-		
-		
+
+
 		// Initialize variables.
 		$pk = (!empty($pk)) ? $pk : (int)$this->getState('category.id');
 
@@ -205,7 +205,7 @@ class ##Component##ModelCategory extends JModel
 		$app = JFactory::getApplication();
 
 		// Get the form.
-	
+
 		$form = $this->_getForm('category', 'com_##component##_categories.category', array('control' => 'jform'));
 		// Check for an error.
 		if (JError::isError($form)) {
@@ -223,7 +223,7 @@ class ##Component##ModelCategory extends JModel
 		if (!empty($data)) {
 			$form->bind($data);
 		}
-	
+
 		return $form;
 	}
 
@@ -238,11 +238,11 @@ class ##Component##ModelCategory extends JModel
 	 */
 	private function &_getForm($xml, $name = 'form', $options = array(), $clear = false)
 	{
-		
-		global $alt_libdir;
-			
+
+		//-global $alt_libdir;
+
 		// Handle the optional arguments.
-		
+
 		$options['control']	= JArrayHelper::getValue($options, 'control', false);
 		// Create a signature hash.
 		$hash = md5($xml.serialize($options));
@@ -256,8 +256,8 @@ class ##Component##ModelCategory extends JModel
 
 		JLoader::import('joomla.form.form', $alt_libdir);
 
-		JForm::addFormPath(JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'forms');
-		JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'fields');
+		JForm::addFormPath(JPATH_COMPONENT_ADMINISTRATOR.'/models/forms');
+		JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/models/fields');
 
 		$form = JForm::getInstance($name, $xml, $options, false);
 		// Check for an error.
@@ -272,8 +272,8 @@ class ##Component##ModelCategory extends JModel
 		$this->_forms[$hash] = $form;
 
 		return $form;
-	}	
-	
+	}
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -284,7 +284,7 @@ class ##Component##ModelCategory extends JModel
 	public function save($data)
 	{
 		$pk		= (!empty($data['id'])) ? $data['id'] : (int)$this->getState('category.id');
-		if ($pk) $data['id'] = $pk;		
+		if ($pk) $data['id'] = $pk;
 		$isNew	= true;
 
 		// Get a row instance.
@@ -294,7 +294,7 @@ class ##Component##ModelCategory extends JModel
 		if ($pk > 0) {
 			$table->load($pk);
 			$isNew = false;
-			
+
 		}
 
 		// Set the new parent id if set.
@@ -307,14 +307,15 @@ class ##Component##ModelCategory extends JModel
 			$this->setError(JText::sprintf('JTable_Error_Bind_failed', $table->getError()));
 			return false;
 		}
-		$jv = new JVersion(); 
-        if($jv->RELEASE > 1.5) {
-		    // Bind the rules.
-		    if (isset($data['rules'])) {
-			    $rules = new JRules($data['rules']);
-			    $table->setRules($rules);
-		    }
-        }
+
+		//-$jv = new JVersion();
+		//-if($jv->RELEASE > 1.5) {
+		// Bind the rules.
+		if (isset($data['rules'])) {
+			$rules = new JRules($data['rules']);
+			$table->setRules($rules);
+		}
+		//-}
 
 		// Check the data.
 		if (!$table->check()) {
@@ -352,12 +353,12 @@ class ##Component##ModelCategory extends JModel
 
 		// Get a row instance.
 		$table = $this->getTable();
-		
+
 		// Iterate the items to delete each one.
 		foreach ($pks as $pk) {
-			
+
 			if (!$table->delete((int) $pk)) {
-				
+
 				$this->setError($table->getError());
 				return false;
 			}
@@ -584,7 +585,7 @@ class ##Component##ModelCategory extends JModel
 	public function checkin($pk = null)
 	{
 		// Only attempt to check the row in if it exists.
-		
+
 		if ($pk) {
 			$user = JFactory::getUser();
 
@@ -598,10 +599,10 @@ class ##Component##ModelCategory extends JModel
 
 			// Check if this is the user having previously checked out the row.
 			if ($table->checked_out > 0 && $table->checked_out != $user->get('id')) {
-				
+
 				$this->setError(JText::_('JError_Checkin_user_mismatch'));
 				return false;
-				
+
 			}
 
 			// Attempt to check the row in.
@@ -612,8 +613,8 @@ class ##Component##ModelCategory extends JModel
 		}
 
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Method to validate the form data.
 	 *
@@ -645,5 +646,5 @@ class ##Component##ModelCategory extends JModel
 		}
 
 		return $data;
-	}	
+	}
 }

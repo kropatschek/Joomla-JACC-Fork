@@ -10,7 +10,7 @@
 defined('JPATH_BASE') or die;
 
 jimport('joomla.database.table');
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'query.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
 
 /**
  * Table class supporting modified pre-order tree traversal behavior.

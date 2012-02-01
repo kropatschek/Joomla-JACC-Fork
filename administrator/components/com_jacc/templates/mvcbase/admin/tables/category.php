@@ -9,7 +9,7 @@
 defined('JPATH_BASE') or die;
 
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'tables'.DS.'tablenested.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/tables/tablenested.php');
 
 
 /**
@@ -126,7 +126,7 @@ class JTableCategory extends ##Component##JTableNested
 		return $this->title;
 	}
 
-	
+
 
 	/**
 	 * Method to delete a row from the database table by primary key value.
@@ -147,8 +147,8 @@ class JTableCategory extends ##Component##JTableNested
 		if ($pk === null) {
 			return false;
 		}
-		
-	
+
+
 
 		// Delete the row by primary key.
 		$this->_db->setQuery(
@@ -165,16 +165,16 @@ class JTableCategory extends ##Component##JTableNested
 		}
 
 		return true;
-	}	
+	}
 	/**
 	 * Get the parent asset id for the record
 	 *
 	 * @return	int
 	 */
-	protected function _getAssetParentId()
+	protected function _getAssetParentId($table = null, $id = null)
 	{
 		// Initialize variables.
-	
+
 		$assetId = null;
 
 		// This is a category under a category.
@@ -212,7 +212,7 @@ class JTableCategory extends ##Component##JTableNested
 			return parent::_getAssetParentId();
 		}
 	}
-	
+
 	/**
 	 * Overloaded bind function.
 	 *
@@ -225,7 +225,7 @@ class JTableCategory extends ##Component##JTableNested
 	{
 
 
-	    if (isset($array['params']) && is_array($array['params'])) {
+		if (isset($array['params']) && is_array($array['params'])) {
 			$registry = new JRegistry();
 			$registry->loadArray($array['params']);
 			$array['params'] = (string)$registry;
@@ -238,17 +238,17 @@ class JTableCategory extends ##Component##JTableNested
 		}
 
 		// Bind the rules. Joomla 1.6 & gt
-		$jv = new JVersion(); 
-        if($jv->RELEASE > 1.5) {
-		    if (isset($array['rules']) && is_array($array['rules'])) {
-			    $rules = new JRules($array['rules']);
-			    $this->setRules($rules);	
-		    }
-        } 
+		//-$jv = new JVersion();
+		//-if($jv->RELEASE > 1.5) {
+		if (isset($array['rules']) && is_array($array['rules'])) {
+			$rules = new JRules($array['rules']);
+			$this->setRules($rules);
+		}
+		//-}
 
 		return parent::bind($array, $ignore);
-	}	
-	
+	}
+
 	/**
 	 * Override check function
 	 *

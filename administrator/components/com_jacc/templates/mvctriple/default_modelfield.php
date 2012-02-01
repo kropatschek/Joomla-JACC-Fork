@@ -5,7 +5,7 @@ defined('JPATH_BASE') or die;
 jimport('joomla.html.html');
 
 JFormHelper::loadFieldClass('list');
-require_once (JPATH_ADMINISTRATOR.DS.'components'.DS.'com_##component##'.DS.'helpers'.DS.'query.php' );
+require_once (JPATH_ADMINISTRATOR.'/components/com_##component##/helpers/query.php' );
 
 /**
  * Form Field class.

@@ -1,7 +1,7 @@
 ##codestart##
 
-global $alt_libdir;
-JLoader::import('joomla.application.component.modellist', $alt_libdir);
+//-global $alt_libdir;
+JLoader::import('joomla.application.component.modellist');//-, $alt_libdir);
 jimport('joomla.application.component.helper');
 
 JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_##component##/tables');
@@ -9,17 +9,17 @@ JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_##component##/t
 class ##Component##Model##Name##list extends JModelList
 {
 	public function __construct($config = array())
-	{		
-	
-		parent::__construct($config);		
+	{
+
+		parent::__construct($config);
 	}
-	
+
 	protected function populateState($ordering = null, $direction = null)
 	{
 			parent::populateState();
 			$app = JFactory::getApplication();
 			$id = JRequest::getVar('id', 0, '', 'int');
-			$this->setState('##name##list.id', $id);			
+			$this->setState('##name##list.id', $id);
 	}
 
 	protected function getStoreId($id = '')
@@ -28,8 +28,8 @@ class ##Component##Model##Name##list extends JModelList
 		$id	.= ':'.$this->getState('##name##list.id');
 
 		return parent::getStoreId($id);
-	}	
-	
+	}
+
 	/**
 	 * Method to get a JDatabaseQuery object for retrieving the data set from a database.
 	 *
@@ -37,28 +37,28 @@ class ##Component##Model##Name##list extends JModelList
 	 */
 	protected function getListQuery()
 	{
-		
+
 		//check the version
-		$jv = new JVersion();
-		if ($jv->RELEASE < 1.6) {
-			$query = $this->query;	
-		} else {
-				$db		= $this->getDbo();
-				$query	= $db->getQuery(true);			
-		}
-	
-		$catid = (int) $this->getState('authorlist.id', 1);	
+		//-$jv = new JVersion();
+		//-if ($jv->RELEASE < 1.6) {
+		//-	$query = $this->query;
+		//-} else {
+		$db		= $this->getDbo();
+		$query	= $db->getQuery(true);
+		//-}
+
+		$catid = (int) $this->getState('authorlist.id', 1);
 ##ifdefFieldaliasStart##
 		$query->select('a.*, '
 		. ' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(\':\', a.id, a.alias) ELSE a.id END as slug');
 ##ifdefFieldaliasEnd##
-##ifnotdefFieldaliasStart##		
+##ifnotdefFieldaliasStart##
 		$query->select('a.*');
 ##ifnotdefFieldaliasEnd##
 		$query->from('##table## as a');
-##ifdefFieldpublishedStart##	
+##ifdefFieldpublishedStart##
 		$query->where('a.published>0');
-##ifdefFieldpublishedEnd##					
+##ifdefFieldpublishedEnd##
 		return $query;
-	}	
+	}
 }

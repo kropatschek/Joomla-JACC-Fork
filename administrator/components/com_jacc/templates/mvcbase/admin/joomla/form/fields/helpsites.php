@@ -9,7 +9,7 @@
 defined('JPATH_BASE') or die;
 
 jimport('joomla.html.html');
-require_once dirname(__FILE__).DS.'list.php';
+require_once dirname(__FILE__).'/list.php';
 
 /**
  * Form Field class for the Joomla Framework.
@@ -37,7 +37,7 @@ class JFormFieldHelpsites extends JFormFieldList
 		jimport('joomla.language.help');
 		$options	= array_merge(
 						parent::_getOptions(),
-						JHelp::createSiteList(JPATH_ADMINISTRATOR.DS.'help'.DS.'helpsites-15.xml', $this->value)
+						JHelp::createSiteList(JPATH_ADMINISTRATOR.'/help/helpsites-15.xml', $this->value)
 					);
 
 		return $options;

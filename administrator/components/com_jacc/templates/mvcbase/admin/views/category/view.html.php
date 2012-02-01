@@ -26,9 +26,9 @@ class ##Component##ViewCategory extends JView
 	{
 		
 			
-		JHTML::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/' );
-		JHTML::_('behavior.formvalidation');
-		JHTML::_('behavior.keepalive');		
+		JHtml::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/' );
+		JHtml::_('behavior.formvalidation');
+		JHtml::_('behavior.keepalive');		
 
 		$state		= $this->get('State');
 		$item		= $this->get('Item');

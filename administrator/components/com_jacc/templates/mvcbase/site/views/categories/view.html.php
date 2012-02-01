@@ -9,7 +9,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
-require_once(JPATH_COMPONENT.DS.'helpers'.DS.'route.php');
+require_once(JPATH_COMPONENT.'/helpers/route.php');
 
 /**
  * ##Component## categories view.

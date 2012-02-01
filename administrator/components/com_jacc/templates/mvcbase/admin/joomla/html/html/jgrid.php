@@ -68,8 +68,8 @@ abstract class JHtmlJGrid
 	public static function checkedout($editorName, $time)
 	{
 		$text	= addslashes(htmlspecialchars($editorName));
-		$date 	= JHTML::_('date',  $time, '%A, %d %B %Y');
-		$time	= JHTML::_('date',  $time, '%H:%M');
+		$date 	= JHtml::_('date',  $time, '%A, %d %B %Y');
+		$time	= JHtml::_('date',  $time, '%H:%M');
 
 		$hover = '<span class="editlinktip hasTip" title="'. JText::_('Checked Out') .'::'. $text .'<br />'. $date .'<br />'. $time .'">';
 		$checked = $hover .'<img src="images/checked_out.png" alt="'.JText::_('Checked Out').'" /></span>';

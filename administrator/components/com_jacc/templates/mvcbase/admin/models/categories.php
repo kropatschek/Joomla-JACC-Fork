@@ -9,7 +9,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.model');
-require_once(JPATH_COMPONENT.DS.'helpers'.DS.'query.php');
+require_once(JPATH_COMPONENT.'/helpers/query.php');
 
 
 /**
@@ -27,21 +27,21 @@ class ##Component##ModelCategories extends JModel
 	 * @var		string
 	 */
 
-	
+
 	/**
-	 * @var		string	The URL option for the component.	
+	 * @var		string	The URL option for the component.
 	 */
 	protected $option = null;
-	
+
 	protected $_context = 'com_##component##_categories.categories';
-	
+
 	public function __construct()
 	{
 		parent::__construct();
 		if (!isset($this->_state) and isset($this->state) ) $this->_state = $this->state;
-		
+
 		$app = JFactory::getApplication('administrator');
-		
+
 		if (empty($this->option)) {
 			$r = null;
 			if (!preg_match('/(.*)Model/i', get_class($this), $r)) {
@@ -49,21 +49,21 @@ class ##Component##ModelCategories extends JModel
 			}
 			$this->option = 'com_'.strtolower($r[1]);
 		}
-		
-		$limit			=	 	$app ->getUserStateFromRequest( 'global.list.limit', 'limit', $app->getCfg('list_limit', 0), 'int' );
+
+		$limit		=	 	$app ->getUserStateFromRequest( 'global.list.limit', 'limit', $app->getCfg('list_limit', 0), 'int' );
 		$limitstart	= 		$app ->getUserStateFromRequest( $this->option.'.limitstart', 'limitstart', 0, 'int' );
 
 		// In case limit has been changed, adjust limitstart accordingly
 		$limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
-	
+
 		$this->setState('limit', $limit);
 		$this->setState('limitstart', $limitstart);
 
-		
-	}	
-	
+
+	}
+
 	/**
-	 * Method to get a pagination object 
+	 * Method to get a pagination object
 	 *
 	 * @access public
 	 * @return integer
@@ -78,8 +78,8 @@ class ##Component##ModelCategories extends JModel
 
 		return $this->_pagination;
 	}
-	
-	
+
+
 	/**
 	 * Method to get a list of items.
 	 *
@@ -87,7 +87,7 @@ class ##Component##ModelCategories extends JModel
 	 */
 	public function &getItems()
 	{
-		$this->_populateState();		
+		$this->_populateState();
 		// Get a unique key for the current list state.
 		$key = $this->_getStoreId($this->_context);
 
@@ -104,7 +104,7 @@ class ##Component##ModelCategories extends JModel
 		$this->_lists[$key] = $rows;
 
 		return $this->_lists[$key];
-	}	
+	}
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -112,7 +112,7 @@ class ##Component##ModelCategories extends JModel
 	 */
 	private function _populateState()
 	{
-		
+
 		$app = JFactory::getApplication();
 
 		$search = $app->getUserStateFromRequest($this->_context.'.search', 'filter_search');
@@ -251,5 +251,5 @@ class ##Component##ModelCategories extends JModel
 		$this->_totals[$key] = $return;
 
 		return $this->_totals[$key];
-	}	
+	}
 }

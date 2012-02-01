@@ -12,10 +12,10 @@ defined('_JEXEC') or die;
 
 // Component Helper
 jimport('joomla.application.component.helper');
-global $alt_libdir;
-JLoader::import('joomla.application.categories', $alt_libdir);
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'query.php'); 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'##component##.php');  
+//-global $alt_libdir;
+JLoader::import('joomla.application.categories');//-, $alt_libdir);
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/##component##.php');
 /**
  * ##Component## Component Category Tree
  *
@@ -35,9 +35,9 @@ class ##Component##Categories extends JCategories
 		foreach ($extensions as $extension) {
 			if ($options['extension'] ==  'com_##component##.'.$extension->name) {
 				$options['table'] = $extension->table;
-				$options['field'] = $extension->field;						
+				$options['field'] = $extension->field;
 			}
-		}		
+		}
 		parent::__construct($options);
 	}
 
@@ -56,17 +56,17 @@ class ##Component##Categories extends JCategories
 		$query->from('#__##component##_categories  as c');
 		$query->where('(c.extension='.$db->Quote($extension).' OR c.extension='.$db->Quote('system').')');
 		if ($this->_options['access']) {
-		    $jv = new JVersion();
-		    if ($jv->RELEASE > 1.5) {
-		        $query->where('c.access IN ('.implode(',', $user->getAuthorisedViewLevels()).')');
-		    } elseif( $id!='root'){
-		        $gid		 = (int) $user->get('aid', 0);
-		        $query->where('c.access <= '. (int) $gid );    
-		    }
+			//-$jv = new JVersion();
+			//-if ($jv->RELEASE > 1.5) {
+			$query->where('c.access IN ('.implode(',', $user->getAuthorisedViewLevels()).')');
+			//-} elseif( $id!='root'){
+			//-	$gid		 = (int) $user->get('aid', 0);
+			//-	$query->where('c.access <= '. (int) $gid );
+			//-}
 		}
-		
+
 		if ($this->_options['published'] == 1) {
-			
+
 			$query->where('c.published = 1');
 		}
 		$query->order('c.lft');
@@ -74,7 +74,7 @@ class ##Component##Categories extends JCategories
 
 		// s for selected id
 		if ($id!='root') {
-			
+
 			// Get the selected category
 			$query->leftJoin('#__##component##_categories  AS s ON (s.lft <= c.lft AND s.rgt >= c.rgt) OR (s.lft > c.lft AND s.rgt < c.rgt)');
 			$query->where('s.id='.(int)$id);
@@ -94,44 +94,44 @@ class ##Component##Categories extends JCategories
 		$query->group('c.id');
 
 
-		
+
 		// Get the results
 		$db->setQuery($query->__toString());
 		$results = $db->loadObjectList('id');
 		$childrenLoaded = false;
 		if (count($results)) {
-			
+
 			// foreach categories
 			foreach ($results as $result) {
-				
+
 				// Deal with root category
 				if ($result->id == 1) {
-					
+
 					$result->id = 'root';
 				}
 				// Deal with parent_id
 				if ($result->parent_id == 1) {
-					
+
 					$result->parent_id = 'root';
 				}
 				// Create the node
 				if (!isset($this->_nodes[$result->id])) {
-					
+
 					// Create the JCategoryNode
 					$this->_nodes[$result->id] = new JCategoryNode($result, $this);
 					if ($result->id != 'root' && (isset($this->_nodes[$result->parent_id]) || $result->parent_id == 0)) {
-						
+
 						// Compute relationship between node and its parent
 						$this->_nodes[$result->id]->setParent($this->_nodes[$result->parent_id]);
 					}
 					if (!(isset($this->_nodes[$result->parent_id]) || $result->parent_id == 0)) {
-						
+
 						unset($this->_nodes[$result->id]);
 						continue;
 					}
 
 					if ($result->id == $id || $childrenLoaded) {
-						
+
 						$this->_nodes[$result->id]->setAllLoaded();
 						$childrenLoaded = true;
 					}
@@ -139,17 +139,17 @@ class ##Component##Categories extends JCategories
 					// Create the JCategoryNode
 					$this->_nodes[$result->id] = new JCategoryNode($result, $this);
 					if ($result->id != 'root' && (isset($this->_nodes[$result->parent_id]) || $result->parent_id)) {
-						
+
 						// Compute relationship between node and its parent
 						$this->_nodes[$result->id]->setParent($this->_nodes[$result->parent_id]);
 					}
 					if (!isset($this->_nodes[$result->parent_id])) {
-						
+
 						unset($this->_nodes[$result->id]);
 						continue;
 					}
 					if ($result->id == $id || $childrenLoaded) {
-						
+
 						$this->_nodes[$result->id]->setAllLoaded();
 						$childrenLoaded = true;
 					}
@@ -159,5 +159,5 @@ class ##Component##Categories extends JCategories
 		} else {
 			$this->_nodes[$id] = null;
 		}
-	}	
+	}
 }

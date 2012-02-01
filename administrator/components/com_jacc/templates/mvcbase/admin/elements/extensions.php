@@ -1,7 +1,7 @@
 <?php
 defined('_JEXEC') or die;
 
-require_once (JPATH_ADMINISTRATOR.DS.'components'.DS.'com_##component##'.DS.'helpers'.DS.'##component##.php' );
+require_once (JPATH_ADMINISTRATOR.'/components/com_##component##/helpers/##component##.php' );
 
 class JElementExtensions extends JElement
 {
@@ -27,6 +27,6 @@ class JElementExtensions extends JElement
 			
 		}		
 		
-		return JHTML::_('select.genericlist', $options, ''.$control_name.'['.$name.']', 'class="inputbox"', 'value', 'text', $value, $control_name.$name );
+		return JHtml::_('select.genericlist', $options, ''.$control_name.'['.$name.']', 'class="inputbox"', 'value', 'text', $value, $control_name.$name );
 	}
 }

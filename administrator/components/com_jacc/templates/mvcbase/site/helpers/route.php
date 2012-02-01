@@ -12,8 +12,8 @@ defined('_JEXEC') or die;
 
 // Component Helper
 jimport('joomla.application.component.helper');
-global $alt_libdir;
-JLoader::import('joomla.application.categories', $alt_libdir);
+//-global $alt_libdir;
+JLoader::import('joomla.application.categories');//-, $alt_libdir);
 /**
  * ##Component## Component Route Helper
  *
@@ -56,7 +56,7 @@ abstract class ##Component##HelperRoute
 	public static function getCategoryRoute($catid)
 	{
 		$app = JFactory::getApplication();
-	    if ($catid instanceof JCategoryNode)
+		if ($catid instanceof JCategoryNode)
 		{
 			$id = $catid->id;
 			$category = $catid;
@@ -64,7 +64,7 @@ abstract class ##Component##HelperRoute
 		else
 		{
 			$id = (int) $catid;
-		    $options['extension'] = $app->getUserStateFromRequest('filter.extension', 'extension', 'com_##component##.##firstname##');	
+			$options['extension'] = $app->getUserStateFromRequest('filter.extension', 'extension', 'com_##component##.##firstname##');
 			$options['table'] = $app->getUserStateFromRequest('filter.extensiontable', 'extensiontable');
 			$category = BookshopCategories::getInstance('##Component##',$options)->get($id);
 		}
@@ -106,7 +106,7 @@ abstract class ##Component##HelperRoute
 
 		return $link;
 	}
-	
+
 	protected static function _findItem($needles)
 	{
 		// Prepare the reverse lookup array.
@@ -115,8 +115,9 @@ abstract class ##Component##HelperRoute
 
 			$component	= JComponentHelper::getComponent('com_##component##');
 			$menus		= JApplication::getMenu('site');
-			$jv = new JVersion();
-			$field = ($jv->RELEASE < 1.6) ? 'componentid' : 'component_id';
+			//-$jv = new JVersion();
+			//-$field = ($jv->RELEASE < 1.6) ? 'componentid' : 'component_id';
+			$field = 'component_id';
 			$items		= $menus->getItems($field, $component->id);
 			foreach ($items as $item) {
 				if (isset($item->query) && isset($item->query['view'])) {
@@ -132,7 +133,7 @@ abstract class ##Component##HelperRoute
 		}
 		foreach ($needles as $view => $ids) {
 			if (isset(self::$lookup[$view])) {
-				
+
 				foreach ($ids as $id) {
 					if (isset(self::$lookup[$view][(int)$id])) {
 						return self::$lookup[$view][(int)$id];

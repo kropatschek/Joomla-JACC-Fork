@@ -68,15 +68,15 @@ defined('_JEXEC') or die('Restricted access');
  	$row->id = $row->##primary##;
 ##ifdefFieldchecked_out_timeStart##
 ##ifdefFieldchecked_outStart## 	
- 	$checked = JHTML::_('grid.checkedout', $row, $i );
+ 	$checked = JHtml::_('grid.checkedout', $row, $i );
 ##ifdefFieldchecked_out_timeEnd##
 ##ifdefFieldchecked_outEnd##
 ##ifnotdefFieldchecked_out_timeStart##
 ##ifnotdefFieldchecked_outStart## 	
- 	$checked = JHTML::_('grid.id', $i, $row->##primary##);
+ 	$checked = JHtml::_('grid.id', $i, $row->##primary##);
 ##ifnotdefFieldchecked_out_timeEnd##
 ##ifnotdefFieldchecked_outEnd## 	
-  	$published = JHTML::_('grid.published', $row, $i ); 	
+  	$published = JHtml::_('grid.published', $row, $i ); 	
  	
   ##codeend##
 	<tr class="##codestart## echo "row$k"; ##codeend##">
@@ -108,5 +108,5 @@ defined('_JEXEC') or die('Restricted access');
 <input type="hidden" name="boxchecked" value="0" />
 <input type="hidden" name="filter_order" value="##codestart## echo $this->lists['order']; ##codeend##" />
 <input type="hidden" name="filter_order_Dir" value="" />
-##codestart## echo JHTML::_( 'form.token' ); ##codeend##
+##codestart## echo JHtml::_( 'form.token' ); ##codeend##
 </form>  	

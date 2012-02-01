@@ -9,7 +9,7 @@
 
 defined('_JEXEC') or die('Restricted access'); // no direct access
 
-require_once (dirname(__FILE__).DS.'helper.php');
+require_once (dirname(__FILE__).'/helper.php');
 $item = mod##Module##Helper::getItem($params);
 require(JModuleHelper::getLayoutPath('mod_##module##'));
 require_once ('helper.php');

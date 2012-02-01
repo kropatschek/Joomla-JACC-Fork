@@ -10,42 +10,41 @@
 defined('_JEXEC') or die('=;)');
 
 // Require the base controller
-require_once( JPATH_COMPONENT.DS.'controller.php' );
+require_once( JPATH_COMPONENT.'/controller.php' );
 
 jimport('joomla.application.component.model');
-require_once( JPATH_COMPONENT.DS.'models'.DS.'model.php' );
+require_once( JPATH_COMPONENT.'/models/model.php' );
 jimport('joomla.application.component.helper');
-JHTML::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers' );
+JHtml::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.'/helpers' );
 //set the default view
 $task = JRequest::getWord('task');
 
-//Use the JForms, even in Joomla 1.5 
-$jv = new JVersion();
-$GLOBALS['alt_libdir'] = ($jv->RELEASE < 1.6) ? JPATH_COMPONENT_ADMINISTRATOR : null;
+//Use the JForms, even in Joomla 1.5
+//-$jv = new JVersion();
+//-$GLOBALS['alt_libdir'] = ($jv->RELEASE < 1.6) ? JPATH_COMPONENT_ADMINISTRATOR : null;
 
 
-$config 	=JComponentHelper::getParams( 'com_##component##' );
+$config = JComponentHelper::getParams( 'com_##component##' );
 
 $controller = JRequest::getWord('view', '##defaultview##');
 
 $ControllerConfig = array();
 
 // Require specific controller if requested
-if ($controller) {   
-   $path = JPATH_COMPONENT.DS.'controllers'.DS.$controller.'.php';
-   $ControllerConfig = array('viewname'=>strtolower($controller),'mainmodel'=>strtolower($controller),'itemname'=>ucfirst(strtolower($controller)));  
-   if (file_exists($path)) {
-       require_once $path;
-   } else {
-
-	   $controller = '';	   
-   }
+if ($controller) {
+	$path = JPATH_COMPONENT.'/controllers/'.$controller.'.php';
+	$ControllerConfig = array('viewname'=>strtolower($controller),'mainmodel'=>strtolower($controller),'itemname'=>ucfirst(strtolower($controller)));
+	if (file_exists($path)) {
+		require_once $path;
+	} else {
+		$controller = '';
+	}
 }
 
 
 // Create the controller
-$classname    = '##Component##Controller'.$controller;
-$controller   = new $classname($ControllerConfig );
+$classname	= '##Component##Controller'.$controller;
+$controller	= new $classname($ControllerConfig );
 
 // Perform the Request task
 $controller->execute( JRequest::getVar( 'task' ) );

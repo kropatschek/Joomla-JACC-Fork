@@ -64,9 +64,9 @@ class JFormHelper
 	 */
 	public static function getXML($data, $isFile = true)
 	{
-		global $alt_libdir;
-		
-		JLoader::import('joomla.utilities.xmlelement',$alt_libdir);	
+		//-global $alt_libdir;
+
+		JLoader::import('joomla.utilities.xmlelement');//-,$alt_libdir);
 
 		// Disable libxml errors and allow to fetch error information as needed
 		libxml_use_internal_errors(true);
@@ -94,14 +94,14 @@ class JFormHelper
 
 		return $xml ;
 	}
-	
-	/** 
-	 * 
+
+	/**
+	 *
 	 * Method to bind an array to registry
 	 * @param $parent JRegistry
 	 * @param $data array
 	 * @param $name key
-	 */ 
+	 */
 	public static function regbindData(& $parent, $data,$name)
 	{
 		// Ensure the input data is an array.
@@ -117,7 +117,7 @@ class JFormHelper
 			}
 		}
 	}
-		
+
 	/**
 	 * Method to determine if an array is an associative array.
 	 *
@@ -137,7 +137,7 @@ class JFormHelper
 
 		return false;
 	}
-	
+
 	/**
 	 * Method to load a form field object given a type.
 	 *

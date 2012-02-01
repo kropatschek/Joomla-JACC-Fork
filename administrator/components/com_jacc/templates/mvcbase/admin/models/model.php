@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
 * @version		$Id:Model.php 1 ##date##Z ##sauthor## $
 * @package		##Component##
@@ -12,14 +12,14 @@ defined('_JEXEC') or die('Restricted access');
  * Model
  * @author Michael Liebler
  */
- 
+
 jimport( 'joomla.application.component.model' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'query.php');
- 
-class ##Component##Model  extends JModel { 
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
 
-  
+class ##Component##Model  extends JModel {
+
+
 	/**
 	 * Items data array
 	 *
@@ -39,7 +39,7 @@ class ##Component##Model  extends JModel {
 	 *
 	 * @var integer
 	 */
-	
+
 	protected $_id = null;
 
 	/**
@@ -47,7 +47,7 @@ class ##Component##Model  extends JModel {
 	 *
 	 * @var mixed
 	 */
-	
+
 	protected $_default_filter = null;
 
 	/**
@@ -55,7 +55,7 @@ class ##Component##Model  extends JModel {
 	 *
 	 * @var mixed
 	 */
-	
+
 	protected $_default_table = null;
 
 	/**
@@ -71,26 +71,26 @@ class ##Component##Model  extends JModel {
 	 * @var object
 	 */
 	protected $_state_field;
-		
+
 	/**
-	 * @var		string	The URL option for the component.	
+	 * @var		string	The URL option for the component.
 	 */
 	protected $option = null;
-		
+
 	/**
-	 * @var		string	context	the context to find session data.	
-	 */		
+	 * @var		string	context	the context to find session data.
+	 */
 	protected $_context = null;
-	
+
 	/**
- 	* Constructor
- 	*/
-		
-	
+	 * Constructor
+	 */
+
+
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		$app = JFactory::getApplication('administrator');
 			// Guess the option from the class name (Option)Model(View).
 		if (empty($this->option)) {
@@ -99,32 +99,32 @@ class ##Component##Model  extends JModel {
 				JError::raiseError(500, JText::_('No Model Name'));
 			}
 			$this->option = 'com_'.strtolower($r[1]);
-		}		
-		
-		$this->_query = new JQuery; 
-		
+		}
+
+		$this->_query = new JQuery;
+
 		$table = $this->getTable();
 		if ($table) {
-			$this->_default_table = $table->getTableName(); 
+			$this->_default_table = $table->getTableName();
 			if (isset($table->published))  $this->_state_field = 'published';
 		}
-		
+
 		if (empty($this->_context)) {
 			$this->_context = $this->option.'.'.$this->getName();
 		}
-		
+
 		$array = JRequest::getVar('cid', array (
 			0
 		), '', 'array');
-		
+
 		$edit = JRequest::getVar('edit', true);
 		if ($edit)
 			$this->setId((int) $array[0]);
 		// Get the pagination request variables
-		
+
 		$limit		= $app ->getUserStateFromRequest( $this->_context .'.limit', 'limit', $app->getCfg('list_limit', 0), 'int' );
 		$limitstart	= $app ->getUserStateFromRequest( $this->_context .'.limitstart', 'limitstart', 0, 'int' );
-			
+
 		// In case limit has been changed, adjust limitstart accordingly
 		$limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
 		$this->setState('limit', $limit);
@@ -138,8 +138,8 @@ class ##Component##Model  extends JModel {
 	* @access public
 	* @return $_id int Item Identifier
 	*/
-	public function getId() 
-	{		
+	public function getId()
+	{
 		return $this->_id;
 	}
 
@@ -149,37 +149,37 @@ class ##Component##Model  extends JModel {
 	* @access public
 	* @param int Item identifier
 	*/
-	public function setId($id) 
+	public function setId($id)
 	{
 		// Set item id and wipe data
-		$this->_id = $id;		
+		$this->_id = $id;
 		$this->_data = null;
 	}
 
 	/**
-	   * Return a  List of vendor-Items 
-	   * @access	public 
-	   * @return $_data array
-	   */
+	 * Return a  List of vendor-Items
+	 * @access	public
+	 * @return $_data array
+	 */
 
 	public function getData()
 	{
 		// Lets load the content if it doesn't already exist
-	   
+
 		if (empty($this->_data)) {
 			$query = $this->_buildQuery();
 			$this->_data = $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));
 		}
 
 		return $this->_data;
-		
+
 	}
-	
-	public function getDefaultFilter() 
+
+	public function getDefaultFilter()
 	{
 		return $this->_default_filter;
 	}
-	
+
 	/**
 	 * Method to get the row form.
 	 *
@@ -191,14 +191,14 @@ class ##Component##Model  extends JModel {
 		if (!$name) {
 			$name = $this->getName();
 		}
- 
+
 		// Initialize variables.
 		$app = JFactory::getApplication();
 
 		// Get the form.
-		
+
 		$form = $this->_getForm($name, 'form', array('control' => 'jform'));
-		JFormHelper::addRulePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'rules');
+		JFormHelper::addRulePath(JPATH_COMPONENT_ADMINISTRATOR.'/models/rules');
 		// Check for an error.
 		if (JError::isError($form)) {
 			$this->setError($form->getMessage());
@@ -212,9 +212,9 @@ class ##Component##Model  extends JModel {
 		if (!empty($data)) {
 			$form->bind($data);
 		}
-	
+
 		return $form;
-	}	
+	}
 
 		/**
 	 * Method to get a form object.
@@ -226,10 +226,10 @@ class ##Component##Model  extends JModel {
 	 */
 	private function &_getForm($xml, $name = 'form', $options = array(), $clear = false)
 	{
-		global $alt_libdir;
-	
+		//-global $alt_libdir;
+
 		// Handle the optional arguments.
-		
+
 		$options['control']	= JArrayHelper::getValue($options, 'control', false);
 		// Create a signature hash.
 		$hash = md5($xml.serialize($options));
@@ -243,8 +243,8 @@ class ##Component##Model  extends JModel {
 
 		JLoader::import('joomla.form.form', $alt_libdir);
 
-		JForm::addFormPath(JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'forms');
-		JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'fields');
+		JForm::addFormPath(JPATH_COMPONENT_ADMINISTRATOR.'/models/forms');
+		JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/models/fields');
 
 		$form = JForm::getInstance($name, $xml, $options, false);
 		// Check for an error.
@@ -263,16 +263,16 @@ class ##Component##Model  extends JModel {
 	/**
 	 * Method to get an Item
 	 *
-	 * @access	public 
+	 * @access	public
 	 * @return $item array
 	 */
-	
-	public function getItem() 
-	{			
-		$item = $this->getTable();				
+
+	public function getItem()
+	{
+		$item = $this->getTable();
 		$item->load($this->_id);
-		if (isset($item->params)) {					
-			$params = json_decode($item->params);					
+		if (isset($item->params)) {
+			$params = json_decode($item->params);
 			$item->params = new JObject();
 			$item->params ->setProperties(JArrayHelper::fromObject($params));
 		}
@@ -281,23 +281,23 @@ class ##Component##Model  extends JModel {
 
 
 
-   /**
-    * Method to delete an Item
- 	*
+/**
+	* Method to delete an Item
+	 *
 	* @access	public
-    * @param  $cid int
-    * @return $affected int
-    */
-     public function  delete($cid) 
-     {
-        $db = JFactory::getDBO();     
-	    $query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
-        $db->setQuery( $query);
+	* @param  $cid int
+	* @return $affected int
+	*/
+	 public function  delete($cid)
+	 {
+		$db = JFactory::getDBO();
+		$query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
+		$db->setQuery( $query);
 
-        $db->query();
-	    $affected = $db->getAffectedRows();	    
-        return $affected ;
-     }
+		$db->query();
+		$affected = $db->getAffectedRows();
+		return $affected ;
+	 }
 
 
 
@@ -309,12 +309,12 @@ class ##Component##Model  extends JModel {
 	 */
 	public function store($data)
 	{
-		// Implemented in child classes	
+		// Implemented in child classes
 	}
 
- 
+
 	/**
-	 * Method to get a pagination object 
+	 * Method to get a pagination object
 	 *
 	 * @access public
 	 * @return integer
@@ -329,7 +329,7 @@ class ##Component##Model  extends JModel {
 
 		return $this->_pagination;
 	}
-	
+
 
 	/**
 	 * Method to get the total number of  items
@@ -346,16 +346,16 @@ class ##Component##Model  extends JModel {
 		}
 
 		return $this->_total;
-	}	
-	
+	}
+
 		/**
 	* Method to (un)publish an item
 	*
 	* @access public
 	* @return boolean True on success
-	
+
 	*/
-	public function publish($cid = array (), $publish = 1) 
+	public function publish($cid = array (), $publish = 1)
 	{
 		$user = JFactory::getUser();
 		if (count($cid)) {
@@ -363,7 +363,7 @@ class ##Component##Model  extends JModel {
 			$cids = implode(',', $cid);
 			$query = 'UPDATE '.$this->_default_table.' SET published = ' . (int) $publish . ' WHERE id IN ( ' . $cids . ' )';
 			$this->_db->setQuery($query);
-	
+
 			if (!$this->_db->query()) {
 				$this->setError($this->_db->getErrorMsg());
 				return false;
@@ -377,9 +377,9 @@ class ##Component##Model  extends JModel {
 	*
 	* @access public
 	* @return boolean True on success
-	
+
 	*/
-	public function saveorder($cid, $order) 
+	public function saveorder($cid, $order)
 	{
 		$row = $this->getTable();
 		$groupings = array ();
@@ -398,7 +398,7 @@ class ##Component##Model  extends JModel {
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to move an item
 	 *
@@ -414,10 +414,10 @@ class ##Component##Model  extends JModel {
 		}
 		$table = $this->getTable();
 		$where = "";
-		
+
 		if ($row->catid) {
 			$where = ' catid = '.(int) $row->catid.' AND published >= 0 ';
-		} 
+		}
 		if (!$row->move( $direction, $where )) {
 			$this->setError($this->_db->getErrorMsg());
 			return false;
@@ -425,15 +425,15 @@ class ##Component##Model  extends JModel {
 
 		return true;
 	}
-	
+
 	/**
 	* Method to checkin/unlock the item
 	*
 	* @access public
 	* @return boolean True on success
-	
+
 	*/
-	public function checkin() 
+	public function checkin()
 	{
 		if ($this->_id) {
 			$item = $this->getTable();
@@ -450,9 +450,9 @@ class ##Component##Model  extends JModel {
 	* @access public
 	* @param int $uid User ID of the user checking the article out
 	* @return boolean True on success
-	
+
 	*/
-	public function checkout($uid = null) 
+	public function checkout($uid = null)
 	{
 		if ($this->_id) {
 			// Make sure we have a user id to checkout the vendor with
@@ -469,89 +469,89 @@ class ##Component##Model  extends JModel {
 			return true;
 		}
 		return false;
-	}	
-	
+	}
+
 	/**
 	 * Method to set the Default Filter Column
-	 * 
+	 *
 	 * @access public
 	 * @param mixed Default Filter
 	 */
-	
-	public function setDefaultFilter($filter) 
+
+	public function setDefaultFilter($filter)
 	{
 		$this->_default_filter = $filter;
 	}
-	
+
 	/**
 	* Method to build the query
 	*
 	* @access private
-	* @return string query	
+	* @return string query
 	*/
 
 	protected function _buildQuery()
 	{
-		
+
 		$this->_query->select('a.*');
 		$this->_query->from($this->_default_table.' AS a');
-		$this->_buildContentWhere();		
+		$this->_buildContentWhere();
 		$this->_buildContentOrderBy();
 
 
 		return $this->_query->__toString();
 	}
-	
+
 	/**
 	* Method to build the Joins
 	*
-	* @access private	
+	* @access private
 	*/
-	
-	protected function _buildJoins() 
+
+	protected function _buildJoins()
 	{
-		
+
 	}
 
 	/**
 	* Method to build the Order Clause
 	*
 	* @access private
-	* @return string orderby	
+	* @return string orderby
 	*/
-	
-	protected function _buildContentOrderBy() 
+
+	protected function _buildContentOrderBy()
 	{
-		
+
 		$app = JFactory::getApplication('administrator');
 		$context			= $option.'.'.strtolower($this->getName()).'.list.';
 		$filter_order = $app ->getUserStateFromRequest($context . 'filter_order', 'filter_order', $this->_default_filter, 'cmd');
 		$filter_order_Dir = $app ->getUserStateFromRequest($context . 'filter_order_Dir', 'filter_order_Dir', '', 'word');
-		
+
 		$this->_query->order($filter_order . ' ' . $filter_order_Dir );
 	}
-	
+
 	/**
-	* Method to build the Where Clause 
+	* Method to build the Where Clause
 	*
 	* @access private
-	* @return string orderby	
+	* @return string orderby
 	*/
-	
-	protected function _buildContentWhere() 
+
+	protected function _buildContentWhere()
 	{
-		
+
 		$app = JFactory::getApplication('administrator');
 		$context			= $this->option.'.'.strtolower($this->getName()).'.list.';
 		$search = $app->getUserStateFromRequest($context . 'search', 'search', '', 'string');
-	
+
 		if ($search) {
 			$where[] = 'LOWER('.$this->getDefaultFilter().') LIKE ' . $this->_db->Quote('%' . $search . '%');
 			$this->_query->where('LOWER('.$this->getDefaultFilter().') LIKE ' . $this->_db->Quote('%' . $search . '%'));
 		}
-		
+
 		if ($this->_state_field) {
-			$filter_state = $app->getUserStateFromRequest($context . 'filter_state', 'filter_state', '', 'word');			
+			$filter_state = $app->getUserStateFromRequest($context . 'filter_state', 'filter_state', '', 'word');
 			switch($filter_state) {
 				case 'P':
 					$this->_query->where('a.published = 1');
@@ -564,9 +564,9 @@ class ##Component##Model  extends JModel {
 					break;
 			}
 		}
-	}		
-	
-	protected function _multiDbCondIfArray($search) 
+	}
+
+	protected function _multiDbCondIfArray($search)
 	{
 		$ret = (is_array($search)) ? " IN ('" . implode("','", $search) . "') " : " = '" . $search . "' ";
 		return $ret;
@@ -585,7 +585,7 @@ class ##Component##Model  extends JModel {
 		// Filter and validate the form data.
 		$data	= $form->filter($data);
 		$return	= $form->validate($data);
-		
+
 		// Check for an error.
 		if (JError::isError($return)) {
 			$this->setError($return->getMessage());
@@ -603,5 +603,5 @@ class ##Component##Model  extends JModel {
 		}
 
 		return $data;
-	}	
-}    
+	}
+}

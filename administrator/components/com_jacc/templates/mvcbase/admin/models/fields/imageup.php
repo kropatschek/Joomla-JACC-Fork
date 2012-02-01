@@ -47,7 +47,7 @@ class JFormFieldImageup extends JFormField
 		$html[] = 	'<input type="hidden" name="task" value="upload" />';
 		$html[] = 	'<input type="hidden" name="folder" value="'.$folder.'" />';
 		$html[] = 	'<input type="hidden" name="view" value="imageup" />';
-		$html[] = 	JHTML::_( 'form.token' );
+		$html[] = 	JHtml::_( 'form.token' );
 		$html[] = 	'</div><div style="clear:both"></div>';
 		
 		$this->_addJs($this->id);	

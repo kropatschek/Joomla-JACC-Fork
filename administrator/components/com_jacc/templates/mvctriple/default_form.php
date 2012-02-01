@@ -20,80 +20,65 @@ if (!$edit) {
 ##codeend##
 
 <script language="javascript" type="text/javascript">
-##codestart## 
-$jv = new JVersion();
-if ($jv->RELEASE < 1.6): ##codeend##
-
-function submitbutton(task)
-{
-    var form = document.adminForm;
-    if (task == 'cancel' || document.formvalidator.isValid(form)) {
-		submitform(task);
+	Joomla.submitbutton = function(task)
+	{
+		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+			Joomla.submitform(task, document.getElementById('adminForm'));
+		}
 	}
-}
-##codestart## else: ##codeend##
-
-Joomla.submitbutton = function(task)
-{
-	if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-		Joomla.submitform(task, document.getElementById('adminForm'));
-	}
-}
-
-##codestart## endif; ##codeend##
 </script>
 
-	 	<form method="post" action="index.php" id="adminForm" name="adminForm">
-	 	<div class="col width-70 fltlft">
-		  <fieldset class="adminform">
-			<legend>##codestart## echo JText::_( 'Details' ); ##codeend##</legend>
-		<?php if (isset($this->formfield['details'])): 
+		<form method="post" action="index.php" id="adminForm" name="adminForm">
+		<div class="col width-70 fltlft">
+			<fieldset class="adminform">
+				<legend>##codestart## echo JText::_( 'Details' ); ##codeend##</legend>
+		<?php if (isset($this->formfield['details'])):
 								$fields = $this->formfield['details'];
 								foreach ($fields as $field) {
 									$this->field = $field;
 									echo $this->loadTemplate('formfields');
 								}
 		?>
-		<?php endif; ?>			
-		<?php if (isset($this->formfield['desc'])): 
+		<?php endif; ?>
+		<?php if (isset($this->formfield['desc'])):
 								$fields = $this->formfield['desc'];
 								foreach ($fields as $field) {
 									$this->field = $field;
 									echo $this->loadTemplate('formfields');
 								}
 		?>
-		<?php endif; ?>			
-		<?php if (isset($this->formfield['subdesc'])): 
+		<?php endif; ?>
+		<?php if (isset($this->formfield['subdesc'])):
 								$fields = $this->formfield['subdesc'];
 								foreach ($fields as $field) {
 									$this->field = $field;
 									echo $this->loadTemplate('formfields');
 								}
 		?>
-		<?php endif; ?>	
-						
-          </fieldset>                      
-        </div>
-        <div class="col width-30 fltrt">
-		<?php if (isset($this->formfield['params'])): ?>        
+		<?php endif; ?>
+
+			</fieldset>
+		</div>
+		<div class="col width-30 fltrt">
+		<?php if (isset($this->formfield['params'])): ?>
 			<fieldset class="adminform">
 				<legend>##codestart## echo JText::_( 'Parameters' ); ##codeend##</legend>
-		<?php 
+		<?php
 								$fields = $this->formfield['params'];
 								foreach ($fields as $field) {
 									$this->field = $field;
 									echo $this->loadTemplate('formfields');
 								}
-		?>								
+		?>
 			</fieldset>
-		<?php endif; ?>	        
-<?php if (isset($this->formfield['addparams'])): ?>     		
+		<?php endif; ?>
+<?php if (isset($this->formfield['addparams'])): ?>
 			<fieldset class="adminform">
 				<legend>##codestart## echo JText::_( 'Advanced Parameters' ); ##codeend##</legend>
-				<table>				
-				##codestart## 
+				<table>
+				##codestart##
 					$fieldSets = $this->form->getFieldsets('params');
-					foreach($fieldSets  as $name =>$fieldset):  ##codeend##				
+					foreach($fieldSets  as $name =>$fieldset):  ##codeend##
 				##codestart## foreach ($this->form->getFieldset($name) as $field) : ##codeend##
 					##codestart## if ($field->hidden):  ##codeend##
 						##codestart## echo $field->input;  ##codeend##
@@ -109,15 +94,15 @@ Joomla.submitbutton = function(task)
 				##codestart## endif;  ##codeend##
 				##codestart## endforeach;  ##codeend##
 			##codestart## endforeach;  ##codeend##
-			</table>			
-			</fieldset>									
+			</table>
+			</fieldset>
 
 <?php endif; ?>
 
-        </div>                   
+		</div>
 		<input type="hidden" name="option" value="##com_component##" />
-	    <input type="hidden" name="cid[]" value="##codestart## echo $this->item->##primary## ##codeend##" />
+		<input type="hidden" name="cid[]" value="##codestart## echo $this->item->##primary## ##codeend##" />
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="view" value="##name##" />
-		##codestart## echo JHTML::_( 'form.token' ); ##codeend##
+		##codestart## echo JHtml::_( 'form.token' ); ##codeend##
 	</form>

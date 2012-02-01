@@ -7,10 +7,10 @@
 * @copyright	Copyright (C) ##year##, . All rights reserved.
 * @license #
 */
- defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die('Restricted access');
 
-global $alt_libdir;
-JLoader::import('joomla.application.component.modelitem', $alt_libdir);
+//-global $alt_libdir;
+JLoader::import('joomla.application.component.modelitem');//-, $alt_libdir);
 jimport('joomla.application.component.helper');
 
 JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_##component##/tables');
@@ -18,13 +18,13 @@ JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_##component##/t
  * ##Component##Model##Name##
  * @author $Author$
  */
- 
- 
-class ##Component##Model##Name##  extends JModelItem { 
 
-	
-	
-	protected $context = 'com_##component##.##name##';   
+
+class ##Component##Model##Name##  extends JModelItem {
+
+
+
+	protected $context = 'com_##component##.##name##';
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -54,7 +54,7 @@ class ##Component##Model##Name##  extends JModelItem {
 
 		return parent::getStoreId($id);
 	}
-	
+
 	/**
 	 * Method to get an ojbect.
 	 *
@@ -65,7 +65,7 @@ class ##Component##Model##Name##  extends JModelItem {
 	public function &getItem($id = null)
 	{
 		if ($this->_item === null) {
-			
+
 			$this->_item = false;
 
 			if (empty($id)) {
@@ -78,10 +78,10 @@ class ##Component##Model##Name##  extends JModelItem {
 
 			// Attempt to load the row.
 			if ($table->load($id)) {
-				
+
 				// Check published state.
 				if ($published = $this->getState('filter.published')) {
-					
+
 					if ($table->state != $published) {
 						return $this->_item;
 					}
@@ -89,20 +89,20 @@ class ##Component##Model##Name##  extends JModelItem {
 
 				// Convert the JTable to a clean JObject.
 				$this->_item = JArrayHelper::toObject($table->getProperties(1), 'JObject');
-				
+
 			} else if ($error = $table->getError()) {
-				
+
 				$this->setError($error);
 			}
 		}
-##ifdefFieldparamsStart##		
-		$params = json_decode($this->_item ->params);					
+##ifdefFieldparamsStart##
+		$params = json_decode($this->_item ->params);
 		$this->_item->params = new JObject();
 		$this->_item->params ->setProperties(JArrayHelper::fromObject($params));
 ##ifdefFieldparamsEnd##
 
 		return $this->_item;
 	}
-		
+
 }
 ##codeend##
