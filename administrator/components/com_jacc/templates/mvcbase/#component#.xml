@@ -8,7 +8,7 @@
 	<copyright>Copyright (C) ##year## ##author## Open Source Matters. All rights reserved.</copyright>
 	<license>##license##</license>
 	<version>##version##</version>
-	<description>##description##</description>
+	<description>COM_##COMPONENT##_XML_DESCRIPTION</description>
 	<installfile></installfile>
 	<uninstallfile></uninstallfile>
 	<install>
@@ -37,7 +37,7 @@
 		<language tag="de-DE">language/de-DE.com_##component##.ini</language>
 	</languages>
 	<administration>
-		<menu link="index.php?option=com_##component##">##Component##</menu>
+		<menu link="index.php?option=com_##component##" img="class:##component##">com_##component##</menu>
 ##submenu##
 		<files folder="admin">
 			<filename>config.xml</filename>
@@ -46,8 +46,6 @@
 			<filename>index.html</filename>
 			<filename>access.xml</filename>
 			<folder>assets</folder>
-			<folder>elements</folder>
-			<folder>joomla</folder>
 			<folder>controllers</folder>
 			<folder>helpers</folder>
 			<folder>models</folder>

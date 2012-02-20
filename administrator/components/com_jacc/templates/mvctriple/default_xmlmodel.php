@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die('Restricted access'); 
+<?php defined('_JEXEC') or die('Restricted access');
 $format = '%Y-%m-%d';
 $datesize = 10;
 ?>
@@ -6,23 +6,23 @@ $datesize = 10;
 <form>
 	<fields>
 <?php foreach ($this->formfield as $field) {
-						
-						
-			     		if ($field->get('additional')) continue;
-			     		if ($field->get('key') == 'params') continue;
-			     		$required = $field->get('required') ? $field->get('required') : 'false';
-			     		$size= $field->get('size') ? $field->get('size') : '40';
-			     		$label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));  
-			     		switch($field->get('key')) {
-							case 'catid': 
+
+
+						 if ($field->get('additional')) continue;
+						 if ($field->get('key') == 'params') continue;
+						 $required = $field->get('required') ? $field->get('required') : 'false';
+						 $size= $field->get('size') ? $field->get('size') : '40';
+						 $label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));
+						 switch($field->get('key')) {
+							case 'catid':
 							case 'category_id':
-								if($this->uses_categories):								
+								if($this->uses_categories):
 								?>
-			     									
-		<field 
+
+		<field
 			id="name"
 			name="<?php echo $field->get('key') ?>"
-			type="##component##category"
+			type="category"
 			label="Category"
 			required="true"
 			extension="com_##component##.##name##"
@@ -30,7 +30,7 @@ $datesize = 10;
 			class="inputbox"
 			size="1"/>
 				<?php
-					 			endif;
+								endif;
 								break;
 						case $this->primary: ?>
 
@@ -39,13 +39,13 @@ $datesize = 10;
 			type="hidden"
 			default="0"
 			required="true"
-			readonly="true"/>							
-							<?php 	
-							break;		
+			readonly="true"/>
+							<?php
+							break;
 						default:
 						switch (strtolower($field->get('formfield'))) {
 							case 'list': ?>
-		
+
 		<field
 			id="<?php echo $field->get('key') ?>"
 			name="<?php echo $field->get('key') ?>"
@@ -68,10 +68,10 @@ $datesize = 10;
 			<option
 				value="3">
 				And so on</option>
-		</field>										
-<?php							
+		</field>
+<?php
 								break;
-			     			case 'published': ?>
+							 case 'published': ?>
 
 		<field
 			id="published"
@@ -95,9 +95,9 @@ $datesize = 10;
 				value="-2">
 				JOption_Trashed</option>
 		</field>
-                          <?php 										
+						  <?php
 								break;
-								
+
 							case 'editor':
 ?>
 
@@ -109,11 +109,11 @@ $datesize = 10;
 			description="<?php echo $field->get('key') ?>_Desc"
 			class="inputbox"
 			buttons="readmore,pagebreak"/>
-							<?php 		  	
-						  		break;		
+							<?php
+								break;
 							case 'calendar':
 								if ($field->get('fieldtype') == 'datetime') {
-									$format = '%Y-%m-%d %H-%M-%S'; 
+									$format = '%Y-%m-%d %H-%M-%S';
 									$datesize = 16;
 								}
 ?>
@@ -127,13 +127,13 @@ $datesize = 10;
 			description="<?php echo $field->get('key') ?>_Desc"
 			class="inputbox"
 			size="<?php echo $datesize ?>"
-			format="<?php echo $format ?>"/>			
-							
-							<?php							
+			format="<?php echo $format ?>"/>
+
+							<?php
 								break;
-							case 'text': 
+							case 'text':
 ?>
-								
+
 		<field
 			id="<?php echo $field->get('key') ?>"
 			name="<?php echo $field->get('key') ?>"
@@ -142,22 +142,22 @@ $datesize = 10;
 			label="<?php echo $label ?>"
 			description="<?php echo $field->get('key') ?>_Desc"
 			class="inputbox"
-			size="40"/>						
-								
-						<?php 		  	
-						  		break;																		
-							case 'null':					
+			size="40"/>
+
+						<?php
+								break;
+							case 'null':
 ?>
 
 		<field
 			name="<?php echo $field->get('key') ?>"
 			type="hidden"
-			filter="unset"/>						  
-							<?php 		
-								break;		  	
-							 default:														
+			filter="unset"/>
+							<?php
+								break;
+							default:
 							?>
-												
+
 		<field
 			id="<?php echo $field->get('key') ?>"
 			name="<?php echo $field->get('key') ?>"
@@ -166,20 +166,20 @@ $datesize = 10;
 			label="<?php echo $label ?>"
 			description="<?php echo $field->get('key') ?>_Desc"
 			class="inputbox"
-			size="<?php echo $size ?>"/>						
+			size="<?php echo $size ?>"/>
 						<?php
-						} 		 	
 						}
-			     		
+						}
+
 }
- ?>
-		
-	</fields>	
+?>
+
+	</fields>
 	<?php if (isset($this->formfield['params'])): ?>
-	
+
 	<fields name="params">
 		<fieldset
-			name="basic">		
+			name="basic">
 			<field
 				name="example_param"
 				type="list"
@@ -193,5 +193,5 @@ $datesize = 10;
 			</field>
 		</fieldset>
 	</fields>
-	<?php endif; ?>	
-</form>	
+	<?php endif; ?>
+</form>

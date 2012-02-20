@@ -15,9 +15,10 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport( 'joomla.application.component.model' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
+//require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
 
-class ##Component##Model  extends JModel {
+class ##Component##Model  extends JModel
+{
 
 
 	/**
@@ -101,7 +102,9 @@ class ##Component##Model  extends JModel {
 			$this->option = 'com_'.strtolower($r[1]);
 		}
 
-		$this->_query = new JQuery;
+		$db = JFactory::getDBO();
+		$this->_query = $db->getQuery(true);
+		//$this->_query = new JQuery;
 
 		$table = $this->getTable();
 		if ($table) {
@@ -241,7 +244,7 @@ class ##Component##Model  extends JModel {
 
 		// Get the form.
 
-		JLoader::import('joomla.form.form', $alt_libdir);
+		JLoader::import('joomla.form.form');//-, $alt_libdir);
 
 		JForm::addFormPath(JPATH_COMPONENT_ADMINISTRATOR.'/models/forms');
 		JForm::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/models/fields');
@@ -288,8 +291,8 @@ class ##Component##Model  extends JModel {
 	* @param  $cid int
 	* @return $affected int
 	*/
-	 public function  delete($cid)
-	 {
+	public function  delete($cid)
+	{
 		$db = JFactory::getDBO();
 		$query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
 		$db->setQuery( $query);
@@ -297,7 +300,7 @@ class ##Component##Model  extends JModel {
 		$db->query();
 		$affected = $db->getAffectedRows();
 		return $affected ;
-	 }
+	}
 
 
 

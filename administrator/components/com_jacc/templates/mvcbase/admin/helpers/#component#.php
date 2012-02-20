@@ -1,22 +1,24 @@
 <?php
-/**
- * @version		$Id: #component#.php 96 2011-08-11 06:59:32Z michel $
- * @package		Joomla.Framework
- * @subpackage		HTML
- * @copyright	Copyright (C) 2005 - 2009 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
 
 // no direct access
 defined('_JEXEC') or die;
 
-require_once(JPATH_ADMINISTRATOR.'/components/com_##component##/helpers/query.php');
-
 class ##Component##Helper
 {
+	/**
+	 * @var    JObject  A cache for the available actions.
+	 * @since  1.6
+	 */
+	protected static $actions;
 
-	/*
-	 * Submenu for Joomla 1.6
+	/**
+	 * Configure the Linkbar.
+	 *
+	 * @param   string  $vName  The name of the active view.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.6
 	 */
 	public static function addSubmenu($vName = '##defaultview##')
 	{
@@ -24,120 +26,30 @@ class ##Component##Helper
 	}
 
 	/**
+	 * Gets a list of the actions that can be performed.
 	 *
-	 * Get the Extensions for Categories
-	 */
-	public static function getExtensions()
-	{
-
-		//-$jv = new JVersion();
-		//-$alt_libdir = ($jv->RELEASE < 1.6) ? JPATH_ADMINISTRATOR.'/components/com_##component##' : null;
-		JLoader::import('joomla.utilities.xmlelement');//-, $alt_libdir);
-
-		$xml = simplexml_load_file(JPATH_ADMINISTRATOR.'/components/com_##component##/elements/extensions.xml', 'JXMLElement');
-		$elements = $xml->xpath('extensions');
-		$extensions = $xml->extensions->xpath('descendant-or-self::extension');
-
-		return $extensions;
-	}
-}
-
-/**
- * Utility class for categories
- *
- * @static
- * @package 	Joomla.Framework
- * @subpackage	HTML
- * @since		1.5
- */
-abstract class JHtml##Component##
-{
-	/**
-	 * @var	array	Cached array of the category items.
-	 */
-	protected static $items = array();
-
-	/**
-	 * Returns the options for extensions list
+	 * @return  JObject
 	 *
-	 * @param string $ext - the extension
+	 * @since   1.6
+	 * @todo    Refactor to work with ????
 	 */
-	public static function extensions($ext)
+	public static function getActions()
 	{
-		$extensions = ##Component##Helper::getExtensions();
-		$options = array();
+		if (empty(self::$actions))
+		{
+			$user = JFactory::getUser();
+			self::$actions = new JObject;
 
-		foreach ($extensions as $extension) {
+			$actions = array(
+				'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete'
+			);
 
-			$option = new stdClass();
-			$option->text = JText::_(ucfirst($extension->name));
-			$option->value = 'com_##component##.'.$extension->name;
-			$options[] = $option;
+			foreach ($actions as $action)
+			{
+				self::$actions->set($action, $user->authorise($action, 'com_users'));
+			}
 		}
-		return JHtml::_('select.options', $options, 'value', 'text', $ext, true);
-	}
 
-	/**
-	 * Returns an array of categories for the given extension.
-	 *
-	 * @param	string	The extension option.
-	 * @param	array	An array of configuration options. By default, only published and unpulbished categories are returned.
-	 *
-	 * @return	array
-	 */
-	public static function categories($extension, $cat_id,$name="categories",$title="Select Category", $config = array('attributes'=>'class="inputbox"','filter.published' => array(0,1)))
-	{
-
-			$config	= (array) $config;
-			$db		= JFactory::getDbo();
-
-			jimport('joomla.database.query');
-			$query	= new JQuery;
-
-			$query->select('a.id, a.title, a.level');
-			$query->from('#__##component##_categories AS a');
-			$query->where('a.parent_id > 0');
-
-			// Filter on extension.
-			if($extension)
-				$query->where('extension = '.$db->quote($extension));
-
-			$attributes = "";
-
-			if (isset($config['attributes'])) {
-				$attributes = $config['attributes'];
-			}
-
-			// Filter on the published state
-			if (isset($config['filter.published'])) {
-
-				if (is_numeric($config['filter.published'])) {
-
-					$query->where('a.published = '.(int) $config['filter.published']);
-
-				} else if (is_array($config['filter.published'])) {
-
-					JArrayHelper::toInteger($config['filter.published']);
-					$query->where('a.published IN ('.implode(',', $config['filter.published']).')');
-
-				}
-			}
-
-			$query->order('a.lft');
-
-			$db->setQuery($query);
-			$items = $db->loadObjectList();
-
-			// Assemble the list options.
-			self::$items = array();
-			self::$items[] = JHtml::_('select.option', '', JText::_($title));
-			foreach ($items as &$item) {
-
-				$item->title = str_repeat('- ', $item->level - 1).$item->title;
-				self::$items[] = JHtml::_('select.option', $item->id, $item->title);
-			}
-
-		return  JHtml::_('select.genericlist', self::$items, $name, $attributes, 'value', 'text', $cat_id, $name);
-		//return self::$items;
+		return self::$actions;
 	}
 }

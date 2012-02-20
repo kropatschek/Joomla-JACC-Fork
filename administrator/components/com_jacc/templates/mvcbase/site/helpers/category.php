@@ -14,7 +14,9 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.helper');
 //-global $alt_libdir;
 JLoader::import('joomla.application.categories');//-, $alt_libdir);
-require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
+
+//TODO: to delete
+//require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/query.php');
 require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/##component##.php');
 /**
  * ##Component## Component Category Tree
@@ -48,12 +50,12 @@ class ##Component##Categories extends JCategories
 		$user = JFactory::getUser();
 		$extension = $this->_extension;
 
-		$query = new JQuery;
+		$query = $db->getQuery(true);
 
 		// right join with c for category
 		$query->select('c.*');
 		$query->select('CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug');
-		$query->from('#__##component##_categories  as c');
+		$query->from('#__categories  as c');
 		$query->where('(c.extension='.$db->Quote($extension).' OR c.extension='.$db->Quote('system').')');
 		if ($this->_options['access']) {
 			//-$jv = new JVersion();
@@ -76,7 +78,7 @@ class ##Component##Categories extends JCategories
 		if ($id!='root') {
 
 			// Get the selected category
-			$query->leftJoin('#__##component##_categories  AS s ON (s.lft <= c.lft AND s.rgt >= c.rgt) OR (s.lft > c.lft AND s.rgt < c.rgt)');
+			$query->leftJoin('#__categories  AS s ON (s.lft <= c.lft AND s.rgt >= c.rgt) OR (s.lft > c.lft AND s.rgt < c.rgt)');
 			$query->where('s.id='.(int)$id);
 		}
 

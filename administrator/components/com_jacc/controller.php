@@ -247,6 +247,7 @@ class JaccController extends JController
 		$date = JFactory::getDate();
 
 		$com_component = $item->name;
+		$Ucom_component = strtoupper($com_component);
 		JRequest::setVar('component', $com_component );
 
 		//Component name for camel case functions
@@ -303,21 +304,34 @@ class JaccController extends JController
 		$filesCopy = array();
 		//the view/model/controller name of the first table
 		$firstName  = "";
-		$syslanguage = strtoupper(str_replace('com_', '', $com_component ))."=\"".ucfirst($component)."\"\n";
+		$syslanguage = "";
+		$syslanguage .= $Ucom_component."=\"".ucfirst($component)."\"\n";
+		$syslanguage .= $Ucom_component."_XML_DESCRIPTION=\"Component for ".ucfirst($component)." management\"\n";
+
+
+		$language = "";
+
+
+//$language .= $Ucom_component."_FORM_VIEW_DEFAULT_DESC=\"Display a form to submit a web link in the frontend.\"\n";
+//$language .= $Ucom_component."_FORM_VIEW_DEFAULT_OPTION=\"Default\"\n";
+//$language .= $Ucom_component."_FORM_VIEW_DEFAULT_TITLE=\"Submit a Web Link\"\n";
 
 		$menu_tmpl = file_get_contents($elements_dir .'menu.php');
+		$categoriesmenu_tmpl = file_get_contents($elements_dir .'categoriesmenu.php');
+
 		$router_tmpl = file_get_contents($elements_dir .'router.php');
 
 		if (count($item->tables)) {
 			$firstName = substr(strrchr($item->tables[0], '_'), 1);
 
+			//TODO: to delete
 			if ($uses_categories) {
 				//need a submenu for categories
 				//TODO: check if catid or category_id in table
-				$addsubmenu =  "		  <menu  link=\"option=".$com_component."&amp;view=categories\">Categories</menu>\n";
-				$options = array('firstname'=>'categories');
-				$helpersubmenu = JaccHelper::_replace($menu_tmpl, $item, $options );
-				$syslanguage .= "CATEGORIES=\"Categories\"\n";
+				//$addsubmenu =  "		  <menu  link=\"option==\"$com_component."&amp;view=categories\">Categories</menu>\n";
+				//$options = array('firstname'=>'categories');
+				//$helpersubmenu = JaccHelper::_replace($menu_tmpl, $item, $options );
+				//$syslanguage .= "CATEGORIES=\"Categories\"\n";
 			}
 
 
@@ -360,7 +374,8 @@ class JaccController extends JController
 				$sqlstring .=  JaccHelper::export_table_structure($table);
 
 				//uninstall sql
-				$dropsqlstring .= 'DROP TABLE IF EXISTS '.str_replace($dbprefix, '#_', $table).";\n";
+				//TODO: just for testing
+				//$dropsqlstring .= 'DROP TABLE IF EXISTS '.str_replace($dbprefix, '#_', $table).";\n";
 
 				//create temp folders
 				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$name);
@@ -378,13 +393,31 @@ class JaccController extends JController
 
 				$options = array('firstname' => $name);
 				$menuhelper .= JaccHelper::_replace($menu_tmpl, $item, $options);
+				if ($model->TableHas($table, 'category') ) {
+					$menuhelper .= JaccHelper::_replace($categoriesmenu_tmpl, $item, $options);
+
+					$syslanguage .= $Ucom_component."_".strtoupper($name)."_CATEGORIES=\"".ucfirst($name)." Categories\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORY_ADD_TITLE=\"Category Manager: Add A New ".ucfirst($name)." Category\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORY_EDIT_TITLE=\"Category Manager: Edit A ".ucfirst($name)." Category\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORY_VIEW_DEFAULT_DESC=\"Displays a list of ".$name." for a category\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORY_VIEW_DEFAULT_OPTION=\"Default\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORY_VIEW_DEFAULT_TITLE=\"List ".ucfirst($name)." in a Category\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORIES_VIEW_DEFAULT_DESC=\"Show all the ".$name." categories within a category.\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORIES_VIEW_DEFAULT_OPTION=\"Default\"\n";
+					$language .= $Ucom_component."_".strtoupper($name)."_CATEGORIES_VIEW_DEFAULT_TITLE=\"List All ".ucfirst($name)." Categories\"\n";
+				}
+
 				$routerswitch .= JaccHelper::_replace($router_tmpl, $item, $options);
 
-				$syslanguage .= strtoupper($name)."=\"".ucfirst($name)."\"\n";
+				$syslanguage .= $Ucom_component."_".strtoupper($name)."=\"".ucfirst($name)."\"\n";
 
 				//Submenu for admin, if more than one table selected
 				if (count($item->tables) >1) {
-					$submenu .=  "		  <menu link=\"option=".$com_component."&amp;view=".$name."\">".ucfirst($name)."</menu>\n";
+					$submenu .=  "\t\t\t\t<menu link=\"option=".$com_component."\" view=\"".$name."\" img=\"class:".$lcomponent."-".$name."\" alt=\"".$component."/".ucfirst($name)."\" >".$com_component."_".$name."</menu>\n";
+				}
+
+				if ($model->TableHas($table, 'category') ) {
+					$submenu .= "\t\t\t\t<menu link=\"option=com_categories&amp;extension=".$com_component.".".$name."\" view=\"categories\" img=\"class:".$lcomponent."-".$name."-cat\" alt=\"".$component."/".ucfirst($name)." Categories\" >".$com_component."_".$name."_categories</menu>\n";
 				}
 
 				//Create an array for the MVC elements
@@ -392,7 +425,7 @@ class JaccController extends JController
 					'model'=>array('folders'=>array('admin'.DS.'models'),'ext'=>'php','name'=>$name),
 					'modelfrontend'=>array('folders'=>array('site'.DS.'models'),'ext'=>'php','name'=>$name),
 					'xmlmodel'=>array('folders'=>array('admin'.DS.'models'.DS.'forms'),'ext'=>'xml','name'=>$name),
-					'element'=>array('folders'=>array('admin'.DS.'elements'),'ext'=>'php','name'=>$name),
+					//'element'=>array('folders'=>array('admin'.DS.'elements'),'ext'=>'php','name'=>$name),
 					'table'=>array('folders'=>array('admin'.DS.'tables'),'ext'=>'php','name'=>$name),
 					'controller'=>array('folders'=>array('admin'.DS.'controllers'),'ext'=>'php','name'=>$name),
 					'viewfrontend'=>array('folders'=>array('site'.DS.'views'.DS.$name),'ext'=>'php','name'=>'view.html'),
@@ -454,13 +487,16 @@ class JaccController extends JController
 			}
 		}
 
+		//TODO: to delete
 		//write the extension.xml
-		$extensionxmlfile = file_get_contents($model->getTempPath(true).'admin'.DS.'elements'.DS.'extensions.xml');
-		file_put_contents($model->getTempPath(true).'admin'.DS.'elements'.DS.'extensions.xml', str_replace('##extensionsxml##', $model->getExtensionXml(), $extensionxmlfile));
+		//$extensionxmlfile = file_get_contents($model->getTempPath(true).'admin'.DS.'elements'.DS.'extensions.xml');
+		//file_put_contents($model->getTempPath(true).'admin'.DS.'elements'.DS.'extensions.xml', str_replace('##extensionsxml##', $model->getExtensionXml(), $extensionxmlfile));
 
 		//Get Install sql for categories if required
-		if ($uses_categories) $sqlstring .=  JaccHelper::getCatsql($lcomponent);
-		if ($uses_categories) $dropsqlstring .= 'DROP TABLE IF EXISTS #__'.$lcomponent."_categories;\n";
+		//TODO: to delete
+		//if ($uses_categories) $sqlstring .=  JaccHelper::getCatsql($lcomponent);
+		//TODO: change to delete rows in #__categories
+		//if ($uses_categories) $dropsqlstring .= 'DROP TABLE IF EXISTS #__'.$lcomponent."_categories;\n";
 
 		//write install.mysql.sql and uninstall.mysql.sql'
 		file_put_contents($model->getTempPath(true).'admin'.DS.'sql'.DS.'install.mysql.sql', $sqlstring);
@@ -471,6 +507,7 @@ class JaccController extends JController
 		$options = array('menuhelper' => $menuhelper.$helpersubmenu,
 						'routerswitch' => $routerswitch,
 						'syslanguage' => $syslanguage,
+						'language' => $language,
 						'defaultview' => $defaultview,
 						'submenu' => $submenu,
 						'firstname' =>$firstName
