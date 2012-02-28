@@ -8,7 +8,7 @@
  */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
 /**
  * Jimtawl Tablejacc class
@@ -16,10 +16,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package		Jacc
  * @subpackage	Tables
  */
-class TableJacc extends JTable 
+class TableJacc extends JTable
 {
-	
-  /** @var int(11) id - Primary Key  **/
+
+/** @var int(11) id - Primary Key  **/
 	public $id = null;
 
 	/** @var varchar(50) name  **/
@@ -27,6 +27,9 @@ class TableJacc extends JTable
 
 	/** @var varchar(50) version  **/
 	public $version = null;
+
+	/** @var varchar(50) version  **/
+	public $package = null;
 
 	/** @var text tables  **/
 	public $tables = null;
@@ -36,7 +39,7 @@ class TableJacc extends JTable
 
 	/** @var tinyint use  **/
 	public $use = null;
-	 
+
 	/** @var datetime created  **/
 	public $created = null;
 
@@ -55,7 +58,7 @@ class TableJacc extends JTable
 	 * @param object Database connector object
 	 * @since 1.0
 	 */
-	public function __construct(& $db) 
+	public function __construct(& $db)
 	{
 
 		parent::__construct('#__jacc', 'id', $db);
@@ -70,8 +73,8 @@ class TableJacc extends JTable
 
 	public function bind($array, $ignore = '')
 	{
-		
-	    if (key_exists( 'params', $array ) && is_array( $array['params'] )) {
+
+		if (key_exists( 'params', $array ) && is_array( $array['params'] )) {
 			$array['params'] = json_encode($array['params']);
 		}
 
@@ -90,13 +93,13 @@ class TableJacc extends JTable
 
 		if ($this->id === 0) {
 			$this->ordering = $this->getNextOrder();
-		}	
-			
+		}
+
 		if (!$this->created) {
 			$date = JFactory::getDate();
 			$this->created = $date->toFormat("%Y-%m-%d %H:%M:%S");
 		}
-				
+
 		return true;
 	}
 }

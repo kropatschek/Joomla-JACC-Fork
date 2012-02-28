@@ -1,6 +1,6 @@
 <?php
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
   JToolBarHelper::title( JText::_( 'Jacc' ).' - '.JText::_( 'Components' ), 'generic.png' );
   JToolBarHelper::publishList();

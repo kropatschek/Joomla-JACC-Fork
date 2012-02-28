@@ -27,7 +27,7 @@
 			<group>details</group>
 			<formfield>text</formfield>
 			<list>true</list>
-			<ordering>2</ordering>			
+			<ordering>2</ordering>
 		</field>
 		<field>
 			<key>catid</key>
@@ -35,7 +35,7 @@
 			<alt>category_id</alt>
 			<group>details</group>
 			<formfield>null</formfield>
-			<ordering>3</ordering>			
+			<ordering>3</ordering>
 		</field>
 		<field>
 			<key>parent_id</key>
@@ -52,7 +52,7 @@
 			<group>details</group>
 			<formfield>null</formfield>
 			<ordering>4</ordering>
-		</field>		
+		</field>
 		<field>
 			<key>description</key>
 			<alt>text</alt>
@@ -86,12 +86,27 @@
 			<ordering>98</ordering>
 		</field>
 		<field>
+			<key>featured</key>
+			<alt>featured</alt>
+			<group>subdesc</group>
+			<formfield>featured</formfield>
+			<list>true</list>
+			<ordering>98</ordering>
+		</field>
+		<field>
+			<key>version</key>
+			<alt>null</alt>
+			<group>null</group>
+			<formfield>none</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
 			<key>language</key>
 			<group>params</group>
 			<label>Language</label>
 			<formfield>language</formfield>
 			<ordering>1</ordering>
-		</field>		
+		</field>
 		<field>
 			<key>created</key>
 			<alt>created_time</alt>
@@ -111,29 +126,57 @@
 			<ordering>96</ordering>
 		</field>
 		<field>
+			<key>created_user_id</key>
+			<alt>created_by</alt>
+			<group>params</group>
+			<formfield>print</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>created_user_id_alias</key>
+			<alt>created_by_alias</alt>
+			<group>params</group>
+			<formfield>print</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
 			<key>created_by</key>
-			<alt>null</alt>
+			<alt>created_user_id</alt>
 			<group>params</group>
 			<formfield>print</formfield>
 			<ordering>1</ordering>
 		</field>
 		<field>
 			<key>created_by_alias</key>
-			<alt>null</alt>
+			<alt>created_user_id_alias</alt>
 			<group>params</group>
 			<formfield>print</formfield>
 			<ordering>1</ordering>
 		</field>
 		<field>
 			<key>modified</key>
-			<alt>null</alt>
+			<alt>modified_time</alt>
 			<group>params</group>
 			<formfield>print</formfield>
 			<ordering>1</ordering>
 		</field>
 		<field>
 			<key>modified_by</key>
-			<alt>null</alt>
+			<alt>modified_user_id</alt>
+			<group>null</group>
+			<formfield>print</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>modified_time</key>
+			<alt>modified</alt>
+			<group>params</group>
+			<formfield>print</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>modified_user_id</key>
+			<alt>modified_by</alt>
 			<group>null</group>
 			<formfield>print</formfield>
 			<ordering>1</ordering>
@@ -158,14 +201,14 @@
 			<group>null</group>
 			<formfield>null</formfield>
 			<ordering>1</ordering>
-		</field>		
+		</field>
 		<field>
 			<key>access</key>
 			<alt>null</alt>
 			<group>params</group>
 			<formfield>null</formfield>
 			<ordering>1</ordering>
-		</field>	
+		</field>
 		<field>
 			<key>publish_up</key>
 			<alt>null</alt>
@@ -186,14 +229,42 @@
 			<group>details</group>
 			<formfield>imageup</formfield>
 			<ordering>3</ordering>
-		</field>		
+		</field>
+		<field>
+			<key>attribs</key>
+			<alt>null</alt>
+			<group>addattribs</group>
+			<formfield>null</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>images</key>
+			<alt>null</alt>
+			<group>addimages</group>
+			<formfield>null</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>urls</key>
+			<alt>null</alt>
+			<group>addurls</group>
+			<formfield>null</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>metadata</key>
+			<alt>null</alt>
+			<group>addmetadata</group>
+			<formfield>null</formfield>
+			<ordering>1</ordering>
+		</field>
 		<field>
 			<key>params</key>
 			<alt>null</alt>
 			<group>addparams</group>
 			<formfield>null</formfield>
 			<ordering>1</ordering>
-		</field>																									
+		</field>
 		<field>
 			<key>ordering</key>
 			<alt>null</alt>
@@ -201,6 +272,6 @@
 			<group>null</group>
 			<formfield>null</formfield>
 			<ordering>97</ordering>
-		</field>																				
+		</field>
 	</fields>
 </specialfields>

@@ -1,6 +1,6 @@
 
 		JSubMenuHelper::addEntry(
-			JText::_('COM_##COMPONENT##_##FIRSTNAME##'),
-			'index.php?option=com_##component##&view=##firstname##',
-			($vName == '##firstname##')
+			JText::_('##COM_COMPONENT##_SUBMENU_##FIRSTNAME##S'),
+			'index.php?option=##com_component##&view=##firstname##s',
+			($vName == '##firstname##s')
 		);

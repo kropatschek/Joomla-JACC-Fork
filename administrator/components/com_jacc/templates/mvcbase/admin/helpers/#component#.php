@@ -1,4 +1,16 @@
 <?php
+/**
+##ifdefVarpackageStart##
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
+ * @version    ##version##
+ * @copyright  Copyright (C) ##year##, ##author##. All rights reserved.
+ * @license    ##license##
+*/
 
 // no direct access
 defined('_JEXEC') or die;
@@ -20,7 +32,7 @@ class ##Component##Helper
 	 *
 	 * @since   1.6
 	 */
-	public static function addSubmenu($vName = '##defaultview##')
+	public static function addSubmenu($vName = '##defaultview##s')
 	{
 		##menuhelper##
 	}
@@ -46,7 +58,7 @@ class ##Component##Helper
 
 			foreach ($actions as $action)
 			{
-				self::$actions->set($action, $user->authorise($action, 'com_users'));
+				self::$actions->set($action, $user->authorise($action, '##com_component##'));
 			}
 		}
 

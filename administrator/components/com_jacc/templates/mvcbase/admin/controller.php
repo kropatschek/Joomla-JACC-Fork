@@ -1,148 +1,78 @@
 <?php
 /**
- * @version		$Id:controller.php 1 ##date##Z ##sauthor## $
- * @author	   	##author##
- * @package    ##Component##
- * @subpackage Controllers
- * @copyright  	Copyright (C) ##year##, ##author##. All rights reserved.
- * @license ##license##
+##ifdefVarpackageStart##
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
+ * @version    ##version##
+ * @copyright  Copyright (C) ##year##, ##author##. All rights reserved.
+ * @license    ##license##
  */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controller');
+// TODO nicht notwendig
+//jimport('joomla.application.component.controller');
 
 /**
- * ##Component## Standard Controller
+ * Component Controller
  *
- * @package ##Component##   
- * @subpackage Controllers
+##ifdefVarpackageStart##*
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
  */
 class ##Component##Controller extends JController
 {
-
-	protected $_viewname = 'item';
-	protected $_mainmodel = 'item';
-	protected $_itemname = 'Item';    
+	/**
+	 * @var		string	The default view.
+	 * @since	1.6
+	 */
+	protected $default_view = '##defaultview##s';
 
 	/**
-	 * Constructor
-	 */
-		 
-	public function __construct($config = array ()) 
-	{
-		
-		parent::__construct($config);
-		
-		if (isset($config['viewname'])) $this->_viewname = $config['viewname'];
-		if (isset($config['mainmodel'])) $this->_mainmodel = $config['mainmodel'];
-		if (isset($config['itemname'])) $this->_itemname = $config['itemname']; 		
-		JRequest::setVar('view', $this->_viewname);
-
-	}
-	
-	/*
-	 * Overloaded Method display
-	 */
-	function display($cachable = false, $urlparams = false)
-	{
-
-		switch($this->getTask())
-		{
-			case 'add'     :
-			{
-				JRequest::setVar( 'hidemainmenu', 1 );
-				JRequest::setVar( 'layout', 'form'  );
-				JRequest::setVar( 'view', $this->_viewname);
-				JRequest::setVar( 'edit', false );
-
-			} break;
-			case 'edit'    :
-			{
-				JRequest::setVar( 'hidemainmenu', 1 );
-				JRequest::setVar( 'layout', 'form'  );
-				JRequest::setVar( 'view', $this->_viewname);
-				JRequest::setVar( 'edit', true );
-
-			} break;
-		}
-		parent::display($cachable, $urlparams);
-	}
-
- 	/**
-	 *stores the item and returnss to previous page 
+	 * Method to display a view.
 	 *
+	 * @param	boolean			If true, the view output will be cached
+	 * @param	array			An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return	JController		This object to support chaining.
+	 * @since	1.5
 	 */
-
-	function apply() 
+	public function display($cachable = false, $urlparams = false)
 	{
-		$this-> save();
-	}
+		//TODO nur Temp für test nachher löschen
+		require_once JPATH_COMPONENT.'/helpers/##component##.php';
 
-	/**
-	 * stores the item
-	 */
-	function save() 
-	{
-		// Check for request forgeries
-		JRequest::checkToken() or jexit('Invalid Token');
-		
-		$db = JFactory::getDBO();  
+		// Load the submenu.
+		##Component##Helper::addSubmenu(JRequest::getCmd('view', '##defaultview##s'));
 
-		$post = JRequest::getVar('jform', array(), 'post', 'array');
-		$cid = JRequest::getVar('cid', array (
-			0
-		), 'post', 'array');
-		$post['id'] = (int) $cid[0];	
-		
-		$model = $this->getModel($this->_mainmodel);
-		if ($model->store($post)) {
-			$msg = JText::_($this->_itemname .' Saved');
-		} else {
-			$msg = $model->getError(); 
+		$view		= JRequest::getCmd('view', '##defaultview##s');
+		$layout 	= JRequest::getCmd('layout', 'default');
+		$id			= JRequest::getInt('id');
+
+		// Check for edit form.
+		if ($view == '##defaultview##' && $layout == 'edit' && !$this->checkEditId('##com_component##.edit.##defaultview##', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=##com_component##&view=##defaultview##s', false));
+
+			return false;
 		}
-        
-		switch ($this->getTask())
-		{
-			case 'apply':
-				$link = 'index.php?option=com_##component##&view='.$this->_viewname.'&task=edit&cid[]='.$model->getId() ;
-				break;
 
-			case 'save':
-			default:
-				$link = 'index.php?option=com_##component##&view='.$this->_viewname;
-				break;
-		}
-        
+		//parent::display();
 
-		$this->setRedirect($link, $msg);
+		//return $this;
+		return parent::display();
 	}
+}
 
-	/**
-	 * remove an item
-	 */		
-	function remove() 
-	{
-		
-		// Check for request forgeries
-		JRequest::checkToken() or jexit('Invalid Token');
-
-		$db = JFactory::getDBO();  
-		$cid = JRequest::getVar('cid', array (), 'post', 'array');
-		JArrayHelper::toInteger($cid);
-		$msg = JText::_($this->_itemname.' deleted');
-		if (count($cid) < 1) {
-			JError::raiseError(500, JText::_('Select a '.$this->_itemname.' to delete'));
-		}
-    	$model = $this->getModel($this->_mainmodel);			
-		if (!$model->delete($cid)) {
-				$msg = $model->getError(); 
-		}		
-		$link = 'index.php?option=com_##component##&view='.$this->_viewname;
-		$this->setRedirect($link, $msg);
-	}
-
-}// class
-  
 ?>

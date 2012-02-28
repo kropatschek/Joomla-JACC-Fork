@@ -1,24 +1,30 @@
-<?php defined('_JEXEC') or die('Restricted access'); ?>
+<?php defined('_JEXEC') or die; ?>
 ##codestart##
 /**
-* @version		$Id:Model.php 1 ##date##Z ##sauthor## $
-* @package		##Component##
-* @subpackage 	Models
-* @copyright	Copyright (C) ##year##, ##author##. All rights reserved.
-* @license ###license##
+##ifdefVarpackageStart##
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
+ * @version    ##version##
+ * @copyright  Copyright (C) ##year##, ##author##. All rights reserved.
+ * @license    ##license##
 */
+
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 /**
  * Model
  * @author Michael Liebler
  */
- 
-jimport( 'joomla.application.component.model' );
- 
-class ##Component##Model  extends JModel { 
 
-  
+jimport( 'joomla.application.component.model' );
+
+class ##Component##Model  extends JModel {
+
+
 	/**
 	 * Items data array
 	 *
@@ -38,7 +44,7 @@ class ##Component##Model  extends JModel {
 	 *
 	 * @var integer
 	 */
-	
+
 	protected $_id = null;
 
 	/**
@@ -46,7 +52,7 @@ class ##Component##Model  extends JModel {
 	 *
 	 * @var mixed
 	 */
-	
+
 	protected $_default_filter = null;
 
 	/**
@@ -54,26 +60,26 @@ class ##Component##Model  extends JModel {
 	 *
 	 * @var mixed
 	 */
-	
+
 	protected $_default_table = null;
 
-		
-	
+
+
 	/**
- 	* Constructor
- 	*/
-	
+	 * Constructor
+	 */
+
 	public function __construct()
 	{
 		parent::__construct();
 
 		global $mainframe, $option;
-		
+
 		$table = $this->getTable();
 		if($table) {
-			$this->_default_table = $table->getTableName(); 
+			$this->_default_table = $table->getTableName();
 		}
-		
+
 		$context = $option.'.'.$this->getName();
 
 		$array = JRequest::getVar('cid', array (
@@ -83,7 +89,7 @@ class ##Component##Model  extends JModel {
 		if ($edit)
 			$this->setId((int) $array[0]);
 		// Get the pagination request variables
-		
+
 		$limit		= $mainframe->getUserStateFromRequest( $context.'.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
 		$limitstart	= $mainframe->getUserStateFromRequest( $context.'.limitstart', 'limitstart', 0, 'int' );
 
@@ -100,7 +106,7 @@ class ##Component##Model  extends JModel {
 	* @access public
 	* @return $_id int Item Identifier
 	*/
-	public function getId() {		
+	public function getId() {
 		return $this->_id;
 	}
 
@@ -117,56 +123,56 @@ class ##Component##Model  extends JModel {
 	}
 
 	/**
-	   * Return a  List of vendor-Items 
-	   * @access	public 
-	   * @return $_data array
-	   */
+	 * Return a  List of vendor-Items
+	 * @access	public
+	 * @return $_data array
+	 */
 
 	public function getData()
 	{
 		// Lets load the content if it doesn't already exist
-	   
+
 		if (empty($this->_data))
 		{
 			$query = $this->_buildQuery();
 			$this->_data = $this->_getList($query,$this->getState('limitstart'), $this->getState('limit'));
 		}
-		
+
 		return $this->_data;
-		
+
 	}
 
 	/**
 	 * Method to get an Item
 	 *
-	 * @access	public 
+	 * @access	public
 	 * @return $item array
 	 */
-	
-	public function getItem() {			
-		$item = $this->getTable();				
-		$item->load($this->_id);		
+
+	public function getItem() {
+		$item = $this->getTable();
+		$item->load($this->_id);
 		return $item;
 	}
 
 
 
-   /**
-    * Method to delete an Item
- 	*
+/**
+	* Method to delete an Item
+	 *
 	* @access	public
-    * @param  $cid int
-    * @return $affected int
-    */
-     public function  delete($cid) {
-        $db = JFactory::getDBO();     
-	    $query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
-        $db->setQuery( $query);
+	* @param  $cid int
+	* @return $affected int
+	*/
+	 public function  delete($cid) {
+		$db = JFactory::getDBO();
+		$query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
+		$db->setQuery( $query);
 
-        $db->query();
-	    $affected = $db->getAffectedRows();	    
-        return $affected ;
-     }
+		$db->query();
+		$affected = $db->getAffectedRows();
+		return $affected ;
+	 }
 
 
 
@@ -178,12 +184,12 @@ class ##Component##Model  extends JModel {
 	 */
 	public function store($data)
 	{
-		// Implemented in child classes	
+		// Implemented in child classes
 	}
 
- 
+
 	/**
-	 * Method to get a pagination object 
+	 * Method to get a pagination object
 	 *
 	 * @access public
 	 * @return integer
@@ -199,7 +205,7 @@ class ##Component##Model  extends JModel {
 
 		return $this->_pagination;
 	}
-	
+
 
 	/**
 	 * Method to get the total number of  items
@@ -217,14 +223,14 @@ class ##Component##Model  extends JModel {
 		}
 
 		return $this->_total;
-	}	
-	
+	}
+
 		/**
 	* Method to (un)publish an item
 	*
 	* @access public
 	* @return boolean True on success
-	
+
 	*/
 	public function publish($cid = array (), $publish = 1) {
 		$user = JFactory::getUser();
@@ -233,7 +239,7 @@ class ##Component##Model  extends JModel {
 			$cids = implode(',', $cid);
 			$query = 'UPDATE '.$this->_default_table.' SET published = ' . (int) $publish . ' WHERE id IN ( ' . $cids . ' )';
 			$this->_db->setQuery($query);
-	
+
 			if (!$this->_db->query()) {
 				$this->setError($this->_db->getErrorMsg());
 				return false;
@@ -247,7 +253,7 @@ class ##Component##Model  extends JModel {
 	*
 	* @access public
 	* @return boolean True on success
-	
+
 	*/
 	public function saveorder($cid = array (), $order) {
 		$row = $this->getTable();
@@ -267,7 +273,7 @@ class ##Component##Model  extends JModel {
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to move an item
 	 *
@@ -283,10 +289,10 @@ class ##Component##Model  extends JModel {
 		}
 		$table = $this->getTable();
 		$where = "";
-		
+
 		if($row->catid) {
 			$where = ' catid = '.(int) $row->catid.' AND published >= 0 ';
-		} 
+		}
 		if (!$row->move( $direction, $where )) {
 			$this->setError($this->_db->getErrorMsg());
 			return false;
@@ -294,13 +300,13 @@ class ##Component##Model  extends JModel {
 
 		return true;
 	}
-	
+
 	/**
 	* Method to checkin/unlock the item
 	*
 	* @access public
 	* @return boolean True on success
-	
+
 	*/
 	public function checkin() {
 		if ($this->_id) {
@@ -318,7 +324,7 @@ class ##Component##Model  extends JModel {
 	* @access public
 	* @param int $uid User ID of the user checking the article out
 	* @return boolean True on success
-	
+
 	*/
 	public function checkout($uid = null) {
 		if ($this->_id) {
@@ -336,31 +342,31 @@ class ##Component##Model  extends JModel {
 			return true;
 		}
 		return false;
-	}	
-	
+	}
+
 	/**
 	 * Method to set the Default Filter Column
-	 * 
+	 *
 	 * @access public
 	 * @param mixed Default Filter
 	 */
-	
+
 	public function setDefaultFilter($filter) {
 		$this->_default_filter = $filter;
 	}
-	
+
 	/**
 	* Method to build the query
 	*
 	* @access private
-	* @return string query	
+	* @return string query
 	*/
 
 	protected function _buildQuery()
 	{
 		$where = $this->_buildContentWhere();
 		$orderby = $this->_buildContentOrderBy();
-		
+
 		$query = 'SELECT * FROM '.$this->_default_table.' '. $where . $orderby;
 
 		return $query;
@@ -370,9 +376,9 @@ class ##Component##Model  extends JModel {
 	* Method to build the Order Clause
 	*
 	* @access private
-	* @return string orderby	
+	* @return string orderby
 	*/
-	
+
 	protected function _buildContentOrderBy() {
 		global $mainframe, $option;
 		$context			= $option.'.'.strtolower($this->getName()).'.list.';
@@ -383,22 +389,22 @@ class ##Component##Model  extends JModel {
 
 		return $orderby;
 	}
-	
+
 	/**
-	* Method to build the Where Clause 
+	* Method to build the Where Clause
 	*
 	* @access private
-	* @return string orderby	
+	* @return string orderby
 	*/
-	
+
 	protected function _buildContentWhere() {
-		// Implemented in child classes	
-	}		
-	
+		// Implemented in child classes
+	}
+
 	protected function _multiDbCondIfArray($search) {
 		$ret = (is_array($search)) ? " IN ('" . implode("','", $search) . "') " : " = '" . $search . "' ";
 		return $ret;
 	}
 
-}  
+}
 ##codeend##

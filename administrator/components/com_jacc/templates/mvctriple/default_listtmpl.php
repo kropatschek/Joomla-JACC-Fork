@@ -1,6 +1,6 @@
 ##codestart##
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 ##codeend##
 <div class="componentheading##codestart## echo $this->escape($this->params->get('pageclass_sfx')); ##codeend##"><h2>##codestart## echo $this->params->get('page_title');  ##codeend##</h2></div>
 

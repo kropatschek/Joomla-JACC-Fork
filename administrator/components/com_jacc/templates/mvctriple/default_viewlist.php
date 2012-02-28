@@ -1,45 +1,51 @@
+<?php defined('_JEXEC') or die; ?>
 ##codestart##
 /**
-* @version		$Id: default_viewlist.php 96 2011-08-11 06:59:32Z michel $
-* @package		##Component##
-* @subpackage 	Views
-* @copyright	Copyright (C) ##year##, . All rights reserved.
-* @license #
+##ifdefVarpackageStart##
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
+ * @version    ##version##
+ * @copyright  Copyright (C) ##year##, ##author##. All rights reserved.
+ * @license    ##license##
 */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
- 
-class ##Component##View##Name##list  extends JView 
+
+class ##Component##View##Name##list  extends JView
 {
 	public function display($tpl = null)
 	{
-		
+
 		$app = JFactory::getApplication('site');
 		$document	= JFactory::getDocument();
 		$uri 		= JFactory::getURI();
 		$user 		= JFactory::getUser();
 		$pagination	= $this->get('pagination');
-		$params		= $app ->getParams();				
+		$params		= $app ->getParams();
 		$menus	= JSite::getMenu();
-		
+
 		$menu	= $menus->getActive();
 		if (is_object( $menu )) {
 			$menu_params = $menus->getParams($menu->id) ;
 			if (!$menu_params->get( 'page_title')) {
 				$params->set('page_title', '##Component##');
 			}
-		}		
-				
+		}
+
 		$items = $this->get( 'Items' );
 		$this->assignRef( 'items', $items);
 
 		$this->assignRef('params', $params);
 		$this->assignRef('pagination', $pagination);
-		
+
 		parent::display($tpl);
 	}
 }

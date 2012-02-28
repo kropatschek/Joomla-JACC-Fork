@@ -1,5 +1,5 @@
   <?php
- defined('_JEXEC') or die('Restricted access');
+ defined('_JEXEC') or die;
 /**
 * @version		$Id:jacc.php  1 2010-08-15 12:57:56Z Michael Liebler $
 * @package		Jacc
@@ -7,7 +7,7 @@
 * @copyright	Copyright (C) 2010, mliebler. All rights reserved.
 * @license #http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
 */
- defined('_JEXEC') or die('Restricted access');
+ defined('_JEXEC') or die;
 /**
  * JaccModelJacc 
  * @author mliebler

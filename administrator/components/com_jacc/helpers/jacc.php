@@ -411,6 +411,8 @@ Replace INTO `#__".$lcomponent."_categories`  VALUES(1, 0, 0, 0, 5, 0, '', 'syst
 
 		$description = $item->description;
 		$version = $item->version;
+		$package = $item->package;
+
 		$params = JComponentHelper::getParams('com_jacc');
 		$com_component = $item->name;
 		$lcomponent = strtolower(str_replace('com_', '', $com_component ));
@@ -432,6 +434,7 @@ Replace INTO `#__".$lcomponent."_categories`  VALUES(1, 0, 0, 0, 5, 0, '', 'syst
 
 		**/
 		$file = str_replace("##version##", $version, $file);
+		$file = str_replace("##package##", $package, $file);
 		$file = str_replace("##table##", $reltable, $file);
 
 		$file = str_replace("##website##", $params->get('website'), $file);
@@ -445,6 +448,7 @@ Replace INTO `#__".$lcomponent."_categories`  VALUES(1, 0, 0, 0, 5, 0, '', 'syst
 		$file = str_replace("##date##", $date->toFormat('%Y-%m-%d'), $file);
 		$file = str_replace("##year##", $date->toFormat('%Y'), $file);
 		$file = str_replace("##com_component##", $com_component, $file);
+		$file = str_replace("##COM_COMPONENT##", strtoupper($com_component), $file);
 
 		foreach($options as $key => $value) {
 			$value = (string) $value;
@@ -456,6 +460,60 @@ Replace INTO `#__".$lcomponent."_categories`  VALUES(1, 0, 0, 0, 5, 0, '', 'syst
 			$file = str_replace("##".$FUkey."##", $FUvalue, $file);
 			$file = str_replace("##".$Ukey."##", $Uvalue, $file);
 		}
+
+		$varList[]= "package";
+
+		foreach ($varList as $var)
+		{
+			// if definend delete just the defined tags
+			$pattern = '/((?:\r\n|\r|\n|^))[ \t]*##ifdefVar'.$var.'(Start|End)##(?:[ \t]|[^\n\r#])*(?:\r\n|\r|\n|$)/isU';
+			$file	= preg_replace($pattern, '$1', $file);
+			$pattern = '/##ifdefVar'.$var.'[Start|End]##/isU';
+			$file	= preg_replace($pattern, '', $file);
+		}
+
+		// if not definend delete the defined tags and the tag content
+		$pattern = '/(?:\r\n|\r|\n|^)[ \t]*##ifdefVar\w+Start##.*##ifdefVar\w+End##(?:[ \t]|[^\n\r])*/isU';
+		$file	= preg_replace($pattern, '', $file);
+		$pattern = '/##ifdefVar\w+Start##.*##ifdefVar\w+End##/isU';
+		$file	= preg_replace($pattern, '', $file);
+
+		foreach ($varList as $var)
+		{
+			$pattern = '/(?:\r\n|\r|\n|^)[ \t]*##ifnotdefVar'.$var.'Start##.*##ifnotdefVar'.$var.'End##(?:[ \t]|[^\n\r])*/imsU';
+			$file	= preg_replace($pattern, '', $file);
+			$pattern = '/##ifnotdefVar'.$var.'Start##.*##ifnotdefVar'.$var.'End##/isU';
+			$file	= preg_replace($pattern, '', $file);
+		}
+
+		$pattern = '/((?:\r\n|\r|\n|^))[ \t]*##ifnotdefVar\w+(Start|End)##(?:[ \t]|[^\n\r#])*(?:\r\n|\r|\n|$)/isU';
+		$file	= preg_replace($pattern, '$1', $file);
+		$pattern = '/##ifnotdefVar\w+[Start|End]##/isU';
+		$file	= preg_replace($pattern, '', $file);
+
+
+// 		foreach ($varList as $var) {
+
+
+// 			$pattern = '/(?:\r\n|\r|\n|^)[ \t]*##ifdefVar'.$var.'Start##.*##ifdefVar'.$var.'End##(?:[ \t]|[^\n\r])*/isU';
+// 			$file	= preg_replace($pattern, '', $file);
+// 			$pattern = '/##ifdefVar'.$var.'Start##.*##ifdefVar'.$var.'End##/isU';
+// 			$file	= preg_replace($pattern, '', $file);
+// 		}
+
+// 		foreach ($allVars  as $Var) {
+// 			$pattern = '/(?:\r\n|\r|\n|^)[ \t]*##ifnotdefVar'.$Var->get('key').'Start##.*##ifnotdefVar'.$Var->get('key').'End##(?:[ \t]|[^\n\r])*/imsU';
+// 			$file	= preg_replace($pattern, '', $file);
+// 			$pattern = '/##ifnotdefVar'.$Var->get('key').'Start##.*##ifnotdefVar'.$Var->get('key').'End##/isU';
+// 			$file	= preg_replace($pattern, '', $file);
+// 		}
+
+// 		$pattern = '/((?:\r\n|\r|\n|^))[ \t]*##if(def|notdef)Var\w+(Start|End)##(?:[ \t]|[^\n\r#])*(?:\r\n|\r|\n|$)/isU';
+// 		$file	= preg_replace($pattern, '$1', $file);
+
+// 		$pattern = '/##if(def|notdef)Var\w+[Start|End]##/isU';
+// 		$file	= preg_replace($pattern, '', $file);
+
 
 		/**
 		$file = str_replace("##name##", $name, $file);

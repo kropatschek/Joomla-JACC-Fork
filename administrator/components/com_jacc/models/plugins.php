@@ -1,5 +1,5 @@
   <?php
- defined('_JEXEC') or die('Restricted access');
+ defined('_JEXEC') or die;
 /**
 * @version		$Id: plugins.php 96 2011-08-11 06:59:32Z michel $
 * @package		Jacc
@@ -7,7 +7,7 @@
 * @copyright	Copyright (C) 2011, Michael Liebler. All rights reserved.
 * @license #http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
 */
- defined('_JEXEC') or die('Restricted access');
+ defined('_JEXEC') or die;
 /**
  * JaccModelPlugins 
  * @author Michael Liebler

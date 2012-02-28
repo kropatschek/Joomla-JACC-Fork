@@ -1,109 +1,144 @@
-<?php defined('_JEXEC') or die('Restricted access'); ?>
+<?php defined('_JEXEC') or die; ?>
 ##codestart##
 /**
-* @version		$Id:##name##.php 1 ##date##Z ##sauthor## $
-* @package		##Component##
-* @subpackage 	Tables
-* @copyright	Copyright (C) ##year##, ##author##. All rights reserved.
-* @license ###license##
+##ifdefVarpackageStart##
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
+ * @version    ##version##
+ * @copyright  Copyright (C) ##year##, ##author##. All rights reserved.
+ * @license    ##license##
 */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
 
-class ##Component##View##Name##  extends JView {
+class ##Component##View##Name## extends JView
+{
+	protected $form;
+	protected $item;
+	protected $state;
 
+	/**
+	 * Display the view
+	 */
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication('');
+		// Initialise variables.
+		$this->form  = $this->get('Form');
+		$this->item  = $this->get('Item');
+		$this->state = $this->get('State');
 
-		if ($this->getLayout() == 'form') {
-
-			$this->_displayForm($tpl);
-			return;
+		// Check for errors.
+		if (count($errors = $this->get('Errors'))) {
+			JError::raiseError(500, implode("\n", $errors));
+			return false;
 		}
-		$context			= 'com_##component##'.'.'.strtolower($this->getName()).'.list.';
-##ifdefFieldpublishedStart##
-		$filter_state = $app->getUserStateFromRequest($context . 'filter_state', 'filter_state', '', 'word');
-##ifdefFieldpublishedEnd##
-		$filter_order = $app->getUserStateFromRequest($context . 'filter_order', 'filter_order', $this->get('DefaultFilter'), 'cmd');
-		$filter_order_Dir = $app->getUserStateFromRequest($context . 'filter_order_Dir', 'filter_order_Dir', '', 'word');
-		$search = $app->getUserStateFromRequest($context . 'search', 'search', '', 'string');
-		$search = JString::strtolower($search);
 
-		// Get data from the model
-		$items = $this->get('Data');
-		$total = $this->get('Total');
-		$pagination = $this->get('Pagination');
-##ifdefFieldpublishedStart##
-		//create the lists
-		$lists = array();
-		$lists['state'] = JHtml::_('grid.state', $filter_state);
-##ifdefFieldpublishedEnd##
-		// table ordering
-		$lists['order_Dir'] = $filter_order_Dir;
-		$lists['order'] = $filter_order;
-		// search filter
-		$lists['search'] = $search;
-		$items = $this->get('Data');
-
-		//pagination
-		$pagination = $this->get( 'Pagination' );
-
-		$user = JFactory::getUser();
-		$this->assignRef('user', $user);
-		$this->assign('lists', $lists);
-		$this->assign('items', $items);
-		$this->assign('total', $total);
-		$this->assign('pagination', $pagination);
-		parent::display();
+		$this->addToolbar();
+		parent::display($tpl);
 	}
 
 	/**
-	 *  Displays the form
-	 * @param string $tpl
+	 * Add the page title and toolbar.
+	 *
+	 * @since	1.6
 	 */
-	public function _displayForm($tpl)
+	protected function addToolbar()
 	{
-		//-global  $alt_libdir;
+		JRequest::setVar('hidemainmenu', true);
 
-		JLoader::import('joomla.form.formvalidator');//-, $alt_libdir);
-		JHtml::stylesheet( 'fields.css', 'administrator/components/com_##component##/assets/' );
+		$user		= JFactory::getUser();
+		$userId		= $user->get('id');
+		$isNew		= ($this->item->id == 0);
+		##ifdefFieldcheck_outStart##
+		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
+		##ifdefFieldcheck_outEnd##
+		##ifdefFieldcatidStart##
+		// Since we don't track these assets at the item level, use the category id.
+		$canDo		= ##Component##Helper::getActions($this->item->catid,0);
+		//$this->canDo	= ##Component##Helper::getActions($this->state->get('filter.category_id'));
+		##ifdefFieldcatidEnd##
+		##ifdefFieldcategory_idStart##
+		// Since we don't track these assets at the item level, use the category id.
+		$canDo		= ##Component##Helper::getActions($this->item->category_id,0);
+		//$this->canDo	= ##Component##Helper::getActions($this->state->get('filter.category_id'));
+		##ifdefFieldcategory_idEnd##
 
-		$db			=JFactory::getDBO();
-		$uri 		=JFactory::getURI();
-		$user 		=JFactory::getUser();
-		$form		= $this->get('Form');
+		JToolBarHelper::title($isNew ? JText::_('COM_##COMPONENT##_MANAGER_##NAME##_NEW') : JText::_('COM_##COMPONENT##_MANAGER_##NAME##_EDIT'), 'generic.png');
 
-		$lists = array();
+		// Built the actions for new and existing records.
 
-		$editor = JFactory::getEditor();
+		// For new records, check the create permission.
+		if ($isNew && (count($user->getAuthorisedCategories('##com_component##', 'core.create')) > 0)) {
+			JToolBarHelper::apply('##name##.apply');
+			JToolBarHelper::save('##name##.save');
+			JToolBarHelper::save2new('##name##.save2new');
+			JToolBarHelper::cancel('##name##.cancel');
+		}
+		else
+		{
+			##ifdefFieldcheck_outStart##
+			// Can't save the record if it's checked out.
+			if (!$checkedOut) {
+			##ifdefFieldcheck_outEnd##
+				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
+				##ifdefFieldcatidStart##
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd##)) {
+				##ifdefFieldcatidEnd##
+				##ifdefFieldcategory_idStart##
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd##)) {
+				##ifdefFieldcategory_idEnd##
+					JToolBarHelper::apply('##name##.apply');
+					JToolBarHelper::save('##name##.save');
 
-		//get the item
-		$item	=$this->get('item');
-		$form->bind($item);
+					##ifdefFieldcatidStart##
+					// We can save this record, but check the create permission to see if we can return to make a new one.
+					if ($canDo->get('core.create'))
+					{
+						JToolBarHelper::save2new('##name##.save2new');
+					}
+					##ifdefFieldcatidEnd##
+					##ifdefFieldcategory_idStart##
+					// We can save this record, but check the create permission to see if we can return to make a new one.
+					if ($canDo->get('core.create'))
+					{
+						JToolBarHelper::save2new('##name##.save2new');
+					}
+					##ifdefFieldcategory_idEnd##
+				##ifdefFieldcatidStart##
+				}
+				##ifdefFieldcatidEnd##
+				##ifdefFieldcategory_idStart##
+				}
+				##ifdefFieldcategory_idEnd##
+			##ifdefFieldcheck_outStart##
+			}
+			##ifdefFieldcheck_outEnd##
 
-		$isNew		= ($item->##primary## < 1);
+			##ifdefFieldcatidStart##
+			// If checked out, we can still save
+			if ($canDo->get('core.create')) {
+				JToolBarHelper::save2copy('##name##.save2copy');
+			}
+			##ifdefFieldcatidEnd##
+			##ifdefFieldcategory_idStart##
+			// If checked out, we can still save
+			if ($canDo->get('core.create')) {
+				JToolBarHelper::save2copy('##name##.save2copy');
+			}
+			##ifdefFieldcategory_idEnd##
 
-		// Edit or Create?
-		if ($isNew) {
-			// initialise new record
-			$item->published = 1;
+			JToolBarHelper::cancel('##name##.cancel', 'JTOOLBAR_CLOSE');
 		}
 
-		$lists['published'] 		= JHtml::_('select.booleanlist', 'published', 'class="inputbox"', $item->published );
-
-		$this->assign('form', $form);
-
-		$this->assignRef('lists', $lists);
-		$this->assignRef('editor', $editor);
-		$this->assignRef('item', $item);
-		$this->assignRef('isNew', $isNew);
-
-		parent::display($tpl);
+		JToolBarHelper::divider();
+		JToolBarHelper::help('JHELP_##COMPONENT##_##NAME##_MANAGER_EDIT');
 	}
 }
 ##codeend##

@@ -7,7 +7,7 @@
  * @license    ##license##
  */
 
-defined('_JEXEC') or die('Restricted access'); // no direct access
+defined('_JEXEC') or die; // no direct access
 
 require_once (dirname(__FILE__).'/helper.php');
 $item = mod##Module##Helper::getItem($params);
