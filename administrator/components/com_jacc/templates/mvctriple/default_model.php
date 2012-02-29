@@ -18,7 +18,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * ##Component##Model##Name##
+ * Item Model for an ##Component## ##Name##
  *
  * @author ##author##
  * @package     Joomla.Administrator
@@ -32,7 +32,78 @@ class ##Component##Model##Name## extends JModelAdmin
 	 * @since	1.6
 	 */
 	//TODO vielleicht nicht notendig!!!
-	protected $text_prefix = '##COM_COMPONENT##';
+	protected $text_prefix = '##COM_COMPONENT##.##NAME##';
+
+	/**
+	 * Method override to check if you can edit an existing record.
+	 *
+	 * @param	array	$data	An array of input data.
+	 * @param	string	$key	The name of the key for the primary key.
+	 *
+	 * @return	boolean
+	 * @since	2.5
+	 */
+	protected function allowEdit($data = array(), $key = 'id')
+	{
+		// Check specific edit permission then general edit permission.
+		return JFactory::getUser()->authorise('core.edit', '##com_component##.##name##.'.
+			((int) isset($data[$key]) ? $data[$key] : 0))
+			or parent::allowEdit($data, $key);
+	}
+
+	/**
+	 * Method to test whether a record can be deleted.
+	 *
+	 * @param	object	$record	A record object.
+	 *
+	 * @return	boolean	True if allowed to delete the record. Defaults to the permission set in the component.
+	 * @since	1.6
+	 */
+	protected function canDelete($record)
+	{
+		if (!empty($record->id)) {
+			if ($record->state != -2) {
+				return ;
+			}
+			$user = JFactory::getUser();
+			return $user->authorise('core.delete', '##com_component##.##name##.'.(int) $record->id);
+		}
+	}
+
+	/**
+	 * Method to test whether a record can have its state edited.
+	 *
+	 * @param	object	$record	A record object.
+	 *
+	 * @return	boolean	True if allowed to change the state of the record. Defaults to the permission set in the component.
+	 * @since	1.6
+	 */
+	protected function canEditState($record)
+	{
+		$user = JFactory::getUser();
+
+		// Check for existing article.
+		if (!empty($record->id)) {
+			return $user->authorise('core.edit.state', '##com_component##.##name##.'.(int) $record->id);
+		}
+		##ifdefFieldcatidStart##
+		// New article, so check against the category.
+		elseif (!empty($record->catid)) {
+			return $user->authorise('core.edit.state', '##com_component##.##name##.category.'.(int) $record->catid);
+		}
+		##ifdefFieldcatidEnd##
+		##ifdefFieldcategory_idStart##
+		// New article, so check against the category.
+		elseif (!empty($record->category_id)) {
+			return $user->authorise('core.edit.state', '##com_component##.##name##.category.'.(int) $record->category_id);
+		}
+		##ifdefFieldcategory_idEnd##
+
+		// Default to component settings if neither article nor category known.
+		else {
+			return parent::canEditState('##com_component##');
+		}
+	}
 
 	/**
 	 * Method to get a table object, load it if necessary.
@@ -45,9 +116,7 @@ class ##Component##Model##Name## extends JModelAdmin
 	 *
 	 * @since   2.5
 	 */
-	// Todo:
 	public function getTable($name = '##Name##', $prefix = '##Component##Table', $options = array())
-	//public function getTable($name = '##Name##', $prefix = 'Table', $options = array())
 	{
 		return JTable::getInstance($name, $prefix, $options);
 	}
@@ -68,15 +137,13 @@ class ##Component##Model##Name## extends JModelAdmin
 		// JForm::addFieldPath('JPATH_ADMINISTRATOR/components/##com_component##/models/fields');
 
 		// Get the form.
-		$form = $this->loadForm('com_##component##.##name##', '##name##', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('##com_component##.##name##', '##name##', array('control' => 'jform', 'load_data' => $loadData));
 		if (empty($form))
 		{
 			return false;
 		}
 
-		// TODO: Only if access controls are used
 		// Modify the form based on access controls.
-		##ifdefFieldaccessStart##
 		if (!$this->canEditState((object) $data))
 		{
 			// Disable fields for display
@@ -120,7 +187,6 @@ class ##Component##Model##Name## extends JModelAdmin
 			$form->setFieldAttribute('publish_down', 'filter', 'unset');
 			##ifdefFieldpublish_downEnd##
 		}
-		##ifdefFieldaccessEnd##
 		return $form;
 	}
 
@@ -221,17 +287,17 @@ class ##Component##Model##Name## extends JModelAdmin
 	protected function prepareTable(&$table)
 	{
 		##ifdefField<?php echo $this->hident ?>Start##
-		$table-><?php echo $this->hident ?> = htmlspecialchars_decode($table-><?php echo $this->hident ?>, ENT_QUOTES);
+		$table->##title## = htmlspecialchars_decode($table->##title##, ENT_QUOTES);
 		##ifdefFieldaliasStart##
 		$table->alias = JApplication::stringURLSafe($table->alias);
 
 		if (empty($table->alias))
 		{
-			$table->alias = JApplication::stringURLSafe($table-><?php echo $this->hident ?>);
+			$table->alias = JApplication::stringURLSafe($table->##title##);
 		}
+
 		##ifdefFieldaliasEnd##
 		##ifdefField<?php echo $this->hident ?>End##
-
 		##ifdefFieldpublish_upStart##
 		// Set the publish date to now
 		$db = $this->getDbo();
@@ -239,8 +305,8 @@ class ##Component##Model##Name## extends JModelAdmin
 		{
 			$table->publish_up = JFactory::getDate()->toSql();
 		}
-		##ifdefFieldpublish_upEnd##
 
+		##ifdefFieldpublish_upEnd##
 		##ifdefFieldversionStart##
 		// Increment the content version number.
 		$table->version++;
@@ -256,7 +322,7 @@ class ##Component##Model##Name## extends JModelAdmin
 		// Reorder the ##name## within the category so the new ##name## is first
 		if (empty($table->id))
 		{
-			$table->reorder('category_id = '.(int) $table->catid##ifdefFieldstateStart##.' AND state >= 0'##ifdefFieldstateEnd##);
+			$table->reorder('category_id = '.(int) $table->category_id##ifdefFieldstateStart##.' AND state >= 0'##ifdefFieldstateEnd##);
 		}
 		##ifdefFieldcategory_idEnd##
 		##ifdefFieldorderingStart##
@@ -344,15 +410,18 @@ class ##Component##Model##Name## extends JModelAdmin
 
 		##ifdefFieldurlsEnd##
 		##ifdefFieldimagesStart##
-		// ToDo: save2copy
-		//if (JRequest::getVar('task') == 'save2copy') {
-		//	list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
-		//	$data['title']	= $title;
+		if (JRequest::getVar('task') == 'save2copy') {
+			list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle(
+				##ifdefFieldcatidStart##$data['catid'], ##ifdefFieldcatidEnd##
+				##ifdefFieldcategory_idStart##$data['category_id'], ##ifdefFieldcategory_idEnd##
+				##ifdefFieldaliasStart##$data['alias'], ##ifdefFieldaliasEnd##
+				$data['##title##']
+			);
+			$data['##title##']	= $title;
 			##ifdefFieldaliasStart##
-		//	$data['alias']	= $alias;
+			$data['alias']	= $alias;
 			##ifdefFieldaliasEnd##
-		//}
-
+		}
 		##ifdefFieldimagesEnd##
 		if (parent::save($data)) {
 			##ifdefFieldfeaturedStart##
@@ -366,5 +435,99 @@ class ##Component##Model##Name## extends JModelAdmin
 
 		return false;
 	}
+	##ifdefFieldfeaturedStart##
+
+
+	/**
+	 * Method to change the title##ifdefFieldaliasStart## and alias##ifdefFieldaliasEnd##.
+	 *
+	##ifdefFieldcatidStart##
+	 * @param   integer  $category_id  The id of the category.
+	##ifdefFieldcatidEnd##
+	##ifdefFieldcategory_idStart##
+	 * @param   integer  $category_id  The id of the category.
+	##ifdefFieldcategory_idEnd##
+	##ifdefFieldaliasStart##
+	 * @param   string   $alias        The alias.
+	##ifdefFieldaliasEnd##
+	##ifdefFieldaliasStart##
+	 * @param   string   $title        The title.
+	##ifdefFieldaliasEnd##
+	 *
+	 * @return	array  Contains the modified title##ifdefFieldaliasStart## and alias##ifdefFieldaliasEnd##.
+	 *
+	 * @since	11.1
+	 */
+	protected function generateNewTitle(##ifdefFieldcatidStart##$category_id, ##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##$category_id, ##ifdefFieldcategory_idEnd####ifdefFieldaliasStart##$alias, ##ifdefFieldaliasEnd##$title)
+	{
+		// Alter the title & alias
+		$table = $this->getTable();
+		while ($table->load(array(
+			##ifdefFieldaliasStart##'alias' => $alias, ##ifdefFieldaliasEnd##
+			##ifnotdefFieldaliasStart##'##title##' => $title, ##ifnotdefFieldaliasEnd##
+			##ifdefFieldcatidStart##'catid' => $category_id##ifdefFieldcatidEnd##
+			##ifdefFieldcategory_idStart##'category_id' => $category_id##ifdefFieldcategory_idEnd##
+		)))
+		{
+			$title = JString::increment($title);
+			##ifdefFieldaliasStart##
+			$alias = JString::increment($alias, 'dash');
+			##ifdefFieldaliasEnd##
+		}
+		return array($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##);
+	}
+
+
+
+	/**
+	 * Method to toggle the featured setting of contacts.
+	 *
+	 * @param	array	$pks	The ids of the items to toggle.
+	 * @param	int		$value	The value to toggle to.
+	 *
+	 * @return	boolean	True on success.
+	 * @since	1.6
+	 */
+	public function featured($pks, $value = 0)
+	{
+		// Sanitize the ids.
+		$pks = (array) $pks;
+		JArrayHelper::toInteger($pks);
+
+		if (empty($pks)) {
+			$this->setError(JText::_('##COM_COMPONENT##_NO_ITEM_SELECTED'));
+			return false;
+		}
+
+		$table = $this->getTable();
+
+		try
+		{
+			$db = $this->getDbo();
+
+			$db->setQuery(
+				'UPDATE ##table##' .
+				' SET featured = '.(int) $value.
+				' WHERE id IN ('.implode(',', $pks).')'
+			);
+			if (!$db->query()) {
+				throw new Exception($db->getErrorMsg());
+			}
+
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+			return false;
+		}
+
+		$table->reorder();
+
+		// Clean component's cache
+		$this->cleanCache();
+
+		return true;
+	}
+	##ifdefFieldfeaturedEnd##
 }
 ##codeend##

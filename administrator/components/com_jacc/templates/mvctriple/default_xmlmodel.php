@@ -8,27 +8,26 @@ $datesize = 10;
 <?php foreach ($this->formfield as $field) {
 
 
-						 if ($field->get('additional')) continue;
-						 if ($field->get('key') == 'params') continue;
-						 $required = $field->get('required') ? $field->get('required') : 'false';
-						 $size= $field->get('size') ? $field->get('size') : '40';
-						 $label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));
-						 switch($field->get('key')) {
+						if ($field->get('additional')) continue;
+						if ($field->get('key') == 'params') continue;
+						$required = $field->get('required') ? $field->get('required') : 'false';
+						$size= $field->get('size') ? $field->get('size') : '40';
+						$label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));
+						switch($field->get('key')) {
 							case 'catid':
 							case 'category_id':
 								if($this->uses_categories):
 								?>
 
 		<field
-			id="name"
 			name="<?php echo $field->get('key') ?>"
 			type="category"
-			label="Category"
-			required="true"
-			extension="com_##component##.##name##"
-			description="<?php echo $field->get('key') ?>_Desc"
+			extension="com_##component##.##name##s"
+			label="JCATEGORY"
+			description="JFIELD_CATEGORY_DESC"
 			class="inputbox"
-			size="1"/>
+			required="true">
+		</field>
 				<?php
 								endif;
 								break;
@@ -71,8 +70,19 @@ $datesize = 10;
 		</field>
 <?php
 								break;
-							 case 'published': ?>
-
+							case 'featured': ?>
+		<field name="featured"
+			type="list"
+			label="JFEATURED"
+			description="##COM_COMPONENT##_FIELD_FEATURED_DESC"
+			default="0"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+<?php
+								break;
+							case 'published': ?>
 		<field
 			id="published"
 			name="published"
@@ -95,7 +105,7 @@ $datesize = 10;
 				value="-2">
 				JOption_Trashed</option>
 		</field>
-						  <?php
+						<?php
 								break;
 
 							case 'editor':
@@ -194,4 +204,9 @@ $datesize = 10;
 		</fieldset>
 	</fields>
 	<?php endif; ?>
+
+	<field name="rules" type="rules" label="JFIELD_RULES_LABEL"
+		translate_label="false" class="inputbox" filter="rules"
+		component="##com_component##" section="##name##" validate="rules"
+	/>
 </form>

@@ -35,6 +35,7 @@
 			<alt>category_id</alt>
 			<group>details</group>
 			<formfield>null</formfield>
+			<list>true</list>
 			<ordering>3</ordering>
 		</field>
 		<field>
@@ -51,6 +52,7 @@
 			<label>Category</label>
 			<group>details</group>
 			<formfield>null</formfield>
+			<list>true</list>
 			<ordering>4</ordering>
 		</field>
 		<field>

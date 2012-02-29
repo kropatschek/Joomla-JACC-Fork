@@ -33,6 +33,7 @@ class ##Component##View##Name## extends JView
 		$this->form  = $this->get('Form');
 		$this->item  = $this->get('Item');
 		$this->state = $this->get('State');
+		$this->canDo = ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
@@ -56,18 +57,18 @@ class ##Component##View##Name## extends JView
 		$user		= JFactory::getUser();
 		$userId		= $user->get('id');
 		$isNew		= ($this->item->id == 0);
-		##ifdefFieldcheck_outStart##
+		##ifdefFieldchecked_outStart##
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
-		##ifdefFieldcheck_outEnd##
+		##ifdefFieldchecked_outEnd##
 		##ifdefFieldcatidStart##
 		// Since we don't track these assets at the item level, use the category id.
-		$canDo		= ##Component##Helper::getActions($this->item->catid,0);
-		//$this->canDo	= ##Component##Helper::getActions($this->state->get('filter.category_id'));
+		$canDo		= ##Component##Helper::getActions('##name##', $this->item->catid,0);
+		//$this->canDo	= ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
 		##ifdefFieldcatidEnd##
 		##ifdefFieldcategory_idStart##
 		// Since we don't track these assets at the item level, use the category id.
-		$canDo		= ##Component##Helper::getActions($this->item->category_id,0);
-		//$this->canDo	= ##Component##Helper::getActions($this->state->get('filter.category_id'));
+		$canDo		= ##Component##Helper::getActions('##name##', $this->item->category_id,0);
+		//$this->canDo	= ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
 		##ifdefFieldcategory_idEnd##
 
 		JToolBarHelper::title($isNew ? JText::_('COM_##COMPONENT##_MANAGER_##NAME##_NEW') : JText::_('COM_##COMPONENT##_MANAGER_##NAME##_EDIT'), 'generic.png');
@@ -83,10 +84,10 @@ class ##Component##View##Name## extends JView
 		}
 		else
 		{
-			##ifdefFieldcheck_outStart##
+			##ifdefFieldchecked_outStart##
 			// Can't save the record if it's checked out.
 			if (!$checkedOut) {
-			##ifdefFieldcheck_outEnd##
+			##ifdefFieldchecked_outEnd##
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
 				##ifdefFieldcatidStart##
 				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd##)) {
@@ -117,9 +118,9 @@ class ##Component##View##Name## extends JView
 				##ifdefFieldcategory_idStart##
 				}
 				##ifdefFieldcategory_idEnd##
-			##ifdefFieldcheck_outStart##
+			##ifdefFieldchecked_outStart##
 			}
-			##ifdefFieldcheck_outEnd##
+			##ifdefFieldchecked_outEnd##
 
 			##ifdefFieldcatidStart##
 			// If checked out, we can still save

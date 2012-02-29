@@ -107,15 +107,20 @@ $saveOrder	= $listOrder == 'a.ordering';
 		</thead>
 		<tfoot>
 			<tr>
-				<td colspan="##numberOfFields##">
+				<?php //TODO better solution colspan="0" schould be all colums but not all browsers support that ?>
+				<td colspan="0">
 					##codestart## echo $this->pagination->getListFooter(); ##codeend##
 				</td>
 			</tr>
 		</tfoot>
 		<tbody>
-		##codestart## foreach ($this->items as $i => $item) :
+		##codestart##
+		##ifdefFieldorderingStart##
+		$n = count($this->items);
+		##ifdefFieldorderingEnd##
+		foreach ($this->items as $i => $item) :
 			##ifdefFieldorderingStart##
-			$item->max_ordering = 0; //??
+			$item->max_ordering = 0; //?? I don#t get it what is the sense of it
 			$ordering	= ($listOrder == 'a.ordering');
 			##ifdefFieldorderingEnd##
 			##ifdefFieldchecked_out_timeStart##
@@ -124,17 +129,14 @@ $saveOrder	= $listOrder == 'a.ordering';
 			##ifdefFieldchecked_out_timeEnd##
 			##ifdefFieldchecked_outEnd##
 			##ifdefFieldcatidStart##
-			$canCreate	= $user->authorise('core.create',		'##com_component##.category.'.$item->catid);
-			$canEdit	= $user->authorise('core.edit',			'##com_component##.category.'.$item->id);
-			$canEditOwn	= $user->authorise('core.edit.own',		'##com_component##.category.'.$item->id)##ifdefFieldcreated_byStart## && $item->created_by == $userId##ifdefFieldcreated_byEnd##;
-			$canChange	= $user->authorise('core.edit.state',	'##com_component##.category.'.$item->id)##ifdefFieldchecked_out_timeStart####ifdefFieldchecked_outStart## && $canCheckin##ifdefFieldchecked_out_timeEnd####ifdefFieldchecked_outEnd##;
+			$canCreate	= $user->authorise('core.create',		'##com_component##.##name##s.category.'.$item->catid);
 			##ifdefFieldcatidEnd##
 			##ifdefFieldcategory_idStart##
-			$canCreate	= $user->authorise('core.create',		'##com_component##.category.'.$item->catid);
-			$canEdit	= $user->authorise('core.edit',			'##com_component##.category.'.$item->id);
-			$canEditOwn	= $user->authorise('core.edit.own',		'##com_component##.category.'.$item->id)##ifdefFieldcreated_byStart## && $item->created_by == $userId##ifdefFieldcreated_byEnd##;
-			$canChange	= $user->authorise('core.edit.state',	'##com_component##.category.'.$item->id)##ifdefFieldchecked_out_timeStart####ifdefFieldchecked_outStart## && $canCheckin##ifdefFieldchecked_out_timeEnd####ifdefFieldchecked_outEnd##;
+			$canCreate	= $user->authorise('core.create',		'##com_component##.##name##s.category.'.$item->category_id);
 			##ifdefFieldcategory_idEnd##
+			$canEdit	= $user->authorise('core.edit',			'##com_component##.##name##.'.$item->id);
+			$canEditOwn	= $user->authorise('core.edit.own',		'##com_component##.##name##.'.$item->id)##ifdefFieldcreated_byStart## && $item->created_by == $userId##ifdefFieldcreated_byEnd####ifdefFieldcreated_user_idStart## && $item->created_by == $userId##ifdefFieldcreated_user_idEnd##;
+			$canChange	= $user->authorise('core.edit.state',	'##com_component##.##name##.'.$item->id)##ifdefFieldchecked_out_timeStart####ifdefFieldchecked_outStart## && $canCheckin##ifdefFieldchecked_out_timeEnd####ifdefFieldchecked_outEnd##;
 			##codeend##
 			<tr class="row##codestart## echo $i % 2; ##codeend##">
 				<td class="center">

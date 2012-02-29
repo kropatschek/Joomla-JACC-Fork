@@ -103,7 +103,7 @@ class ##Component##Model##Name##s extends JModelList
 		$this->setState('params', $params);
 
 		// List state information.
-		parent::populateState('a.<?php echo $this->hident ?>', 'asc');
+		parent::populateState('a.##title##', 'asc');
 	}
 
 	/**
@@ -302,7 +302,7 @@ class ##Component##Model##Name##s extends JModelList
 		##ifdefFieldcreated_byEnd##
 
 		##ifdefField<?php echo $this->hident ?>Start##
-		// Filter by search in <?php echo $this->hident ?>.
+		// Filter by search in ##title##.
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
@@ -317,10 +317,17 @@ class ##Component##Model##Name##s extends JModelList
 				$query->where('(ua.name LIKE '.$search.' OR ua.username LIKE '.$search.')');
 			}
 			##ifdefFieldcreated_byEnd##
+			##ifdefFieldcreated_user_idStart##
+			elseif (stripos($search, 'author:') === 0)
+			{
+				$search = $db->Quote('%'.$db->escape(substr($search, 7), true).'%');
+				$query->where('(ua.name LIKE '.$search.' OR ua.username LIKE '.$search.')');
+			}
+			##ifdefFieldcreated_user_idEnd##
 			else
 			{
 				$search = $db->Quote('%'.$db->escape($search, true).'%');
-				$query->where('(a.<?php echo $this->hident ?> LIKE '.$search.##ifdefFieldaliasStart##' OR a.alias LIKE '.$search.##ifdefFieldaliasEnd##')');
+				$query->where('(a.##title## LIKE '.$search.##ifdefFieldaliasStart##' OR a.alias LIKE '.$search.##ifdefFieldaliasEnd##')');
 			}
 		}
 
@@ -335,12 +342,12 @@ class ##Component##Model##Name##s extends JModelList
 		##ifdefFieldlanguageEnd##
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'a.<?php echo $this->hident ?>');
+		$orderCol	= $this->state->get('list.ordering', 'a.##title##');
 		$orderDirn	= $this->state->get('list.direction', 'asc');
 		// TODO
 		if ($orderCol == 'a.ordering' || $orderCol == 'category_title')
 		{
-			$orderColTmp = 0;
+			$orderColTmp = null;
 			##ifdefFieldcategory_idStart##
 			$orderColTmp[] = 'c.title '.$orderDirn;
 			##ifdefFieldcategory_idEnd##
@@ -350,6 +357,7 @@ class ##Component##Model##Name##s extends JModelList
 			##ifdefFieldorderingStart##
 			$orderColTmp[] = 'a.ordering';
 			##ifdefFieldorderingEnd##
+
 			$orderCol = implode(', ',$orderColTmp);
 		}
 		//sqlsrv change
@@ -363,7 +371,7 @@ class ##Component##Model##Name##s extends JModelList
 		##ifdefFieldaccessEnd##
 		$query->order($db->escape($orderCol.' '.$orderDirn));
 
-		// echo nl2br(str_replace('#__','jos_',$query));
+		//echo nl2br(str_replace('#__','jos_',$query));
 		return $query;
 	}
 

@@ -65,8 +65,8 @@ class ##Component##View##Name##s extends JView
 	 */
 	protected function addToolbar()
 	{
-		$canDo = ##Component##Helper::getActions();
-		//$canDo = ##Component##Helper::getActions($this->state->get('filter.category_id'));
+		$canDo = ##Component##Helper::getActions('##name##');
+		//$canDo = ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
 
 		$user = JFactory::getUser();
 

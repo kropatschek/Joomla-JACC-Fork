@@ -9,9 +9,9 @@
 					##ifdefFieldchecked_outEnd##
 					##codestart## if ($canEdit) : ##codeend##
 						<a href="##codestart## echo JRoute::_('index.php?option=##com_component##&task=##name##.edit&id='.(int) $item->id); ##codeend##">
-							##codestart## echo $this->escape($item-><?php echo $this->hident ?>); ##codeend##</a>
+							##codestart## echo $this->escape($item->##title##); ##codeend##</a>
 					##codestart## else : ##codeend##
-							##codestart## echo $this->escape($item-><?php echo $this->hident ?>); ##codeend##
+							##codestart## echo $this->escape($item->##title##); ##codeend##
 					##codestart## endif; ##codeend##
 					##ifdefFieldaliasStart##
 					<p class="smallsub">

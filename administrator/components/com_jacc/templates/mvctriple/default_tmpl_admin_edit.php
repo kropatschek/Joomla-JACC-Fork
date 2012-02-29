@@ -37,7 +37,7 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 
-<form action="##codestart## echo JRoute::_('index.php?option=##com_component##&layout=edit&id='.(int) $this->item->id);##codeend##" method="post" name="adminForm" id="##nama###-form" class="form-validate">
+<form action="##codestart## echo JRoute::_('index.php?option=##com_component##&layout=edit&id='.(int) $this->item->id);##codeend##" method="post" name="adminForm" id="##name##-form" class="form-validate">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend>##codestart## echo empty($this->item->id) ? JText::_('COM_##COMPONENT##_NEW_##NAME##') : JText::sprintf('COM_##COMPONENT##_EDIT_##NAME##', $this->item->id);##codeend##</legend>
@@ -91,6 +91,15 @@ JHtml::_('behavior.keepalive');
 					}
 				}
 				?>
+				##codestart## if ($this->canDo->get('core.admin')): ##codeend##
+				<li><span class="faux-label">##codestart## echo JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL'); ##codeend##</span>
+					<div class="button2-left"><div class="blank">
+						<button type="button" onclick="document.location.href='#access-rules';">
+							##codestart## echo JText::_('JGLOBAL_PERMISSIONS_ANCHOR'); ##codeend##
+						</button>
+					</div></div>
+				</li>
+				##codestart## endif; ##codeend##
 			</ul>
 			<?php
 			if (isset($this->formfield['desc']))
@@ -148,7 +157,26 @@ JHtml::_('behavior.keepalive');
 		##ifdefFieldmetadataStart##
 		##codestart## //echo $this->loadTemplate('metadata');##codeend##
 		##ifdefFieldmetadataEnd##
+
+
 		##codestart## echo JHtml::_('sliders.end');##codeend##
+	</div>
+
+	<div class="clr"></div>
+	##codestart## if ($this->canDo->get('core.admin')): ##codeend##
+		<div class="width-100 fltlft">
+			##codestart## echo JHtml::_('sliders.start', 'permissions-sliders-'.$this->item->id, array('useCookie'=>1)); ##codeend##
+
+				##codestart## echo JHtml::_('sliders.panel', JText::_('##COM_COMPONENT##_FIELDSET_RULES'), 'access-rules'); ##codeend##
+				<fieldset class="panelform">
+					##codestart## echo $this->form->getLabel('rules'); ##codeend##
+					##codestart## echo $this->form->getInput('rules'); ##codeend##
+				</fieldset>
+
+			##codestart## echo JHtml::_('sliders.end'); ##codeend##
+		</div>
+	##codestart## endif; ##codeend##
+	<div>
 		<input type="hidden" name="task" value="" />
 		##codestart## echo JHtml::_('form.token');##codeend##
 	</div>

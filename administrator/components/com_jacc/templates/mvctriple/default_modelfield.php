@@ -1,21 +1,29 @@
+<?php defined('_JEXEC') or die; ?>
 ##codestart##
+/**
+##ifdefVarpackageStart##
+ * @package    ##package## Administrator
+ * @subpackage ##com_component##
+##ifdefVarpackageEnd##
+##ifnotdefVarpackageStart##
+ * @package    ##com_component## Administrator
+##ifnotdefVarpackageEnd##
+ * @version    ##version##
+ * @copyright  Copyright (C) ##year##, ##author##. All rights reserved.
+ * @license    ##license##
+*/
 
-defined('JPATH_BASE') or die;
-
-//TODO: to delete
-//jimport('joomla.html.html');
+// No direct access to this file
+defined('_JEXEC') or die;
 
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
-//TODO: to delete
-//require_once (JPATH_ADMINISTRATOR.'/components/com_##component##/helpers/query.php' );
-
 /**
  * Form Field class.
  */
-class JFormField##Component####name## extends JFormFieldList
+class JFormField##Component####Name## extends JFormFieldList
 {
 	/**
 	 * The form field type.
@@ -23,7 +31,7 @@ class JFormField##Component####name## extends JFormFieldList
 	 * @var		string
 	 * @since	1.6
 	 */
-	public $type = '##Component####name##';
+	public $type = '##Component####Name##';
 
 	/**
 	 * Method to get the field options.
@@ -62,3 +70,4 @@ class JFormField##Component####name## extends JFormFieldList
 		return $options;
 	}
 }
+##codeend##

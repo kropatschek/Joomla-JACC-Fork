@@ -15,6 +15,9 @@
 
 defined('_JEXEC') or die;
 
+jimport('joomla.database.tableasset');
+jimport('joomla.database.table');
+
 /**
 * ##Component## ##Name##s table class
 *
@@ -238,14 +241,12 @@ class ##Component##Table##Name## extends JTable
 		##ifdefFieldurlsEnd##
 		*/
 
-		/*
 		// Bind the rules.
 		if (isset($array['rules']) && is_array($array['rules']))
 		{
 			$rules = new JAccessRules($array['rules']);
 			$this->setRules($rules);
 		}
-		*/
 
 		return parent::bind($array, $ignore);
 	}
@@ -259,42 +260,47 @@ class ##Component##Table##Name## extends JTable
 	 */
 	public function check()
 	{
-
-##ifdefFieldorderingStart##
-		if ($this->##primary## === 0) {
+		##ifdefFieldorderingStart##
+		if ($this->##primary## === 0)
+		{
 			//get next ordering
-##ifdefFieldcatidStart##
+			##ifdefFieldcatidStart##
 			$condition = ' catid = '.(int) $this->catid ##ifdefFieldpublishedStart## . ' AND published >= 0 ' ##ifdefFieldpublishedEnd##;
-##ifdefFieldcatidEnd##
-##ifdefFieldcategory_idStart##
+			##ifdefFieldcatidEnd##
+			##ifdefFieldcategory_idStart##
 			$condition = ' category_id = '.(int) $this->category_id ##ifdefFieldpublishedStart## . ' AND published >= 0 ' ##ifdefFieldpublishedEnd##;
-##ifdefFieldcategory_idEnd##
+			##ifdefFieldcategory_idEnd##
 			$this->ordering = $this->getNextOrder( ##ifdefFieldcatidStart## $condition ##ifdefFieldcatidEnd##);
-
 		}
-##ifdefFieldorderingEnd##
-##ifdefFieldcreatedStart##
-		if (!$this->created) {
+		##ifdefFieldorderingEnd##
+		##ifdefFieldcreatedStart##
+		if (!$this->created)
+		{
 			$date = JFactory::getDate();
 			$this->created = $date->toFormat("%Y-%m-%d %H:%M:%S");
 		}
-##ifdefFieldcreatedEnd##
-##ifdefFieldcreated_timeStart##
-		if (!$this->created_time) {
+		##ifdefFieldcreatedEnd##
+		##ifdefFieldcreated_timeStart##
+		if (!$this->created_time)
+		{
 			$date = JFactory::getDate();
 			$this->created_time = $date->toFormat("%Y-%m-%d %H:%M:%S");
 		}
-##ifdefFieldcreated_timeEnd##
+		##ifdefFieldcreated_timeEnd##
 		/** check for valid name */
 		/**
-		if (trim($this-><?php echo $this->hident ?>) == '') {
-			$this->setError(JText::_('Your ##Name## must contain a <?php echo $this->hident ?>.'));
+		##ifdefField<?php echo $this->hident ?>Start##
+		if (trim($this->##title##) == '')
+		{
+			$this->setError(JText::_('Your ##Name## must contain a ##title##.'));
 			return false;
 		}
+		##ifdefField<?php echo $this->hident ?>End##
 		**/
-##ifdefFieldaliasStart##
-		if(empty($this->alias)) {
-			$this->alias = $this-><?php echo $this->hident ?>;
+		##ifdefFieldaliasStart##
+		if (empty($this->alias))
+		{
+			$this->alias = $this->##title##;
 		}
 
 		$this->alias = JFilterOutput::stringURLSafe($this->alias);
@@ -305,15 +311,52 @@ class ##Component##Table##Name## extends JTable
 
 		$xid = intval($this->_db->loadResult());
 
-		if ($xid && $xid != intval($this->{$this->getKeyName()})) {
+		if ($xid && $xid != intval($this->{$this->getKeyName()}))
+		{
 			$this->setError(JText::_('Can\'t save to ##Name##. Name already exists'));
 			return false;
 		}
 
-##ifdefFieldaliasEnd##
+		##ifdefFieldaliasEnd##
 		return true;
+	}
+
+	/**
+	 * Method to compute the default name of the asset.
+	 * The default name is in the form `table_name.id`
+	 * where id is the value of the primary key of the table.
+	 *
+	 * @return	string
+	 * @since	2.5
+	 */
+	protected function _getAssetName()
+	{
+		$k = $this->_tbl_key;
+		return '##com_component##.##name##.'.(int) $this->$k;
+	}
+
+	/**
+	 * Method to return the title to use for the asset table.
+	 *
+	 * @return	string
+	 * @since	2.5
+	 */
+	protected function _getAssetTitle()
+	{
+		return $this->##title##;
+	}
+
+	/**
+	 * Get the parent asset id for the record
+	 *
+	 * @return	int
+	 * @since	2.5
+	 */
+	protected function _getAssetParentId($table = null, $id = null)
+	{
+		$asset = JTable::getInstance('Asset');
+		$asset->loadByName('##com_component##');
+		return $asset->id;
 	}
 }
 ##codeend##
-
-

@@ -297,6 +297,7 @@ class JaccController extends JController
 		$addsubmenu = "";
 		$helpersubmenu = "";
 		$menuhelper = "";
+		$accesshelper = "";
 		$defaultview = "";
 		$extensions = "";
 		$routerswitch = "";
@@ -313,6 +314,8 @@ class JaccController extends JController
 
 		$menu_tmpl = file_get_contents($elements_dir .'menu.php');
 		$categoriesmenu_tmpl = file_get_contents($elements_dir .'categoriesmenu.php');
+		$accessxml_tmpl = file_get_contents($elements_dir .'accessxml_section.php');
+		$categoryaccessxml_tmpl = file_get_contents($elements_dir .'accessxml_category.php');
 
 		$router_tmpl = file_get_contents($elements_dir .'router.php');
 
@@ -394,10 +397,13 @@ class JaccController extends JController
 
 				$options = array('firstname' => $name);
 				$menuhelper .= JaccHelper::_replace($menu_tmpl, $item, $options);
+				$accesshelper .= JaccHelper::_replace($accessxml_tmpl, $item, $options);
 				$language .= $Ucom_component."_SUBMENU_".strtoupper($name)."S=\"".ucfirst($name)."s\"\n";
 				if ($model->TableHas($table, 'category') )
 				{
 					$menuhelper .= JaccHelper::_replace($categoriesmenu_tmpl, $item, $options);
+					$accesshelper .= JaccHelper::_replace($categoryaccessxml_tmpl, $item, $options);
+
 					$language .= $Ucom_component."_SUBMENU_".strtoupper($name)."_CATEGORIES=\"".ucfirst($name)." Categories\"\n";
 					// Name for the com_category component
 					$language .= $Ucom_component."_".strtoupper($name)."S=\"".ucfirst($name)."s\"\n";
@@ -443,6 +449,7 @@ class JaccController extends JController
 					'tmpl_admin_edit'=>array('folders'=>array('admin'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'edit'),
 					'tmpl_admin_default'=>array('folders'=>array('admin'.DS.'views'.DS.$name.'s'.DS.'tmpl'),'ext'=>'php','name'=>'default'),
 					'defaultxml'=>array('folders'=>array('site'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'xml','name'=>'default'),
+					//'accessxml'=>array('folders'=>array('admin'),'ext'=>'xml','name'=>'access')
 					//'tmpl_admin_'=>array('folders'=>array('admin'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'form')
 				);
 				//If there is no category_id present, we use a simple list view
@@ -469,8 +476,6 @@ class JaccController extends JController
 						file_put_contents($model->getTempPath(true).$folder.DS.$options['name'].'.'.$options['ext'], $data);
 					}
 				}
-
-
 			}
 		}
 		if($hasnoImages) {
@@ -514,6 +519,7 @@ class JaccController extends JController
 		$submenu .= $addsubmenu;
 
 		$options = array('menuhelper' => $menuhelper.$helpersubmenu,
+						'accesshelper' => $accesshelper,
 						'routerswitch' => $routerswitch,
 						'syslanguage' => $syslanguage,
 						'language' => $language,

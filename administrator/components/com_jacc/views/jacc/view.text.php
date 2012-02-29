@@ -69,7 +69,7 @@ class  JaccViewJacc   extends JView
 				case 'modelplural':
 					$parsedFields = $tableFields->get('list');
 					break;
-				case 'form' :
+				case 'tmpl_admin_edit' :
 					$this->formfield = $tableFields->get('groups');
 					break;
 				case 'xmlmodel' :
@@ -101,40 +101,32 @@ class  JaccViewJacc   extends JView
 					$freplace .= $this->replace_field($field, 'tmpl_site_row');
 					break;
 				case 'tmpl_admin_default' :
-
 					// Todo JFile::exists not perfect
-					if (JFile::exists(JPATH_COMPONENT_ADMINISTRATOR.'/templates/mvctriple/default_tmpl_admin_default_head_'.$field->get('key').'.php'))
+					if ($field->get('key') == $this->hident)
+					{
+						$freplace .= $this->replace_field($field, 'tmpl_admin_default_head_hident');
+					}
+					elseif (JFile::exists(JPATH_COMPONENT_ADMINISTRATOR.'/templates/mvctriple/default_tmpl_admin_default_head_'.$field->get('key').'.php'))
 					{
 						$freplace .= $this->replace_field($field, 'tmpl_admin_default_head_'.$field->get('key'));
-
 					}
 					else
 					{
 						$freplace .= $this->replace_field($field, 'tmpl_admin_default_head');
 					}
 
-					if (JFile::exists(JPATH_COMPONENT_ADMINISTRATOR.'/templates/mvctriple/default_tmpl_admin_default_item_'.$field->get('key').'.php'))
+					if ($field->get('key') == $this->hident)
+					{
+						$flistreplace .= $this->replace_field($field, 'tmpl_admin_default_item_hident');
+					}
+					elseif (JFile::exists(JPATH_COMPONENT_ADMINISTRATOR.'/templates/mvctriple/default_tmpl_admin_default_item_'.$field->get('key').'.php'))
 					{
 						$flistreplace .= $this->replace_field($field, 'tmpl_admin_default_item_'.$field->get('key'));
-
 					}
 					else
 					{
 						$flistreplace .= $this->replace_field($field, 'tmpl_admin_default_item');
 					}
-					/*
-					$freplace .= $this->replace_field($field, 'tmpl_admin_default_head');
-
-					if ($field->get('key') == 'ordering') {
-
-					/*	$flistreplace.= $this->loadTemplate('templordering');
-					} elseif ($field->get('key') == $this->hident) {
-						$flistreplace .= $this->replace_field($field, 'templlist_hident');
-					} else {
-
-						$flistreplace .= $this->replace_field($field, 'templlist');
-					}
-					*/
 					break;
 				default:$freplace .='';
 			}
@@ -161,7 +153,15 @@ class  JaccViewJacc   extends JView
 		$file = str_replace("##com_component##", $com_component, $file);
 		$file = str_replace("##COM_COMPONENT##", strtoupper($com_component), $file);
 
-		$file = str_replace("##title##", $this->hident, $file);
+		if (empty($this->hident))
+		{
+			$file = str_replace("##title##", $this->primary, $file);
+		}
+		else
+		{
+			$file = str_replace("##title##", $this->hident, $file);
+		}
+
 		$file = str_replace("##name##", strtolower($name), $file);
 		$file = str_replace("##Name##", ucfirst($name), $file);
 		$file = str_replace("##NAME##", strtoupper($name), $file);
