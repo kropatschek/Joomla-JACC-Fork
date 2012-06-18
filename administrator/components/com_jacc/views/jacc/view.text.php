@@ -72,6 +72,7 @@ class  JaccViewJacc   extends JView
 				case 'tmpl_admin_edit' :
 					$this->formfield = $tableFields->get('groups');
 					break;
+				case 'language' :
 				case 'xmlmodel' :
 					$this->formfield = $tableFields->get('all');
 					break;
@@ -137,6 +138,17 @@ class  JaccViewJacc   extends JView
 
 		//last part of table name as (lowercase) name
 		$name = substr(strrchr($mvcTable, '_'), 1);
+		$name = InflectorHelper::singularize($name);
+		$namePlural = InflectorHelper::pluralize($name);
+
+		if ($name == $namePlural)
+		{
+			$extra = 's';
+		}
+		else
+		{
+			$extra = '';
+		}
 
 		//Component Name as first part of camel case class names
 		$ComponentName = ucfirst(strtolower(str_replace('com_', '', $com_component)));
@@ -165,6 +177,12 @@ class  JaccViewJacc   extends JView
 		$file = str_replace("##name##", strtolower($name), $file);
 		$file = str_replace("##Name##", ucfirst($name), $file);
 		$file = str_replace("##NAME##", strtoupper($name), $file);
+		$file = str_replace("##nameplural##", strtolower($namePlural), $file);
+		$file = str_replace("##Nameplural##", ucfirst($namePlural), $file);
+		$file = str_replace("##NAMEPLURAL##", strtoupper($namePlural), $file);
+		$file = str_replace("##extra##", strtolower($extra), $file);
+		$file = str_replace("##Extra##", ucfirst($extra), $file);
+		$file = str_replace("##EXTRA##", strtoupper($extra), $file);
 
 		//$file = str_replace("##fields##", $freplace, $file);
 		//$file = str_replace("##fieldslist##", $flistreplace, $file);
@@ -190,17 +208,17 @@ class  JaccViewJacc   extends JView
 		$pattern = '/##ifnotdefField'.$field.'Start##.*##ifnotdefField'.$field.'End##/isU';
 		$allFields = $tableFields->get('all');
 		foreach ($allFields  as $field) {
-			$pattern = '/(?:\r\n|\r|\n|^)[ \t]*##ifnotdefField'.$field->get('key').'Start##.*##ifnotdefField'.$field->get('key').'End##(?:[ \t]|[^\n\r])*/imsU';
+			$pattern = '/(?:\r\n|\r|\n|^)[ \t]*##ifnotdefField'.$field->get('key').'Start##.*##ifnotdefField'.$field->get('key').'End##(?:[ \t]|[^\n\r])*/isU';
 			$file	= preg_replace($pattern, '', $file);
 			$pattern = '/##ifnotdefField'.$field->get('key').'Start##.*##ifnotdefField'.$field->get('key').'End##/isU';
 			$file	= preg_replace($pattern, '', $file);
 		}
 
 		//$pattern = '/\s+##ifdefField.*[Start|End]##+?/isU';
-		$pattern = '/((?:\r\n|\r|\n|^))[ \t]*##if(def|notdef)Field\w+(Start|End)##(?:[ \t]|[^\n\r#])*(?:\r\n|\r|\n|$)/isU';
+		$pattern = '/((?:\r\n|\r|\n|^))[ \t]*##if(def|notdef)Field\w*(Start|End)##(?:[ \t]|[^\n\r#])*(?:\r\n|\r|\n|$)/isU';
 		$file	= preg_replace($pattern, '$1', $file);
 
-		$pattern = '/##if(def|notdef)Field\w+[Start|End]##/isU';
+		$pattern = '/##if(def|notdef)Field\w*[Start|End]##/isU';
 		$file	= preg_replace($pattern, '', $file);
 
 		//$file = str_replace("(?:\r\n|\r|\n)", "\n", $file);

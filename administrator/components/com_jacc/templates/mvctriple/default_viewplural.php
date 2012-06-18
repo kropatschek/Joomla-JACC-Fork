@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
-class ##Component##View##Name##s extends JView
+class ##Component##View##Nameplural####extra## extends JView
 {
 	protected $items;
 	protected $pagination;
@@ -40,6 +40,30 @@ class ##Component##View##Name##s extends JView
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
+
+		##ifdefFieldparent_idStart##
+		// Preprocess the list of items to find ordering divisions.
+		foreach ($this->items as &$item) {
+			$this->ordering[$item->parent_id][] = $item->id;
+		}
+
+		// Levels filter.
+		$options	= array();
+		$options[]	= JHtml::_('select.option', '1', JText::_('J1'));
+		$options[]	= JHtml::_('select.option', '2', JText::_('J2'));
+		$options[]	= JHtml::_('select.option', '3', JText::_('J3'));
+		$options[]	= JHtml::_('select.option', '4', JText::_('J4'));
+		$options[]	= JHtml::_('select.option', '5', JText::_('J5'));
+		$options[]	= JHtml::_('select.option', '6', JText::_('J6'));
+		$options[]	= JHtml::_('select.option', '7', JText::_('J7'));
+		$options[]	= JHtml::_('select.option', '8', JText::_('J8'));
+		$options[]	= JHtml::_('select.option', '9', JText::_('J9'));
+		$options[]	= JHtml::_('select.option', '10', JText::_('J10'));
+
+		$this->assign('f_levels', $options);
+		##ifdefFieldparent_idEnd##
+
+
 
 		// Include the component HTML helpers.
 		JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
@@ -65,53 +89,92 @@ class ##Component##View##Name##s extends JView
 	 */
 	protected function addToolbar()
 	{
-		$canDo = ##Component##Helper::getActions('##name##');
-		//$canDo = ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
-
+		// Initialise variables.
+		##ifdefFieldcatidStart##
+		$categoryId	= $this->state->get('filter.category_id');
+		##ifdefFieldcatidEnd##
+		##ifdefFieldcategory_idStart##
+		$categoryId	= $this->state->get('filter.category_id');
+		##ifdefFieldcategory_idEnd##
+		##ifdefFieldextensionStart##
+		//$component	= $this->state->get('filter.component');
+		//$section	= $this->state->get('filter.section');
+		##ifdefFieldextensionEnd##
+		$canDo = ##Component##Helper::getActions('##name##'##ifdefFieldcatidStart##, $categoryId##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##, $categoryId##ifdefFieldcategory_idEnd##);
 		$user = JFactory::getUser();
 
-		JToolBarHelper::title(JText::_('COM_##COMPONENT##_MANAGER_##NAME##S'), 'generic.png');
+		##ifdefFieldextensionStart##
+		// Avoid nonsense situation.
+		//if ($component == 'com_categories') {
+		//	return;
+		//}
+
+		##ifdefFieldextensionEnd##
+		JToolBarHelper::title(JText::_('COM_##COMPONENT##_MANAGER_##NAMEPLURAL####EXTRA##'), 'generic.png');
 
 		if ($canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('##name##.add');
 		}
 
-		if ($canDo->get('core.edit'))
+		if ($canDo->get('core.edit')##ifdefFieldparent_idStart## || $canDo->get('core.edit.own')##ifdefFieldparent_idEnd##)
 		{
 			JToolBarHelper::editList('##name##.edit');
+			JToolBarHelper::divider();
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolBarHelper::divider();
 			##ifdefFieldpublishedStart##
-			JToolBarHelper::publish('##name##s.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolBarHelper::unpublish('##name##s.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			JToolBarHelper::publish('##nameplural####extra##.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolBarHelper::unpublish('##nameplural####extra##.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 			##ifdefFieldpublishedEnd##
 			##ifdefFieldfeaturedStart##
-			JToolBarHelper::custom('##name##s.featured', 'featured.png', 'featured_f2.png', 'JFEATURED', true);
+			JToolBarHelper::custom('##nameplural####extra##.featured', 'featured.png', 'featured_f2.png', 'JFEATURED', true);
 			##ifdefFieldfeaturedEnd##
 			JToolBarHelper::divider();
-			JToolBarHelper::archiveList('##name##s.archive');
-
-			JToolBarHelper::checkin('##name##s.checkin');
+			JToolBarHelper::archiveList('##nameplural####extra##.archive');
+			##ifnotdefFieldparent_idStart##
+			JToolBarHelper::checkin('##nameplural####extra##.checkin');
+			##ifnotdefFieldparent_idEnd##
 		}
+
+		##ifdefFieldparent_idStart##
+		if (JFactory::getUser()->authorise('core.admin')) {
+			JToolBarHelper::checkin('##nameplural####extra##.checkin');
+		}
+
+		##ifdefFieldparent_idEnd##
 		##ifdefFieldstateStart##
 		if ($this->state->get('filter.state') == -2 && $canDo->get('core.delete'))
 		{
-			JToolBarHelper::deleteList('', '##name##s.delete', 'JTOOLBAR_EMPTY_TRASH');
+			JToolBarHelper::deleteList('', '##nameplural####extra##.delete', 'JTOOLBAR_EMPTY_TRASH');
 			JToolBarHelper::divider();
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolBarHelper::trash('##name##s.trash');
+			JToolBarHelper::trash('##nameplural####extra##.trash');
 			JToolBarHelper::divider();
 		}
+
 		##ifdefFieldstateEnd##
+		##ifdefFieldpublishedStart##
+		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
+		{
+			JToolBarHelper::deleteList('', '##nameplural####extra##.delete', 'JTOOLBAR_EMPTY_TRASH');
+		}
+		elseif ($canDo->get('core.edit.state'))
+		{
+			JToolBarHelper::trash('##nameplural####extra##.trash');
+			JToolBarHelper::divider();
+		}
+		##ifdefFieldpublishedEnd##
 
 		if ($canDo->get('core.admin'))
 		{
+			##ifdefFieldparent_idStart##
+			JToolBarHelper::custom('##nameplural####extra##.rebuild', 'refresh.png', 'refresh_f2.png', 'JTOOLBAR_REBUILD', false);
+			##ifdefFieldparent_idEnd##
 			JToolBarHelper::preferences('##com_component##');
 			JToolBarHelper::divider();
 		}

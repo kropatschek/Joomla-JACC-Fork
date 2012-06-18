@@ -93,6 +93,10 @@ Joomla.submitbutton = function(task)
 
 					<?php echo $this->form->getInput('use');  ?>
 
+					<?php echo $this->form->getLabel('firsttable'); ?>
+
+					<?php echo $this->form->getInput('firsttable');  ?>
+
 					<?php echo $this->form->getLabel('tables'); ?>
 
 					<?php echo $this->form->getInput('tables');  ?>
@@ -105,7 +109,7 @@ Joomla.submitbutton = function(task)
 
 					<?php echo $this->form->getInput('published');  ?>
 
-		  </fieldset>
+		</fieldset>
 		</div>
 		<div class="col width-40 fltrt">
 		<div style="margin-top:10px;"></div>

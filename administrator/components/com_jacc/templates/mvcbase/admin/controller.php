@@ -35,7 +35,7 @@ class ##Component##Controller extends JController
 	 * @var		string	The default view.
 	 * @since	1.6
 	 */
-	protected $default_view = '##defaultview##s';
+	protected $default_view = '##defaultview##';
 
 	/**
 	 * Method to display a view.
@@ -52,18 +52,18 @@ class ##Component##Controller extends JController
 		require_once JPATH_COMPONENT.'/helpers/##component##.php';
 
 		// Load the submenu.
-		##Component##Helper::addSubmenu(JRequest::getCmd('view', '##defaultview##s'));
+		##Component##Helper::addSubmenu(JRequest::getCmd('view', '##defaultview##'));
 
-		$view		= JRequest::getCmd('view', '##defaultview##s');
+		$view		= JRequest::getCmd('view', '##defaultview##');
 		$layout 	= JRequest::getCmd('layout', 'default');
 		$id			= JRequest::getInt('id');
 
 		// Check for edit form.
-		if ($view == '##defaultview##' && $layout == 'edit' && !$this->checkEditId('##com_component##.edit.##defaultview##', $id)) {
+		if ($view == '##defaultviewsingular##' && $layout == 'edit' && !$this->checkEditId('##com_component##.edit.##defaultviewsingular##', $id)) {
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=##com_component##&view=##defaultview##s', false));
+			$this->setRedirect(JRoute::_('index.php?option=##com_component##&view=##defaultview##', false));
 
 			return false;
 		}

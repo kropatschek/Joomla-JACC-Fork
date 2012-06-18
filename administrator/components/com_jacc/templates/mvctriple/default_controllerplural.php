@@ -19,7 +19,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * ##Name##s controller class.
+ * ##Nameplural####extra## controller class.
  *
 ##ifdefVarpackageStart##
  * @package    ##package## Administrator
@@ -29,7 +29,7 @@ jimport('joomla.application.component.controlleradmin');
  * @package    ##com_component## Administrator
 ##ifnotdefVarpackageEnd##
  */
-class ##Component##Controller##Name##s extends JControllerAdmin
+class ##Component##Controller##Nameplural####extra## extends JControllerAdmin
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -37,7 +37,7 @@ class ##Component##Controller##Name##s extends JControllerAdmin
 	 * @var    string
 	 * @since  2.5
 	 */
-	protected $text_prefix = '##COM_COMPONENT##_##NAME##S';
+	protected $text_prefix = '##COM_COMPONENT##_##NAMEPLURAL####EXTRA##';
 
 	/**
 	 * Constructor.
@@ -70,10 +70,43 @@ class ##Component##Controller##Name##s extends JControllerAdmin
 	{
 		return parent::getModel($name, $prefix, $config);
 	}
+	##ifdefFieldparent_idStart##
 
-	##ifdefFieldfeaturedStart##
 	/**
-	 * Method to toggle the featured setting of a list of ##name##s.
+	 * Rebuild the nested set tree.
+	 *
+	 * @return	bool	False on failure or error, true on success.
+	 * @since	1.6
+	 */
+	public function rebuild()
+	{
+		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		##ifdefFieldextensionStart##
+		//$extension = JRequest::getCmd('extension');
+		//$this->setRedirect(JRoute::_('index.php?option=com_categories&view=categories&extension='.$extension, false));
+		##ifdefFieldextensionEnd##
+
+		$this->setRedirect(JRoute::_('index.php?option=##com_component##&view=##nameplural####extra##', false));
+
+		// Initialise variables.
+		$model = $this->getModel();
+
+		if ($model->rebuild()) {
+			// Rebuild succeeded.
+			$this->setMessage(JText::_('##COM_COMPONENT##_REBUILD_SUCCESS'));
+			return true;
+		} else {
+			// Rebuild failed.
+			$this->setMessage(JText::_('##COM_COMPONENT##_REBUILD_FAILURE'));
+			return false;
+		}
+	}
+	##ifdefFieldparent_idEnd##
+	##ifdefFieldfeaturedStart##
+
+	/**
+	 * Method to toggle the featured setting of a list of ##nameplural####extra##.
 	 *
 	 * @return	void
 	 * @since	1.6
@@ -98,14 +131,13 @@ class ##Component##Controller##Name##s extends JControllerAdmin
 			$item = $model->getItem($id);
 
 			##ifdefFieldcatidStart##
-			if (!$user->authorise('core.edit.state', '##com_component##.category.'.(int) $item->catid)) {
 				// Prune items that you can't change.
 				unset($ids[$i]);
 				JError::raiseNotice(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 			}
 			##ifdefFieldcatidEnd##
 			##ifdefFieldcategory_idStart##
-			if (!$user->authorise('core.edit.state', '##com_component##.category.'.(int) $item->category_id)) {
+			if (!$user->authorise('core.edit.state', '##com_component##.##nameplural####extra##.category.'.(int) $item->category_id)) {
 				// Prune items that you can't change.
 				unset($ids[$i]);
 				JError::raiseNotice(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
@@ -122,7 +154,7 @@ class ##Component##Controller##Name##s extends JControllerAdmin
 			}
 		}
 
-		$this->setRedirect('index.php?option=##com_component##&view=##name##s');
+		$this->setRedirect('index.php?option=##com_component##&view=##nameplural####extra##');
 	}
 	##ifdefFieldfeaturedEnd##
 }

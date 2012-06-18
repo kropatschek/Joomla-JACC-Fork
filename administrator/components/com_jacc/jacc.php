@@ -22,8 +22,11 @@ JHTML::addIncludePath(JPATH_COMPONENT.DS.'helpers');
 
 //include Helper
 require_once(JPATH_COMPONENT.DS.'helpers'.DS.'jacc.php' );
+require_once(JPATH_COMPONENT.DS.'helpers'.DS.'inflector.php' );
 
-//Use the JForms, even in Joomla 1.5 
+//JHTML::addIncludePath(JPATH_COMPONENT.DS.'helpers');
+
+//Use the JForms, even in Joomla 1.5
 $jv = new JVersion();
 $GLOBALS['alt_libdir'] = ($jv->RELEASE < 1.6) ? JPATH_COMPONENT_ADMINISTRATOR : null;
 
@@ -32,7 +35,7 @@ $controller = JRequest::getWord('view', 'jacc');
 
 //add submenu for 1.6
 if ($jv->RELEASE > 1.5) {
-	JaccHelper::addSubmenu($controller);	
+	JaccHelper::addSubmenu($controller);
 }
 
 
@@ -40,15 +43,15 @@ if ($jv->RELEASE > 1.5) {
 $ControllerConfig = array();
 
 // Require specific controller if requested
-if ($controller) {   
-   $path = JPATH_COMPONENT.DS.'controllers'.DS.$controller.'.php';
-   
-   if (file_exists($path)) {
-       require_once $path;
-   } else {
-       $ControllerConfig = array('viewname'=>strtolower($controller), 'mainmodel'=>strtolower($controller), 'itemname'=>ucfirst(strtolower($controller))); 
-	   $controller = '';	   
-   }
+if ($controller) {
+$path = JPATH_COMPONENT.DS.'controllers'.DS.$controller.'.php';
+
+if (file_exists($path)) {
+	require_once $path;
+} else {
+	$ControllerConfig = array('viewname'=>strtolower($controller), 'mainmodel'=>strtolower($controller), 'itemname'=>ucfirst(strtolower($controller)));
+	$controller = '';
+}
 }
 
 // Create the controller

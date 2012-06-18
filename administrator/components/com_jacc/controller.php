@@ -271,14 +271,14 @@ class JaccController extends JController
 		//categories included?
 		$uses_categories =  $item->params->get('uses_categories');
 
-		if (!$uses_categories) {
+		if (!$uses_categories)
+		{
 			$model->addExcludes(array('.svn', 'CVS','category','categories','category.php','categories.php','tablenested.php'));
-
 		}
 
 		//Create temp folder
-		if (JFolder::exists($model->getTempPath())) {
-
+		if (JFolder::exists($model->getTempPath()))
+		{
 			JFolder::delete($model->getTempPath());
 		}
 
@@ -316,11 +316,24 @@ class JaccController extends JController
 		$categoriesmenu_tmpl = file_get_contents($elements_dir .'categoriesmenu.php');
 		$accessxml_tmpl = file_get_contents($elements_dir .'accessxml_section.php');
 		$categoryaccessxml_tmpl = file_get_contents($elements_dir .'accessxml_category.php');
+		$parentaccessxml_tmpl = file_get_contents($elements_dir .'accessxml_parent.php');
 
 		$router_tmpl = file_get_contents($elements_dir .'router.php');
 
 		if (count($item->tables)) {
-			$firstName = substr(strrchr($item->tables[0], '_'), 1);
+			$firstName = substr(strrchr($item->firsttable, '_'), 1);
+			$firstName = InflectorHelper::singularize($firstName);
+			$firstNamePlural = InflectorHelper::pluralize($firstName);
+
+			if ($firstName == $firstNamePlural)
+			{
+				$firstExtra = 's';
+			}
+			else
+			{
+				$firstExtra = '';
+			}
+
 
 			//TODO: to delete
 			if ($uses_categories) {
@@ -364,6 +377,18 @@ class JaccController extends JController
 
 				//last part of table name as class name
 				$name = substr(strrchr($table, '_'), 1);
+				$name = InflectorHelper::singularize($name);
+				$namePlural = InflectorHelper::pluralize($name);
+
+				if ($name == $namePlural)
+				{
+					$extra = 's';
+				}
+				else
+				{
+					$extra = '';
+				}
+
 
 				//the table name used as last part of camel case class names
 				$model->setMvcTable($table);
@@ -379,34 +404,50 @@ class JaccController extends JController
 				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$name);
 				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$name.DS.'tmpl');
 				// TODO: add plural function instead
-				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$name.'s');
-				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$name.'s'.DS.'tmpl');
+				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$namePlural.$extra);
+				JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl');
 				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$name);
 				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$name.DS.'tmpl');
 				// TODO: add plural function instead
-				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$name.'s');
-				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$name.'s'.DS.'tmpl');
+				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$namePlural.$extra);
+				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl');
 				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'sql');
 
 
 				//First table as main triple
 				if (!$mainlink) {
-					$mainlink = 'option='.$com_component.'&amp;view='.$name;
-					$defaultview = $name;
+					$mainlink = 'option='.$com_component.'&amp;view='.$firstNamePlural.$firstExtra;
+					$defaultview = $firstNamePlural.$firstExtra;
+					$defaultviewsingular = $firstName;
 				}
 
-				$options = array('firstname' => $name);
+				$options = array(
+					'firstname' => $name,
+					'firstnameplural' => $namePlural,
+					'firstextra' => $extra
+				);
+
+
 				$menuhelper .= JaccHelper::_replace($menu_tmpl, $item, $options);
-				$accesshelper .= JaccHelper::_replace($accessxml_tmpl, $item, $options);
-				$language .= $Ucom_component."_SUBMENU_".strtoupper($name)."S=\"".ucfirst($name)."s\"\n";
-				if ($model->TableHas($table, 'category') )
+
+				if ($model->TableHas($table, 'parent_id'))
+				{
+					$accesshelper .= JaccHelper::_replace($parentaccessxml_tmpl, $item, $options);
+				}
+				else
+				{
+					$accesshelper .= JaccHelper::_replace($accessxml_tmpl, $item, $options);
+				}
+
+				$language .= $Ucom_component."_SUBMENU_".strtoupper($namePlural.$extra)."=\"".ucfirst($namePlural)."\"\n";//no extra
+				if ($model->TableHas($table, 'category_id') )
 				{
 					$menuhelper .= JaccHelper::_replace($categoriesmenu_tmpl, $item, $options);
 					$accesshelper .= JaccHelper::_replace($categoryaccessxml_tmpl, $item, $options);
 
 					$language .= $Ucom_component."_SUBMENU_".strtoupper($name)."_CATEGORIES=\"".ucfirst($name)." Categories\"\n";
 					// Name for the com_category component
-					$language .= $Ucom_component."_".strtoupper($name)."S=\"".ucfirst($name)."s\"\n";
+					$language .= $Ucom_component."_".strtoupper($namePlural.$extra)."=\"".ucfirst($namePlural)."\"\n";
 				}
 
 				$routerswitch .= JaccHelper::_replace($router_tmpl, $item, $options);
@@ -416,44 +457,60 @@ class JaccController extends JController
 				//Submenu for admin, if more than one table selected
 				if (count($item->tables) >1)
 				{
-					$submenu .=  "\t\t\t\t<menu link=\"option=".$com_component."\" view=\"".$name."s\" img=\"class:".$lcomponent."-".$name."\" alt=\"".$component."/".ucfirst($name)."\" >".$com_component."_".$name."s</menu>\n";
-					$syslanguage .= $Ucom_component."_".strtoupper($name)."S=\"".ucfirst($name)."s\"\n";
+					$submenu .=  "\t\t\t\t<menu link=\"option=".$com_component."\" view=\"".$namePlural.$extra."\" img=\"class:".$lcomponent."-".$name."\" alt=\"".$component."/".ucfirst($name)."\" >".$com_component."_".$namePlural.$extra."</menu>\n";
+					$syslanguage .= $Ucom_component."_".strtoupper($namePlural.$extra)."=\"".ucfirst($namePlural)."\"\n";
 				}
 
-				if ($model->TableHas($table, 'category') )
+				if ($model->TableHas($table, 'category_id') )
 				{
-					$submenu .= "\t\t\t\t<menu link=\"option=com_categories&amp;extension=".$com_component.".".$name."s\" view=\"categories\" img=\"class:".$lcomponent."-".$name."-cat\" alt=\"".$component."/".ucfirst($name)." Categories\" >".$com_component."_".$name."_categories</menu>\n";
+					$submenu .= "\t\t\t\t<menu link=\"option=com_categories&amp;extension=".$com_component.".".$namePlural.$extra."\" view=\"categories\" img=\"class:".$lcomponent."-".$name."-cat\" alt=\"".$component."/".ucfirst($name)." Categories\" >".$com_component."_".$name."_categories</menu>\n";
 					$syslanguage .= $Ucom_component."_".strtoupper($name)."_CATEGORIES=\"".ucfirst($name)." Categories\"\n";
 				}
 
-				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."S=\"".ucfirst($component)." Manager: ".ucfirst($name)."s\"\n";
+				$language .= $Ucom_component."_MANAGER_".strtoupper($namePlural.$extra)."=\"".ucfirst($component)." Manager: ".ucfirst($namePlural)."\"\n";
 				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."=\"".ucfirst($component)." Manager: ".ucfirst($name)."\"\n";
 				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."_NEW=\"".ucfirst($component)." Manager: Add New ".ucfirst($name)."\"\n";
 				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."_EDIT=\"".ucfirst($component)." Manager: Edit ".ucfirst($name)."\"\n";
 
+				JRequest::setVar('type', 'language');
+				$model->setMvcTemplate('language');
+				$view->setModel($model, true);
+				$language .= $view->display();
+
 				//Create an array for the MVC elements
 				$mvcfiles = array(
 					'model'=>array('folders'=>array('admin'.DS.'models'),'ext'=>'php','name'=>$name),
-					'modelplural'=>array('folders'=>array('admin'.DS.'models'),'ext'=>'php','name'=>$name.'s'),
+					'modelplural'=>array('folders'=>array('admin'.DS.'models'),'ext'=>'php','name'=>$namePlural.$extra),
 					'modelfrontend'=>array('folders'=>array('site'.DS.'models'),'ext'=>'php','name'=>$name),
 					'xmlmodel'=>array('folders'=>array('admin'.DS.'models'.DS.'forms'),'ext'=>'xml','name'=>$name),
+					'language'=>array('folders'=>array('admin'.DS.'language'),'ext'=>'ini','name'=>'en-GB.'.$com_component),
+					'language'=>array('folders'=>array('admin'.DS.'language'),'ext'=>'ini','name'=>'de-DE.'.$com_component),
 					//'element'=>array('folders'=>array('admin'.DS.'elements'),'ext'=>'php','name'=>$name),
 					'table'=>array('folders'=>array('admin'.DS.'tables'),'ext'=>'php','name'=>$name),
 					'controller'=>array('folders'=>array('admin'.DS.'controllers'),'ext'=>'php','name'=>$name),
-					'controllerplural'=>array('folders'=>array('admin'.DS.'controllers'),'ext'=>'php','name'=>$name.'s'),
+					'controllerplural'=>array('folders'=>array('admin'.DS.'controllers'),'ext'=>'php','name'=>$namePlural.$extra),
 					'viewfrontend'=>array('folders'=>array('site'.DS.'views'.DS.$name),'ext'=>'php','name'=>'view.html'),
 					'view'=>array('folders'=>array('admin'.DS.'views'.DS.$name),'ext'=>'php','name'=>'view.html'),
-					'viewplural'=>array('folders'=>array('admin'.DS.'views'.DS.$name.'s'),'ext'=>'php','name'=>'view.html'),
+					'viewplural'=>array('folders'=>array('admin'.DS.'views'.DS.$namePlural.$extra),'ext'=>'php','name'=>'view.html'),
 					'metadata'=>array('folders'=>array('site'.DS.'views'.DS.$name),'ext'=>'xml','name'=>'metadata'),
 					'tmpl_site'=>array('folders'=>array('site'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'default'),
 					'tmpl_admin_edit'=>array('folders'=>array('admin'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'edit'),
-					'tmpl_admin_default'=>array('folders'=>array('admin'.DS.'views'.DS.$name.'s'.DS.'tmpl'),'ext'=>'php','name'=>'default'),
+					'tmpl_admin_default'=>array('folders'=>array('admin'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl'),'ext'=>'php','name'=>'default'),
+					'tmpl_admin_default_batch'=>array('folders'=>array('admin'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl'),'ext'=>'php','name'=>'default_batch'),
 					'defaultxml'=>array('folders'=>array('site'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'xml','name'=>'default'),
 					//'accessxml'=>array('folders'=>array('admin'),'ext'=>'xml','name'=>'access')
 					//'tmpl_admin_'=>array('folders'=>array('admin'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'form')
 				);
+
+				if ($model->TableHas($table, 'parent_id'))
+				{
+					$mvcfiles[model_field_categoryedit] = array('folders'=>array('admin'.DS.'models'.DS.'fields'),'ext'=>'php','name'=>$name.'edit');
+					$mvcfiles[helpers_html_category] = array('folders'=>array('admin'.DS.'helpers'.DS.'html'),'ext'=>'php','name'=>$name);
+
+				}
+
 				//If there is no category_id present, we use a simple list view
-				if (!$model->TableHas($table, 'category') ) {
+				if (!$model->TableHas($table, 'category_id') ) {
 					$mvcfiles['viewlist'] =  array('folders'=>array('site'.DS.'views'.DS.$name.'list'),'ext'=>'php','name'=>'view.html');
 					$mvcfiles['modellist'] =  array('folders'=>array('site'.DS.'models'),'ext'=>'php','name'=>$name.'list');
 					$mvcfiles['listtmpl'] = array('folders'=>array('site'.DS.'views'.DS.$name.'list'.DS.'tmpl'),'ext'=>'php','name'=>'default');
@@ -524,11 +581,12 @@ class JaccController extends JController
 						'syslanguage' => $syslanguage,
 						'language' => $language,
 						'defaultview' => $defaultview,
+						'defaultviewsingular' => $defaultviewsingular,
 						'submenu' => $submenu,
-						'firstname' =>$firstName
+						'firstname' =>$firstName,
+						'firstnameplural' => $firstNamePlural,
+						'firstextra' => $firstExtra,
 					);
-
-
 
 		$model->readinFiles();
 

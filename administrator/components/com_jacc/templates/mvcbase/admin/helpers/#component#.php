@@ -32,7 +32,7 @@ class ##Component##Helper
 	 *
 	 * @since   1.6
 	 */
-	public static function addSubmenu($vName = '##defaultview##s')
+	public static function addSubmenu($vName = '##defaultview##')
 	{
 		##menuhelper##
 	}
@@ -46,7 +46,7 @@ class ##Component##Helper
 	* @return	JObject
 	* @since	1.6
 	*/
-	public static function getActions($section = '##defaultview##', $categoryId = 0, $sectionId = 0)
+	public static function getActions($section = '##defaultviewsingular##', $categoryId = 0, $sectionId = 0)
 	{
 		jimport('joomla.access.access');
 		$user	= JFactory::getUser();

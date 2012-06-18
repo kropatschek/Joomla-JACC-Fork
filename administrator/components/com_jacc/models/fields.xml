@@ -11,6 +11,52 @@
 			<ordering>1</ordering>
 		</field>
 		<field>
+			<key>asset_id</key>
+			<alt>null</alt>
+			<group>params</group>
+			<formfield>null</formfield>
+			<fieldtype>int</fieldtype>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>parent_id</key>
+			<alt>parentid</alt>
+			<label>Parent</label>
+			<group>details</group>
+			<formfield>parent_id</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>lft</key>
+			<alt>null</alt>
+			<group>params</group>
+			<formfield>null</formfield>
+			<list>true</list>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>rgt</key>
+			<alt>null</alt>
+			<group>params</group>
+			<formfield>null</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>extension</key>
+			<alt>null</alt>
+			<group>params</group>
+			<formfield>null</formfield>
+			<ordering>1</ordering>
+		</field>
+		<field>
+			<key>level</key>
+			<alt>null</alt>
+			<group>params</group>
+			<formfield>null</formfield>
+			<list>true</list>
+			<ordering>1</ordering>
+		</field>
+		<field>
 			<key>hident</key>
 			<alt>null</alt>
 			<group>details</group>
@@ -39,14 +85,6 @@
 			<ordering>3</ordering>
 		</field>
 		<field>
-			<key>parent_id</key>
-			<alt>parentid</alt>
-			<label>Parent</label>
-			<group>details</group>
-			<formfield>null</formfield>
-			<ordering>3</ordering>
-		</field>
-		<field>
 			<key>category_id</key>
 			<alt>catid</alt>
 			<label>Category</label>
@@ -59,7 +97,7 @@
 			<key>description</key>
 			<alt>text</alt>
 			<label>Description</label>
-			<group>desc</group>
+			<group>details</group>
 			<formfield>editor</formfield>
 			<ordering>1</ordering>
 		</field>
@@ -67,7 +105,7 @@
 			<key>text</key>
 			<alt>description</alt>
 			<label>Text</label>
-			<group>desc</group>
+			<group>details</group>
 			<formfield>editor</formfield>
 			<ordering>2</ordering>
 		</field>

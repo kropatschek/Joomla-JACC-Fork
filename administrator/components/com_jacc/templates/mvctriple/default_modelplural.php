@@ -26,7 +26,7 @@ jimport('joomla.application.component.modellist');
  * @since       2.5
  */
 // TODO: plural function
-class ##Component##Model##Name##s extends JModelList
+class ##Component##Model##Nameplural####extra## extends JModelList
 {
 	/**
 	 * Constructor.
@@ -58,52 +58,88 @@ class ##Component##Model##Name##s extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication();
+		$app		= JFactory::getApplication();
+		$context	= $this->context;
 
 		// Adjust the context to support modal layouts.
 		if ($layout = JRequest::getVar('layout', 'default'))
 		{
-			$this->context .= '.'.$layout;
+			$context .= '.'.$layout;
 		}
 
+		##ifdefFieldextensionStart##
+		//$extension = $app->getUserStateFromRequest('com_categories.categories.filter.extension', 'extension', 'com_content', 'cmd');
+
+		//$this->setState('filter.extension', $extension);
+		//$parts = explode('.', $extension);
+
+		// extract the component name
+		//$this->setState('filter.component', $parts[0]);
+
+		// extract the optional section name
+		//$this->setState('filter.section', (count($parts) > 1) ? $parts[1] : null);
+
+		##ifdefFieldextensionEnd##
 		// Load the filter state.
-		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
+
+		##ifdefFieldlevelStart##
+		$level = $this->getUserStateFromRequest($context.'.filter.level', 'filter_level', 0, 'int');
+		$this->setState('filter.level', $level);
+
+		##ifdefFieldlevelEnd##
 		##ifdefFieldaccessStart##
-		$accessId = $this->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
+		$accessId = $this->getUserStateFromRequest($context.'.filter.access', 'filter_access', 0, 'int');
 		$this->setState('filter.access', $accessId);
+
 		##ifdefFieldaccessEnd##
 		##ifdefFieldcreated_byStart##
-		$authorId = $app->getUserStateFromRequest($this->context.'.filter.author_id', 'filter_author_id');
+		$authorId = $app->getUserStateFromRequest($context.'.filter.author_id', 'filter_author_id');
 		$this->setState('filter.author_id', $authorId);
+
 		##ifdefFieldcreated_byEnd##
+		##ifdefFieldcreated_user_idStart##
+		$authorId = $app->getUserStateFromRequest($context.'.filter.author_id', 'filter_author_id');
+		$this->setState('filter.author_id', $authorId);
+
+		##ifdefFieldcreated_user_idEnd##
 		##ifdefFieldpublishedStart##
-		$published = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_published', '', 'string');
-		$this->setState('filter.state', $published);
+		$published = $this->getUserStateFromRequest($context.'.filter.published', 'filter_published', '');
+		$this->setState('filter.published', $published);
+
 		##ifdefFieldpublishedEnd##
 		##ifdefFieldstateStart##
-		$published = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_published', '', 'string');
-		$this->setState('filter.state', $published);
+		$state = $this->getUserStateFromRequest($context.'.filter.state', 'filter_state', '', 'string');
+		$this->setState('filter.state', $state);
+
 		##ifdefFieldstateEnd##
 		##ifdefFieldcategory_idStart##
-		$categoryId = $this->getUserStateFromRequest($this->context.'.filter.category_id', 'filter_category_id');
+		$categoryId = $this->getUserStateFromRequest($context.'.filter.category_id', 'filter_category_id');
 		$this->setState('filter.category_id', $categoryId);
+
 		##ifdefFieldcategory_idEnd##
 		##ifdefFieldcatidStart##
-		$categoryId = $this->getUserStateFromRequest($this->context.'.filter.category_id', 'filter_category_id');
+		$categoryId = $this->getUserStateFromRequest($context.'.filter.category_id', 'filter_category_id');
 		$this->setState('filter.category_id', $categoryId);
+
 		##ifdefFieldcatidEnd##
 		##ifdefFieldlanguageStart##
-		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
+		$language = $this->getUserStateFromRequest($context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
-		##ifdefFieldlanguageEnd##
 
+		##ifdefFieldlanguageEnd##
 		// Load the parameters.
 		$params = JComponentHelper::getParams('##com_component##');
 		$this->setState('params', $params);
 
 		// List state information.
+		##ifnotdefFieldparent_idStart##
 		parent::populateState('a.##title##', 'asc');
+		##ifnotdefFieldparent_idEnd##
+		##ifdefFieldparent_idStart##
+		parent::populateState('a.lft', 'asc');
+		##ifdefFieldparent_idEnd##
 	}
 
 	/**
@@ -122,6 +158,9 @@ class ##Component##Model##Name##s extends JModelList
 	{
 		// Compile the store id.
 		$id	.= ':'.$this->getState('filter.search');
+		##ifdefFieldextensionEnd##
+		//$id	.= ':'.$this->getState('filter.extension');
+		##ifdefFieldextensionEnd##
 		##ifdefFieldaccessStart##
 		$id	.= ':'.$this->getState('filter.access');
 		##ifdefFieldaccessEnd##
@@ -129,7 +168,7 @@ class ##Component##Model##Name##s extends JModelList
 		$id	.= ':'.$this->getState('filter.published');
 		##ifdefFieldpublishedEnd##
 		##ifdefFieldstateStart##
-		$id	.= ':'.$this->getState('filter.published');
+		$id	.= ':'.$this->getState('filter.state');
 		##ifdefFieldstateEnd##
 		##ifdefFieldcategory_idStart##
 		$id	.= ':'.$this->getState('filter.category_id');
@@ -140,6 +179,9 @@ class ##Component##Model##Name##s extends JModelList
 		##ifdefFieldcreated_byStart###
 		$id	.= ':'.$this->getState('filter.author_id');
 		##ifdefFieldcreated_byEnd##
+		##ifdefFieldcreated_user_idStart###
+		$id	.= ':'.$this->getState('filter.author_id');
+		##ifdefFieldcreated_user_idEnd##
 		##ifdefFieldlanguageStart##
 		$id	.= ':'.$this->getState('filter.language');
 		##ifdefFieldlanguageEnd##
@@ -209,6 +251,28 @@ class ##Component##Model##Name##s extends JModelList
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
 
 		##ifdefFieldcreated_byEnd##
+		##ifdefFieldcreated_user_idStart##
+		// Join over the users for the author.
+		$query->select('ua.name AS author_name');
+		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_user_id');
+
+		##ifdefFieldcreated_user_idEnd##
+		##ifdefFieldextensionStart##
+		// Filter by extension
+		//if ($extension = $this->getState('filter.extension')) {
+		//	$query->where('a.extension = '.$db->quote($extension));
+		//}
+		// TODO: just a workaround to get rid of the ROOT in the list.
+		$query->where('a.id <> 1');
+
+		##ifdefFieldextensionEnd##
+		##ifdefFieldlevelStart##
+		// Filter on the level.
+		if ($level = $this->getState('filter.level')) {
+			$query->where('a.level <= '.(int) $level);
+		}
+
+		##ifdefFieldlevelEnd##
 		##ifdefFieldaccessStart##
 		// Filter by access level.
 		if ($access = $this->getState('filter.access'))
@@ -232,7 +296,19 @@ class ##Component##Model##Name##s extends JModelList
 			$query->where('a.state = ' . (int) $published);
 		}
 		elseif ($published === '') {
-			$query->where('(a.state = 0 OR a.state = 1)');
+			$query->where('(a.state IN (0, 1))');
+		}
+
+		##ifdefFieldstateEnd##
+		##ifdefFieldpublishedStart##
+		// Filter by published state
+		$published = $this->getState('filter.published');
+		if (is_numeric($published))
+		{
+			$query->where('a.published = ' . (int) $published);
+		}
+		elseif ($published === '') {
+			$query->where('(a.published IN (0, 1))');
 		}
 
 		##ifdefFieldstateEnd##
@@ -258,6 +334,11 @@ class ##Component##Model##Name##s extends JModelList
 			$query->where('a.catid IN ('.$categoryId.')');
 		}
 
+		// Filter on the level.
+		if ($level = $this->getState('filter.level'))
+		{
+			$query->where('c.level <= '.((int) $level + (int) $baselevel - 1));
+		}
 		##ifdefFieldcatidEnd##
 		##ifdefFieldcategory_idStart##
 		// Filter by published
@@ -281,15 +362,12 @@ class ##Component##Model##Name##s extends JModelList
 			$query->where('a.category_id IN ('.$categoryId.')');
 		}
 
-		##ifdefFieldcategory_idEnd##
-		##ifdefFieldlevelStart##
 		// Filter on the level.
 		if ($level = $this->getState('filter.level'))
 		{
 			$query->where('c.level <= '.((int) $level + (int) $baselevel - 1));
 		}
-
-		##ifdefFieldlevelEnd##
+		##ifdefFieldcategory_idEnd##
 		##ifdefFieldcreated_byStart##
 		// Filter by author
 		$authorId = $this->getState('filter.author_id');
@@ -300,6 +378,16 @@ class ##Component##Model##Name##s extends JModelList
 		}
 
 		##ifdefFieldcreated_byEnd##
+		##ifdefFieldcreated_user_idStart##
+		// Filter by author
+		$authorId = $this->getState('filter.author_id');
+		if (is_numeric($authorId))
+		{
+			$type = $this->getState('filter.author_id.include', true) ? '= ' : '<>';
+			$query->where('a.created_user_id '.$type.(int) $authorId);
+		}
+
+		##ifdefFieldcreated_user_idEnd##
 
 		##ifdefField<?php echo $this->hident ?>Start##
 		// Filter by search in ##title##.
@@ -342,34 +430,60 @@ class ##Component##Model##Name##s extends JModelList
 		##ifdefFieldlanguageEnd##
 
 		// Add the list ordering clause.
+		##ifdefFieldlftStart##
+		$orderCol	= $this->state->get('list.ordering', 'a.lft');
+		##ifdefFieldlftEnd##
+		##ifnotdefFieldlftStart##
 		$orderCol	= $this->state->get('list.ordering', 'a.##title##');
-		$orderDirn	= $this->state->get('list.direction', 'asc');
+		##ifnotdefFieldlftStart##
+		$orderDirn	= $db->escape($this->state->get('list.direction', 'asc'));
 		// TODO
-		if ($orderCol == 'a.ordering' || $orderCol == 'category_title')
+		$order = null;
+		switch($orderCol)
 		{
-			$orderColTmp = null;
+			##ifdefFieldorderingStart##
+			case 'a.ordering':
+				##ifdefFieldcategory_idStart##
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				##ifdefFieldcategory_idEnd##
+				##ifdefFieldcatidStart##
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				##ifdefFieldcatidEnd##
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				break;
+			##ifdefFieldorderingEnd##
 			##ifdefFieldcategory_idStart##
-			$orderColTmp[] = 'c.title '.$orderDirn;
+			case 'category_title':
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				##ifdefFieldorderingStart##
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				##ifdefFieldorderingEnd##
+				break;
 			##ifdefFieldcategory_idEnd##
 			##ifdefFieldcatidStart##
-			$orderColTmp[] = 'c.title '.$orderDirn;
+			case 'category_title':
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				##ifdefFieldorderingStart##
+				$order[] = $db->escape('c.title').' '.$orderDirn;
+				##ifdefFieldorderingEnd##
+				break;
 			##ifdefFieldcatidEnd##
-			##ifdefFieldorderingStart##
-			$orderColTmp[] = 'a.ordering';
-			##ifdefFieldorderingEnd##
-
-			$orderCol = implode(', ',$orderColTmp);
+			##ifdefFieldlanguageStart##
+			case 'language':
+				$order[] = $db->escape('l.title').' '.$orderDirn;
+				break;
+			##ifdefFieldlanguageEnd##
+			##ifdefFieldaccessStart##
+			case 'access_level':
+				$order[] = $db->escape('ag.title').' '.$orderDirn;
+				break;
+			##ifdefFieldaccessEnd##
+			default:
+				$order[] = $db->escape($orderCol).' '.$orderDirn;
+				break;
 		}
-		//sqlsrv change
-		##ifdefFieldlanguageStart##
-		if($orderCol == 'language')
-			$orderCol = 'l.title';
-		##ifdefFieldlanguageEnd##
-		##ifdefFieldaccessStart##
-		if($orderCol == 'access_level')
-			$orderCol = 'ag.title';
-		##ifdefFieldaccessEnd##
-		$query->order($db->escape($orderCol.' '.$orderDirn));
+
+		$query->order(implode(', ',$order));
 
 		//echo nl2br(str_replace('#__','jos_',$query));
 		return $query;
@@ -391,7 +505,7 @@ class ##Component##Model##Name##s extends JModelList
 		// Construct the query
 		$query->select('u.id AS value, u.name AS text');
 		$query->from('#__users AS u');
-		$query->join('INNER', '#__content AS c ON c.created_by = u.id');
+		$query->join('INNER', '##table## AS c ON c.created_by = u.id');
 		$query->group('u.id, u.name');
 		$query->order('u.name');
 
@@ -401,8 +515,36 @@ class ##Component##Model##Name##s extends JModelList
 		// Return the result
 		return $db->loadObjectList();
 	}
-	##ifdefFieldcreated_byEnd##
 
+	##ifdefFieldcreated_byEnd##
+	##ifdefFieldcreated_user_idStart##
+	/**
+	 * Build a list of authors
+	 *
+	 * @return	JDatabaseQuery
+	 * @since	1.6
+	 */
+	public function getAuthors()
+	{
+		// Create a new query object.
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+
+		// Construct the query
+		$query->select('u.id AS value, u.name AS text');
+		$query->from('#__users AS u');
+		$query->join('INNER', '##table## AS c ON c.created_user_id = u.id');
+		$query->group('u.id, u.name');
+		$query->order('u.name');
+
+		// Setup the query
+		$db->setQuery($query->__toString());
+
+		// Return the result
+		return $db->loadObjectList();
+	}
+
+	##ifdefFieldcreated_user_idEnd##
 	##ifdefFieldaccessStart##
 	/**
 	 * Method to get a list of articles.

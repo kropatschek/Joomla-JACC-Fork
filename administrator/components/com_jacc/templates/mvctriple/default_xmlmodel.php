@@ -5,48 +5,221 @@ $datesize = 10;
 <<?php echo '?'?>xml version="1.0" encoding="utf-8"##codeend##
 <form>
 	<fields>
-<?php foreach ($this->formfield as $field) {
+<?php foreach ($this->formfield as $field)
+{
+	if ($field->get('additional')) continue;
+	if ($field->get('key') == 'params') continue;
+	$required = $field->get('required') ? $field->get('required') : 'false';
+	$size= $field->get('size') ? $field->get('size') : '40';
+	//$label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));
+	$label = '##COM_COMPONENT##_##NAME##_FIELD_'.strtoupper($field->get('key')).'_LABEL';
+	$description = '##COM_COMPONENT##_##NAME##_FIELD_'.strtoupper($field->get('key')).'_DESC';
 
-
-						if ($field->get('additional')) continue;
-						if ($field->get('key') == 'params') continue;
-						$required = $field->get('required') ? $field->get('required') : 'false';
-						$size= $field->get('size') ? $field->get('size') : '40';
-						$label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));
-						switch($field->get('key')) {
-							case 'catid':
-							case 'category_id':
-								if($this->uses_categories):
-								?>
-
+	switch($field->get('key')) {
+		case 'catid':
+		case 'category_id':
+			if($this->uses_categories):
+?>
 		<field
 			name="<?php echo $field->get('key') ?>"
 			type="category"
-			extension="com_##component##.##name##s"
+			extension="##com_component##.##nameplural####extra##"
 			label="JCATEGORY"
 			description="JFIELD_CATEGORY_DESC"
 			class="inputbox"
 			required="true">
 		</field>
-				<?php
-								endif;
-								break;
-						case $this->primary: ?>
-
+<?php
+			endif;
+			break;
+		case 'parent_id':
+?>
+		<field
+			name="<?php echo $field->get('key') ?>"
+			type="##name##edit"
+			##ifdefFieldextensionStart##
+			extension="##com_component##.##nameplural####extra##"
+			##ifdefFieldextensionEnd##
+			label="<?php echo $label ?>"
+			description="<?php echo $description ?>"
+			class="inputbox"
+			required="true">
+		</field>
+<?php
+			break;
+		case $this->primary:
+?>
 		<field
 			name="<?php echo $this->primary ?>"
 			type="hidden"
 			default="0"
 			required="true"
 			readonly="true"/>
-							<?php
-							break;
-						default:
-						switch (strtolower($field->get('formfield'))) {
-							case 'list': ?>
-
+<?php
+			break;
+		case 'asset_id':
+?>
 		<field
-			id="<?php echo $field->get('key') ?>"
+			name="asset_id"
+			type="hidden"
+			filter="unset"/>
+<?php
+			break;
+		case 'featured':
+?>
+		<field name="featured"
+			type="list"
+			label="JFEATURED"
+			description="<?php echo $description ?>"
+			default="0">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+<?php
+			break;
+		case 'image':
+?>
+		<field name="image"
+			type="media"
+			label="<?php echo $label ?>"
+			description="<?php echo $description ?>">
+<?php
+			break;
+		case 'published':
+?>
+		<field
+			id="published"
+			name="published"
+			type="list"
+			label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC"
+			class="inputbox"
+			size="1"
+			default="1">
+			<option
+				value="1">
+				JPUBLISHED</option>
+			<option
+				value="0">
+				JUNPUBLISHED</option>
+			<option
+				value="2">
+				JARCHIVED</option>
+			<option
+				value="-2">
+				JTRASHED</option>
+		</field>
+<?php
+			break;
+		case 'state':
+?>
+		<field
+			id="state"
+			name="state"
+			type="list"
+			label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC"
+			class="inputbox"
+			size="1"
+			default="1">
+			<option
+				value="1">
+				JPUBLISHED</option>
+			<option
+				value="0">
+				JUNPUBLISHED</option>
+			<option
+				value="2">
+				JARCHIVED</option>
+			<option
+				value="-2">
+				JTRASHED</option>
+		</field>
+<?php
+			break;
+		case 'publish_up':
+?>
+		<field
+			id="publish_up"
+			name="publish_up"
+			type="calendar"
+			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
+			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+			class="inputbox"
+			format="%Y-%m-%d %H:%M:%S"
+			size="22"
+			filter="user_utc" />
+<?php
+			break;
+		case 'publish_down':
+?>
+		<field
+			id="publish_down"
+			name="publish_down"
+			type="calendar"
+			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
+			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+			class="inputbox"
+			format="%Y-%m-%d %H:%M:%S"
+			size="22"
+			filter="user_utc" />
+<?php
+			break;
+		case 'language':
+?>
+		<field
+			name="language"
+			type="contentlanguage"
+			label="JFIELD_LANGUAGE_LABEL"
+			description="JFIELD_LANGUAGE_DESC"
+			class="inputbox">
+			<option value="*">JALL</option>
+		</field>
+<?php
+			break;
+		case 'metakey':
+?>
+		<field
+			id="metakey"
+			name="metakey"
+			type="textarea"
+			label="JFIELD_META_KEYWORDS_LABEL"
+			description="JFIELD_META_KEYWORDS_DESC"
+			class="inputbox"
+			rows="5"
+			cols="50" />
+<?php
+			break;
+		case 'metadesc':
+?>
+		<field
+			id="metadesc"
+			name="metadesc"
+			type="textarea"
+			label="JFIELD_META_DESCRIPTION_LABEL"
+			description="JFIELD_META_DESCRIPTION_DESC"
+			class="inputbox"
+			rows="5"
+			cols="50" />
+<?php
+			break;
+		case 'access':
+?>
+		<field
+			id="access"
+			name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			class="inputbox"
+			size="1" />
+<?php
+			break;
+		default:
+		switch (strtolower($field->get('formfield'))) {
+			case 'list':
+?>
+		<field
 			name="<?php echo $field->get('key') ?>"
 			type="list"
 			class="inputbox"
@@ -54,7 +227,7 @@ $datesize = 10;
 			required="<?php echo $required ?>"
 			size="1"
 			label="<?php echo $label ?>"
-			description="<?php echo $field->get('key') ?>_Desc">
+			description="<?php echo $description ?>">
 			<option
 				value="0">
 				Option None</option>
@@ -69,123 +242,117 @@ $datesize = 10;
 				And so on</option>
 		</field>
 <?php
-								break;
-							case 'featured': ?>
-		<field name="featured"
-			type="list"
-			label="JFEATURED"
-			description="##COM_COMPONENT##_FIELD_FEATURED_DESC"
-			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-<?php
-								break;
-							case 'published': ?>
-		<field
-			id="published"
-			name="published"
-			type="list"
-			class="inputbox"
-			default="1"
-			size="1"
-			label="JField_Published_Label"
-			description="JField_Published_Desc">
-			<option
-				value="1">
-				JOption_Published</option>
-			<option
-				value="0">
-				JOption_UnPublished</option>
-			<option
-				value="-1">
-				JOption_Archived</option>
-			<option
-				value="-2">
-				JOption_Trashed</option>
-		</field>
-						<?php
-								break;
-
-							case 'editor':
+				break;
+			case 'editor':
 ?>
-
 		<field
-			id="<?php echo $field->get('key') ?>"
 			name="<?php echo $field->get('key') ?>"
 			type="editor"
 			label="<?php echo $label ?>"
-			description="<?php echo $field->get('key') ?>_Desc"
+			description="<?php echo $description ?>"
 			class="inputbox"
 			buttons="readmore,pagebreak"/>
-							<?php
-								break;
-							case 'calendar':
-								if ($field->get('fieldtype') == 'datetime') {
-									$format = '%Y-%m-%d %H-%M-%S';
-									$datesize = 16;
-								}
+<?php
+				break;
+			case 'text':
 ?>
-
 		<field
-			id="<?php echo $field->get('key') ?>"
-			name="<?php echo $field->get('key') ?>"
-			type="calendar"
-			required="<?php echo $required ?>"
-			label="<?php echo $label ?>"
-			description="<?php echo $field->get('key') ?>_Desc"
-			class="inputbox"
-			size="<?php echo $datesize ?>"
-			format="<?php echo $format ?>"/>
-
-							<?php
-								break;
-							case 'text':
-?>
-
-		<field
-			id="<?php echo $field->get('key') ?>"
 			name="<?php echo $field->get('key') ?>"
 			type="text"
 			required="<?php echo $required ?>"
 			label="<?php echo $label ?>"
-			description="<?php echo $field->get('key') ?>_Desc"
+			description="<?php echo $description ?>"
 			class="inputbox"
 			size="40"/>
-
-						<?php
-								break;
-							case 'null':
+<?php
+				break;
+			case 'integer':
 ?>
-
+		<field
+			name="<?php echo $field->get('key') ?>"
+			type="text"
+			required="<?php echo $required ?>"
+			label="<?php echo $label ?>"
+			description="<?php echo $description ?>"
+			class="inputbox"
+			size="10"/>
+<?php
+				break;
+			case 'float':
+?>
+		<field
+			name="<?php echo $field->get('key') ?>"
+			type="text"
+			required="<?php echo $required ?>"
+			label="<?php echo $label ?>"
+			description="<?php echo $description ?>"
+			class="inputbox"
+			size="10"/>
+<?php
+				break;
+			case 'calendar':
+				if ($field->get('fieldtype') == 'datetime')
+				{
+					$format = '%Y-%m-%d %H-%M-%S';
+					$datesize = 16;
+				}
+?>
+		<field
+			name="<?php echo $field->get('key') ?>"
+			type="calendar"
+			required="<?php echo $required ?>"
+			label="<?php echo $label ?>"
+			description="<?php echo $description ?>"
+			class="inputbox"
+			size="<?php echo $datesize ?>"
+			format="<?php echo $format ?>"/>
+<?php
+				break;
+			case 'boolean':
+?>
+			<field
+				name="<?php echo $field->get('key') ?>"
+				type="list"
+				default=""
+				label="<?php echo $label ?>"
+				description="<?php echo $description ?>">
+				<option
+					value="0">No</option>
+				<option
+					value="1">Yes</option>
+			</field>
+<?php
+				break;
+			case 'null':
+?>
 		<field
 			name="<?php echo $field->get('key') ?>"
 			type="hidden"
 			filter="unset"/>
-							<?php
-								break;
-							default:
-							?>
-
+<?php
+				break;
+			default:
+?>
 		<field
-			id="<?php echo $field->get('key') ?>"
 			name="<?php echo $field->get('key') ?>"
 			required="<?php echo $required ?>"
 			type="<?php echo $field->get('formfield') ?>"
 			label="<?php echo $label ?>"
-			description="<?php echo $field->get('key') ?>_Desc"
+			description="<?php echo $description ?>"
 			class="inputbox"
 			size="<?php echo $size ?>"/>
-						<?php
-						}
-						}
+<?php
+		}
+	}
 
 }
 ?>
-
+		<field name="rules" type="rules" label="JFIELD_RULES_LABEL"
+		translate_label="false" class="inputbox" filter="rules"
+		component="##com_component##" section="##name##" validate="rules"
+		/>
 	</fields>
-	<?php if (isset($this->formfield['params'])): ?>
+<?php if (isset($this->formfield['params'])): ?>
 
 	<fields name="params">
 		<fieldset
@@ -203,10 +370,5 @@ $datesize = 10;
 			</field>
 		</fieldset>
 	</fields>
-	<?php endif; ?>
-
-	<field name="rules" type="rules" label="JFIELD_RULES_LABEL"
-		translate_label="false" class="inputbox" filter="rules"
-		component="##com_component##" section="##name##" validate="rules"
-	/>
+<?php endif; ?>
 </form>

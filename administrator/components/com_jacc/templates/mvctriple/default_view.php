@@ -90,10 +90,10 @@ class ##Component##View##Name## extends JView
 			##ifdefFieldchecked_outEnd##
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
 				##ifdefFieldcatidStart##
-				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd##)) {
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd####ifdefFieldcreated_user_idStart## && $this->item->created_user_id == $userId##ifdefFieldcreated_user_idEnd##)) {
 				##ifdefFieldcatidEnd##
 				##ifdefFieldcategory_idStart##
-				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd##)) {
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own')##ifdefFieldcreated_byStart## && $this->item->created_by == $userId##ifdefFieldcreated_byEnd####ifdefFieldcreated_user_idStart## && $this->item->created_user_id == $userId##ifdefFieldcreated_user_idEnd##)) {
 				##ifdefFieldcategory_idEnd##
 					JToolBarHelper::apply('##name##.apply');
 					JToolBarHelper::save('##name##.save');

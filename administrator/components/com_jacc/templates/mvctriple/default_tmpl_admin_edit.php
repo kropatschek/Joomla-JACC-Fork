@@ -27,7 +27,7 @@ JHtml::_('behavior.keepalive');
 	{
 		if (task == '##name##.cancel' || document.formvalidator.isValid(document.id('##name##-form')))
 		{
-			##codestart## echo $this->form->getField('description')->save();##codeend##
+			##codestart## //TODO: echo $this->form->getField('description')->save();##codeend##
 			Joomla.submitform(task, document.getElementById('##name##-form'));
 		}
 		else
@@ -149,19 +149,20 @@ JHtml::_('behavior.keepalive');
 			}
 			?>
 		</fieldset>
-
 		##ifdefFieldparamsStart##
+
 		##codestart## //echo $this->loadTemplate('params');##codeend##
 		##ifdefFieldparamsEnd##
 
 		##ifdefFieldmetadataStart##
+
 		##codestart## //echo $this->loadTemplate('metadata');##codeend##
 		##ifdefFieldmetadataEnd##
-
 
 		##codestart## echo JHtml::_('sliders.end');##codeend##
 	</div>
 
+	##ifdefFieldasset_idStart##
 	<div class="clr"></div>
 	##codestart## if ($this->canDo->get('core.admin')): ##codeend##
 		<div class="width-100 fltlft">
@@ -180,5 +181,6 @@ JHtml::_('behavior.keepalive');
 		<input type="hidden" name="task" value="" />
 		##codestart## echo JHtml::_('form.token');##codeend##
 	</div>
+	##ifdefFieldasset_idEnd##
 </form>
 <div class="clr"></div>

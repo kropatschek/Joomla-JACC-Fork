@@ -38,6 +38,15 @@
 			size="20"/>
 
 		<field
+			name="firsttable"
+			type="tablelist"
+			required="true"
+			label="Default Table"
+			description="tables_Desc"
+			class="inputbox validate-tables"
+		/>
+
+		<field
 			name="tables"
 			type="tablelist"
 			required="true"
