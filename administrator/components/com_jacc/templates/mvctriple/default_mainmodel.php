@@ -22,7 +22,7 @@ defined('_JEXEC') or die;
 
 jimport( 'joomla.application.component.model' );
 
-class ##Component##Model  extends JModel {
+class ##Component##Model extends JModel {
 
 
 	/**
@@ -164,7 +164,7 @@ class ##Component##Model  extends JModel {
 	* @param  $cid int
 	* @return $affected int
 	*/
-	 public function  delete($cid) {
+	public function  delete($cid) {
 		$db = JFactory::getDBO();
 		$query = 'DELETE FROM '.$this->_default_table.' WHERE id '.$this->_multiDbCondIfArray($cid);
 		$db->setQuery( $query);
@@ -172,7 +172,7 @@ class ##Component##Model  extends JModel {
 		$db->query();
 		$affected = $db->getAffectedRows();
 		return $affected ;
-	 }
+	}
 
 
 

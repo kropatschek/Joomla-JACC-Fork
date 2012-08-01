@@ -79,7 +79,7 @@ class JaccModelJacc  extends JaccModel {
 	{
 		static $instance;
 		if($instance) return $instance;
-		$item =  $this->getTable();
+		$item = $this->getTable();
 		$item->load($this->_id);
 		$item->tables = json_decode($item->tables);
 		//$item->firsttable = json_decode($item->firsttable);
@@ -129,9 +129,6 @@ class JaccModelJacc  extends JaccModel {
 	{
 		return $this->_MvcTemplate;
 	}
-
-
-
 
 	/**
 	 * Method to set the Fields of a table
@@ -189,8 +186,8 @@ class JaccModelJacc  extends JaccModel {
 
 				$sfx = (substr(strrchr($field->get('key'), '_'), 1) == 'id');
 
-				if ($field->get('key') == 'catid' || $field->get('key') == 'category_id') {
-
+				if ($field->get('key') == 'catid' || $field->get('key') == 'category_id')
+				{
 					$this->_TablesHas[$table]->set('category_id', $field->get('key'));
 					$primary =$fieldlist['primary'];
 
@@ -202,30 +199,65 @@ class JaccModelJacc  extends JaccModel {
 										"                <table>".$table."</table>\n".
 										"            </extension>\n";
 
-				} else {
+				}
+				else
+				{
 					$this->_TablesHas[$table]->set($field->get('key'), $field->get('key'));
 				}
 
-				if ($part && $sfx && ($foreigntable = $this->_findTable(substr($field->get('key'), 0, -3)))) {
+				if ($part && $sfx && ($foreigntable = $this->_findTable(substr($field->get('key'), 0, -3))))
+				{
 
 					$field->set('foreignkey', $part);
 					$field->set('reltable', $foreigntable);
 					$field->set('formfield', $lname. $part);
 					$field->set('size', '1');
-					$field->set('label', ucfirst($part));
+
+					//now in helper
+					//$field->set('label', ucfirst($part));
 					$field->set('fieldtype', $lname. $part);
 					$field->set('required', 'true');
 
-					$ffieldslist =  $this->_Fields[$foreigntable];
+					$ffieldslist = $this->_Fields[$foreigntable];
 					$ffields = $ffieldslist->get('all');
-					$ffield =  $ffields['hident'];
-					$ffieldprim =  $ffields['primary'];
+					$ffield = $ffields['hident'];
+					$ffieldprim = $ffields['primary'];
 					$this->_Fields['foreigns'][$field->get('key')] = new JObject();
 					$this->_Fields['foreigns'][$field->get('key')]->set('key', $field->get('key'));
 					$this->_Fields['foreigns'][$field->get('key')]->set('name', $part);
 					$this->_Fields['foreigns'][$field->get('key')]->set('hident', $ffield->get('key'));
 					$this->_Fields['foreigns'][$field->get('key')]->set('primary', $ffieldprim->get('key'));
 					$this->_Fields['foreigns'][$field->get('key')]->set('reltable', $foreigntable);
+					$this->_Fields['foreigns'][$field->get('key')]->set('table', $foreigntable);
+
+					//$backupForeign = null;
+					//$backupForeign = $field->get('foreign');
+					//$foreign->primary = isset($backupForeign->primary) ? $backupForeign->primary : $ffieldprim->get('key');
+					//$foreign->hident = isset($backupForeign->hident) ? $backupForeign->hident : $ffield->get('key');
+					//$foreign->table = isset($backupForeign->table) ? $backupForeign->table : $foreigntable;
+					//last part of table name as (lowercase) name
+					//$foreign->name = isset($backupForeign->name) ? $backupForeign->name : InflectorHelper::singularize(substr(strrchr($foreigntable, '_'), 1));
+
+					//$foreign->primary = $ffieldprim->get('key');
+					//$foreign->hident = $ffield->get('key');
+					//$foreign->table =  $foreigntable;
+					//last part of table name as (lowercase) name
+					//$foreign->name = InflectorHelper::singularize(substr(strrchr($foreigntable, '_'), 1));
+
+					//$field->set('foreign', $foreign);
+
+					$foreign->primary = $ffieldprim->get('key');
+					$foreign->hident = $ffield->get('key');
+					$foreign->table =  $foreigntable;
+					//last part of table name as (lowercase) name
+					$foreign->name = InflectorHelper::singularize(substr(strrchr($foreigntable, '_'), 1));
+
+					//$foreigntext = print_r($foreign, true);
+
+					$field->foreign = $foreign;
+					// Fix: Todo: Bug set is not does not work i don't know why
+					//$field->set('foreign', $foreign);
+					//$field->set('foreigntext', $foreigntext);
 				}
 			}
 		}

@@ -18,6 +18,20 @@ class  JaccViewJacc   extends JView
 	 *
 	 * @return void
 	 **/
+	public $language = 'en-GB';
+
+	/**
+	 * componenthelp view display method
+	 *
+	 * @return void
+	 **/
+	protected $_default_language = 'en-GB';
+
+	/**
+	 * componenthelp view display method
+	 *
+	 * @return void
+	 **/
 	public function display($tpl = null)
 	{
 
@@ -46,7 +60,7 @@ class  JaccViewJacc   extends JView
 
 		$flistreplace = "\n";
 
-		$time =  $item->created;
+		$time = $item->created;
 
 		$tableFields = $model->getTableFields($mvcTable);
 
@@ -68,7 +82,8 @@ class  JaccViewJacc   extends JView
 					break;
 				case 'modelplural':
 					$parsedFields = $tableFields->get('list');
-					break;
+					$foreignFields = $model->getTableFields('foreigns');
+					$this->foreignFields = $foreignFields;
 				case 'tmpl_admin_edit' :
 					$this->formfield = $tableFields->get('groups');
 					break;
@@ -82,7 +97,7 @@ class  JaccViewJacc   extends JView
 				default: $freplace .='';
 		}
 
-		foreach ($parsedFields  as $field) {
+		foreach ($parsedFields as $field) {
 			$this->field = $field;
 
 			switch($mvcTemplate) {
@@ -97,6 +112,25 @@ class  JaccViewJacc   extends JView
 					break;
 				case 'modelplural':
 					$freplace .= $this->replace_field($field, 'modelpluralrow');
+					//$foreign = $field->get('foreign');
+					//$foreigntext = $field->get('foreigntext');
+					if (array_key_exists ($field->get('key'), $foreignFields))
+					{
+						$foreign = $foreignFields[$field->get('key')];
+						$freplace .= "\t\t\t\t'" . $foreign->get('name') . "_" . $foreign->get('hident') . "',\n";
+						$flistreplace .= "\t\t\$query->select('" . "ft" . JaccHelper::acronym(substr($foreign->get('table'), 3), '_') . "." . $foreign->get('hident') . " AS " . $foreign->get('name') . "_" . $foreign->get('hident') . "');\n";
+						$flistreplace .= "\t\t\$query->join('LEFT', '" . $foreign->get('table') . " AS " . "ft" . JaccHelper::acronym(substr($foreign->get('table'), 3), '_') . " ON " . "ft" . JaccHelper::acronym(substr($foreign->get('table'), 3), '_') . "." . $foreign->get('primary') . " = a." . strtolower($field->get('key')) ."');\n";
+						$flistreplace .= "\n";
+					}
+
+// 					if (is_object($foreign)) {
+// 						$freplace .= "\t\t\t\t'" . $foreign->name . "_" . $foreign->hident . "',\n";
+// 						$flistreplace .= $foreigntext;
+// 						$flistreplace .= "\n\n".print_r($this ,true);
+// 						$flistreplace .= "\t\t\$query->select('" . JaccHelper::acronym(substr($foreign->table, 3), '_') . "." . $foreign->hident . " AS " . $foreign->name . "_" . $foreign->hident . "');\n";
+// 						$flistreplace .= "\t\t\$query->join('LEFT', '" . $foreign->table . " AS " . JaccHelper::acronym(substr($foreign->table, 3), '_') . " ON " . JaccHelper::acronym(substr($foreign->table, 3), '_') . "." . $foreign->primary . " = a." . strtolower($field->get('key')) ."');\n";
+// 						$flistreplace .= "\n";
+// 					}
 					break;
 				case 'tmpl_site' :
 					$freplace .= $this->replace_field($field, 'tmpl_site_row');

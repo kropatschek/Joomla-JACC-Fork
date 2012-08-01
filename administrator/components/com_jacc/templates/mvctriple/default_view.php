@@ -30,19 +30,51 @@ class ##Component##View##Name## extends JView
 	public function display($tpl = null)
 	{
 		// Initialise variables.
-		$this->form  = $this->get('Form');
-		$this->item  = $this->get('Item');
-		$this->state = $this->get('State');
-		$this->canDo = ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
+		$this->form		= $this->get('Form');
+		$this->item		= $this->get('Item');
+		$this->state	= $this->get('State');
+		$this->script	= $this->get('Script');
+		##ifdefFieldparent_idStart##
+		$this->canDo = ##Component##Helper::getActions('##nameplural####extra##.##name##', $this->state->get('filter.##name##_id'));
+		##ifdefFieldparent_idEnd##
+		##ifnotdefFieldparent_idStart##
+		##ifdefFieldcatidStart##
+		if (empty($this->item->id))
+		{
+			$this->canDo = ##Component##Helper::getActions('##nameplural####extra##.category', $this->state->get('filter.category_id'));
+		}
+		else
+		{
+		##ifdefFieldcatidEnd##
+		##ifdefFieldcategory_idStart##
+		if (empty($this->item->id))
+		{
+			$this->canDo = ##Component##Helper::getActions('##nameplural####extra##.category', $this->state->get('filter.category_id'));
+		}
+		else
+		{
+		##ifdefFieldcategory_idEnd##
+		##ifdefFieldcatidStart##	##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##	##ifdefFieldcategory_idEnd##
+		$this->canDo = ##Component##Helper::getActions('##name##', $this->item->id);
+		##ifdefFieldcatidStart##}##ifdefFieldcatidEnd##
+		##ifdefFieldcategory_idStart##}##ifdefFieldcategory_idEnd##
+		##ifnotdefFieldparent_idEnd##
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
 
+		// Set the toolbar
 		$this->addToolbar();
+
+		// Display the template
 		parent::display($tpl);
+
+		// Set the document
+		$this->setDocument();
 	}
 
 	/**
@@ -57,26 +89,22 @@ class ##Component##View##Name## extends JView
 		$user		= JFactory::getUser();
 		$userId		= $user->get('id');
 		$isNew		= ($this->item->id == 0);
+		$canDo		= $this->canDo;
 		##ifdefFieldchecked_outStart##
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
 		##ifdefFieldchecked_outEnd##
-		##ifdefFieldcatidStart##
-		// Since we don't track these assets at the item level, use the category id.
-		$canDo		= ##Component##Helper::getActions('##name##', $this->item->catid,0);
-		//$this->canDo	= ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
-		##ifdefFieldcatidEnd##
-		##ifdefFieldcategory_idStart##
-		// Since we don't track these assets at the item level, use the category id.
-		$canDo		= ##Component##Helper::getActions('##name##', $this->item->category_id,0);
-		//$this->canDo	= ##Component##Helper::getActions('##name##', $this->state->get('filter.category_id'));
-		##ifdefFieldcategory_idEnd##
 
-		JToolBarHelper::title($isNew ? JText::_('COM_##COMPONENT##_MANAGER_##NAME##_NEW') : JText::_('COM_##COMPONENT##_MANAGER_##NAME##_EDIT'), 'generic.png');
+		JToolBarHelper::title($isNew ? JText::_('COM_##COMPONENT##_##NAME##_MANAGER_NEW') : JText::_('COM_##COMPONENT##_##NAME##_MANAGER_EDIT'), 'generic.png');
 
 		// Built the actions for new and existing records.
 
 		// For new records, check the create permission.
-		if ($isNew && (count($user->getAuthorisedCategories('##com_component##', 'core.create')) > 0)) {
+		##ifnotdefFieldparent_idStart##
+		if ($isNew##ifdefFieldcatidStart## && (count($user->getAuthorisedCategories('##com_component##.##nameplural####extra##', 'core.create')) > 0)##ifdefFieldcatidEnd####ifdefFieldcategory_idStart## && (count($user->getAuthorisedCategories('##com_component##.##nameplural####extra##', 'core.create')) > 0)##ifdefFieldcategory_idEnd##) {
+		##ifnotdefFieldparent_idEnd##
+		##ifdefFieldparent_idStart##
+		if ($isNew && (count(##Component##Helper::getAuthorised##Nameplural####extra##('##com_component##.##nameplural####extra##', 'core.create')) > 0)) {
+		##ifdefFieldparent_idEnd##
 			JToolBarHelper::apply('##name##.apply');
 			JToolBarHelper::save('##name##.save');
 			JToolBarHelper::save2new('##name##.save2new');
@@ -122,24 +150,36 @@ class ##Component##View##Name## extends JView
 			}
 			##ifdefFieldchecked_outEnd##
 
-			##ifdefFieldcatidStart##
 			// If checked out, we can still save
 			if ($canDo->get('core.create')) {
 				JToolBarHelper::save2copy('##name##.save2copy');
 			}
-			##ifdefFieldcatidEnd##
-			##ifdefFieldcategory_idStart##
-			// If checked out, we can still save
-			if ($canDo->get('core.create')) {
-				JToolBarHelper::save2copy('##name##.save2copy');
-			}
-			##ifdefFieldcategory_idEnd##
 
 			JToolBarHelper::cancel('##name##.cancel', 'JTOOLBAR_CLOSE');
 		}
 
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_##COMPONENT##_##NAME##_MANAGER_EDIT');
+	}
+
+	/**
+	 * Method to set up the document properties
+	 *
+	 * @return void
+	 */
+	protected function setDocument()
+	{
+		$isNew = ($this->item->id == 0);
+		$document = JFactory::getDocument();
+		$document->setTitle($isNew ? JText::_('COM_##COMPONENT##_##NAME##_MANAGER_NEW') : JText::_('COM_##COMPONENT##_##NAME##_MANAGER_EDIT'));
+		//$script = array();
+		//$script[] = '	';
+		//JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
+		//$document->addScript(JURI::root(true) . '/media/com_units/js/jquery-1.7.2.min.js');
+		$document->addScript(JURI::root(true) . $this->script);
+		$document->addScript(JURI::root(true) . '/media/##com_component##/js/##name##/submitbutton.js');
+		//$document->addScript(JURI::root(true) . '/media/##com_component##/js/jquery-1.7.2.min.js');
+		//JText::script('COM_##COMPONENT##_##NAME##_ERROR_UNACCEPTABLE');
 	}
 }
 ##codeend##

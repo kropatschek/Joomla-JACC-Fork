@@ -170,6 +170,10 @@ class JaccController extends JController
 		$langs_admin = JLanguage::getKnownLanguages(JPATH_ADMINISTRATOR);
 		$langfiles_site = array();
 		$langfiles_admin = array();
+
+
+
+
 		foreach ($langs_site as $lang) {
 			$langfiles_site  = array_merge(JFolder::files(JPATH_SITE.DS.'language'.DS.$lang['tag'], $item->name, true, true), $langfiles_site);
 		}
@@ -301,16 +305,35 @@ class JaccController extends JController
 		$defaultview = "";
 		$extensions = "";
 		$routerswitch = "";
+		$languages	= JLanguageHelper::getLanguages();
+
 
 		$filesCopy = array();
 		//the view/model/controller name of the first table
 		$firstName  = "";
-		$syslanguage = "";
-		$syslanguage .= $Ucom_component."=\"".ucfirst($component)."\"\n";
-		$syslanguage .= $Ucom_component."_XML_DESCRIPTION=\"Component for ".ucfirst($component)." management\"\n";
+
+		$adminlanguagefile = array();
+		$adminsyslanguagefile = array();
+		$sitelanguagefile = array();
+
+		$adminsyslanguage = array();
+		$adminlanguage = array();
+		$sitelanguage = array();
 
 
-		$language = "";
+		foreach ($languages as $language)
+		{
+			$adminsyslanguage[''][$language->lang_code] = ucfirst($component);
+			$adminsyslanguage['XML_DESCRIPTION'][$language->lang_code] = "Component for " . ucfirst($component) . " management";
+		}
+
+		foreach ($languages as $language)
+		{
+			$adminlanguage[''][$language->lang_code] = ucfirst($component);
+			$adminlanguage['XML_DESCRIPTION'][$language->lang_code] = "Component for " . ucfirst($component) . " management";
+		}
+
+		$componenthelper = "";
 
 		$menu_tmpl = file_get_contents($elements_dir .'menu.php');
 		$categoriesmenu_tmpl = file_get_contents($elements_dir .'categoriesmenu.php');
@@ -342,7 +365,7 @@ class JaccController extends JController
 				//$addsubmenu =  "		  <menu  link=\"option==\"$com_component."&amp;view=categories\">Categories</menu>\n";
 				//$options = array('firstname'=>'categories');
 				//$helpersubmenu = JaccHelper::_replace($menu_tmpl, $item, $options );
-				//$syslanguage .= "CATEGORIES=\"Categories\"\n";
+				//$adminsyslanguage[''] .= "CATEGORIES=\"Categories\"\n";
 			}
 
 
@@ -378,7 +401,12 @@ class JaccController extends JController
 				//last part of table name as class name
 				$name = substr(strrchr($table, '_'), 1);
 				$name = InflectorHelper::singularize($name);
+				$FUName = ucfirst($name);
+				$UName = strtoupper($name);
+
 				$namePlural = InflectorHelper::pluralize($name);
+				$FUNamePlural = ucfirst($namePlural);
+				$UNamePlural = strtoupper($namePlural);
 
 				if ($name == $namePlural)
 				{
@@ -388,7 +416,7 @@ class JaccController extends JController
 				{
 					$extra = '';
 				}
-
+				$UExtra = strtoupper($extra);
 
 				//the table name used as last part of camel case class names
 				$model->setMvcTable($table);
@@ -413,6 +441,14 @@ class JaccController extends JController
 				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl');
 				JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'sql');
 
+				JaccHelper::createFolder($model->getTempPath(true).'media'.DS.'js'.DS.$name);
+
+
+				foreach ($languages as $language)
+				{
+					JaccHelper::createFolder($model->getTempPath(true).'site'.DS.'language'.DS.$language->lang_code);
+					JaccHelper::createFolder($model->getTempPath(true).'admin'.DS.'language'.DS.$language->lang_code);
+				}
 
 				//First table as main triple
 				if (!$mainlink) {
@@ -439,43 +475,64 @@ class JaccController extends JController
 					$accesshelper .= JaccHelper::_replace($accessxml_tmpl, $item, $options);
 				}
 
-				$language .= $Ucom_component."_SUBMENU_".strtoupper($namePlural.$extra)."=\"".ucfirst($namePlural)."\"\n";//no extra
 				if ($model->TableHas($table, 'category_id') )
 				{
 					$menuhelper .= JaccHelper::_replace($categoriesmenu_tmpl, $item, $options);
 					$accesshelper .= JaccHelper::_replace($categoryaccessxml_tmpl, $item, $options);
-
-					$language .= $Ucom_component."_SUBMENU_".strtoupper($name)."_CATEGORIES=\"".ucfirst($name)." Categories\"\n";
-					// Name for the com_category component
-					$language .= $Ucom_component."_".strtoupper($namePlural.$extra)."=\"".ucfirst($namePlural)."\"\n";
 				}
+
+
 
 				$routerswitch .= JaccHelper::_replace($router_tmpl, $item, $options);
 
-				$syslanguage .= $Ucom_component."_".strtoupper($name)."=\"".ucfirst($name)."\"\n";
 
 				//Submenu for admin, if more than one table selected
 				if (count($item->tables) >1)
 				{
-					$submenu .=  "\t\t\t\t<menu link=\"option=".$com_component."\" view=\"".$namePlural.$extra."\" img=\"class:".$lcomponent."-".$name."\" alt=\"".$component."/".ucfirst($name)."\" >".$com_component."_".$namePlural.$extra."</menu>\n";
-					$syslanguage .= $Ucom_component."_".strtoupper($namePlural.$extra)."=\"".ucfirst($namePlural)."\"\n";
+					$submenu .=  "\t\t\t\t<menu link=\"option=".$com_component."&amp;view=".$namePlural.$extra."\" view=\"".$namePlural.$extra."\" img=\"class:".$lcomponent."-".$namePlural.$extra."\" alt=\"".$component."/".$FUNamePlural.$extra."\" >".$com_component."_".$namePlural.$extra."</menu>\n";
 				}
 
 				if ($model->TableHas($table, 'category_id') )
 				{
-					$submenu .= "\t\t\t\t<menu link=\"option=com_categories&amp;extension=".$com_component.".".$namePlural.$extra."\" view=\"categories\" img=\"class:".$lcomponent."-".$name."-cat\" alt=\"".$component."/".ucfirst($name)." Categories\" >".$com_component."_".$name."_categories</menu>\n";
-					$syslanguage .= $Ucom_component."_".strtoupper($name)."_CATEGORIES=\"".ucfirst($name)." Categories\"\n";
+					$submenu .= "\t\t\t\t<menu link=\"option=com_categories&amp;extension=".$com_component.".".$namePlural.$extra."\" view=\"categories\" img=\"class:".$lcomponent."-".$namePlural.$extra."-cat\" alt=\"".$component."/".$FUName." Categories\" >".$com_component."_".$name."_categories</menu>\n";
 				}
 
-				$language .= $Ucom_component."_MANAGER_".strtoupper($namePlural.$extra)."=\"".ucfirst($component)." Manager: ".ucfirst($namePlural)."\"\n";
-				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."=\"".ucfirst($component)." Manager: ".ucfirst($name)."\"\n";
-				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."_NEW=\"".ucfirst($component)." Manager: Add New ".ucfirst($name)."\"\n";
-				$language .= $Ucom_component."_MANAGER_".strtoupper($name)."_EDIT=\"".ucfirst($component)." Manager: Edit ".ucfirst($name)."\"\n";
+				foreach ($languages as $language)
+				{
+					$adminsyslanguage[$UName][$language->lang_code] = $FUName;
+					$adminlanguage[$UNamePlural . $UExtra . '_SUBMENU'][$language->lang_code] = $FUNamePlural;//no extra
+					$adminlanguage[$UNamePlural . $UExtra . '_MANAGER'][$language->lang_code] = ucfirst($component) . " Manager: " . $FUNamePlural;
+					$adminlanguage[$UName . '_MANAGER'][$language->lang_code] = ucfirst($component)." Manager: " . $FUName;
+					$adminlanguage[$UName . '_MANAGER_NEW'][$language->lang_code] = ucfirst($component)." Manager: Add New " . $FUName;
+					$adminlanguage[$UName . '_MANAGER_EDIT'][$language->lang_code] = ucfirst($component)." Manager: Edit " . $FUName;
+					$adminlanguage[$UName . '_DETAILS'][$language->lang_code] = "Details";
+					$adminlanguage[$UName . '_NEW'][$language->lang_code] = "New " . $FUName;
+					$adminlanguage[$UName . '_EDIT'][$language->lang_code] = "Edit " . $FUName;
+					$adminlanguage[$UName . '_BATCH_OPTIONS'][$language->lang_code] = "";
+					$adminlanguage[$UName . '_BATCH_TIP'][$language->lang_code] = "";
+					if (count($item->tables) >1)
+					{
+						$adminsyslanguage[$UNamePlural . $UExtra][$language->lang_code] = $FUNamePlural;
+
+					}
+					if ($model->TableHas($table, 'category_id') )
+					{
+						$adminsyslanguage[$UName . '_CATEGORIES'][$language->lang_code] = $FUNname . " Categories";
+						$adminlanguage[$UName . '_CATEGORIES_SUBMENU'][$language->lang_code] = $FUName . " Categories";
+						// Name for the com_category component
+						$adminlanguage[$UNamePlural . $extra][$language->lang_code] = $FUNamePlural;
+					}
+				}
 
 				JRequest::setVar('type', 'language');
 				$model->setMvcTemplate('language');
 				$view->setModel($model, true);
-				$language .= $view->display();
+				foreach ($languages as $language)
+				{
+					$view->language = $language->lang_code;
+					$adminlanguagefile[$language->lang_code] .= $view->display();
+					$sitelanguagefile[$language->lang_code] .= $view->display();
+				}
 
 				//Create an array for the MVC elements
 				$mvcfiles = array(
@@ -483,8 +540,8 @@ class JaccController extends JController
 					'modelplural'=>array('folders'=>array('admin'.DS.'models'),'ext'=>'php','name'=>$namePlural.$extra),
 					'modelfrontend'=>array('folders'=>array('site'.DS.'models'),'ext'=>'php','name'=>$name),
 					'xmlmodel'=>array('folders'=>array('admin'.DS.'models'.DS.'forms'),'ext'=>'xml','name'=>$name),
-					'language'=>array('folders'=>array('admin'.DS.'language'),'ext'=>'ini','name'=>'en-GB.'.$com_component),
-					'language'=>array('folders'=>array('admin'.DS.'language'),'ext'=>'ini','name'=>'de-DE.'.$com_component),
+					//'language'=>array('folders'=>array('admin'.DS.'language'),'ext'=>'ini','name'=>'en-GB.'.$com_component),
+					//'language'=>array('folders'=>array('admin'.DS.'language'),'ext'=>'ini','name'=>'de-DE.'.$com_component),
 					//'element'=>array('folders'=>array('admin'.DS.'elements'),'ext'=>'php','name'=>$name),
 					'table'=>array('folders'=>array('admin'.DS.'tables'),'ext'=>'php','name'=>$name),
 					'controller'=>array('folders'=>array('admin'.DS.'controllers'),'ext'=>'php','name'=>$name),
@@ -495,6 +552,7 @@ class JaccController extends JController
 					'metadata'=>array('folders'=>array('site'.DS.'views'.DS.$name),'ext'=>'xml','name'=>'metadata'),
 					'tmpl_site'=>array('folders'=>array('site'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'default'),
 					'tmpl_admin_edit'=>array('folders'=>array('admin'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'edit'),
+					'tmpl_admin_edit_submitbutton_js'=>array('folders'=>array('media'.DS.'js'.DS.$name),'ext'=>'js','name'=>'submitbutton'),
 					'tmpl_admin_default'=>array('folders'=>array('admin'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl'),'ext'=>'php','name'=>'default'),
 					'tmpl_admin_default_batch'=>array('folders'=>array('admin'.DS.'views'.DS.$namePlural.$extra.DS.'tmpl'),'ext'=>'php','name'=>'default_batch'),
 					'defaultxml'=>array('folders'=>array('site'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'xml','name'=>'default'),
@@ -502,8 +560,15 @@ class JaccController extends JController
 					//'tmpl_admin_'=>array('folders'=>array('admin'.DS.'views'.DS.$name.DS.'tmpl'),'ext'=>'php','name'=>'form')
 				);
 
+
+
 				if ($model->TableHas($table, 'parent_id'))
 				{
+					JRequest::setVar('type', 'helpers_component_parent');
+					$model->setMvcTemplate('helpers_component_parent');
+					$view->setModel($model, true);
+					$componenthelper .= $view->display();
+
 					$mvcfiles[model_field_categoryedit] = array('folders'=>array('admin'.DS.'models'.DS.'fields'),'ext'=>'php','name'=>$name.'edit');
 					$mvcfiles[helpers_html_category] = array('folders'=>array('admin'.DS.'helpers'.DS.'html'),'ext'=>'php','name'=>$name);
 
@@ -538,7 +603,10 @@ class JaccController extends JController
 		if($hasnoImages) {
 			$model->addExcludes(array('imageup'));
 		}
+
+
 		//additional user defined Controller/View Pairs, that do not relate to a table
+
 		$vcpairs = $item->params->get('views');
 
 		if(is_array($vcpairs) && count($vcpairs) ) {
@@ -553,10 +621,15 @@ class JaccController extends JController
 					$menuhelper .= JaccHelper::_replace($menu_tmpl, $item, $replaceoptions);
 					$addsubmenu .=  "		  <menu  link=\"option=".$com_component."&amp;view=".$options['name']."\">".ucfirst($options['name'])."</menu>\n";
 					$routerswitch .= JaccHelper::_replace($router_tmpl, $item, $replaceoptions);
-					$syslanguage .= strtoupper($options['name'])."=\"".ucfirst($options['name'])."\"\n";
+					foreach ($languages as $language)
+					{
+						$adminsyslanguage[strtoupper($options['name'])][$language->lang_code] = ucfirst($options['name']);
+					}
 				}
 			}
 		}
+
+
 
 		//TODO: to delete
 		//write the extension.xml
@@ -575,14 +648,45 @@ class JaccController extends JController
 
 		$submenu .= $addsubmenu;
 
+		foreach ($languages as $language)
+		{
+			foreach ($sitelanguage as $languagekey => $value)
+			{
+				$sitelanguagefile[$language->lang_code] .= $Ucom_component . "_" . (empty($languagekey) ? "" : "_" . $languagekey) . "=\"" . $value[$language->lang_code] . "\"\n";
+			}
+
+			foreach ($adminlanguage as $languagekey => $value)
+			{
+				$adminlanguagefile[$language->lang_code] .= $Ucom_component . (empty($languagekey) ? "" : "_" . $languagekey) . "=\"" . $value[$language->lang_code] . "\"\n";
+			}
+
+			foreach ($adminsyslanguage as $languagekey => $value)
+			{
+				$adminsyslanguagefile[$language->lang_code] .= $Ucom_component . (empty($languagekey) ? "" : "_" . $languagekey) . "=\"" . $value[$language->lang_code] . "\"\n";
+			}
+
+			$languages_site .= "\t\t<language tag=\"".$language->lang_code."\">language".DS.$language->lang_code.DS.$language->lang_code.".".$com_component.".ini</language>\n";
+			$languages_admin .= "\t\t\t<language tag=\"".$language->lang_code."\">language".DS.$language->lang_code.DS.$language->lang_code.".".$com_component.".ini</language>\n";
+			$languages_admin .= "\t\t\t<language tag=\"".$language->lang_code."\">language".DS.$language->lang_code.DS.$language->lang_code.".".$com_component.".sys.ini</language>\n";
+
+			file_put_contents($model->getTempPath(true).'site'.DS.'language'.DS.$language->lang_code.DS.$language->lang_code.'.'.$com_component.'.ini', $sitelanguagefile[$language->lang_code]);
+			file_put_contents($model->getTempPath(true).'admin'.DS.'language'.DS.$language->lang_code.DS.$language->lang_code.'.'.$com_component.'.ini', $adminlanguagefile[$language->lang_code]);
+			file_put_contents($model->getTempPath(true).'admin'.DS.'language'.DS.$language->lang_code.DS.$language->lang_code.'.'.$com_component.'.sys.ini', $adminsyslanguagefile[$language->lang_code]);
+		}
+
+		//Read the template for each mvc element
 		$options = array('menuhelper' => $menuhelper.$helpersubmenu,
+						'submenu' => $submenu,
 						'accesshelper' => $accesshelper,
 						'routerswitch' => $routerswitch,
-						'syslanguage' => $syslanguage,
-						'language' => $language,
+						//'syslanguage' => $adminsyslanguage[''],
+						//'language' => $language,
+						'languages_site' => $languages_site,
+						'languages_admin' => $languages_admin,
 						'defaultview' => $defaultview,
 						'defaultviewsingular' => $defaultviewsingular,
-						'submenu' => $submenu,
+						'componenthelper' => $componenthelper,
+						'firstname' =>$firstName,
 						'firstname' =>$firstName,
 						'firstnameplural' => $firstNamePlural,
 						'firstextra' => $firstExtra,

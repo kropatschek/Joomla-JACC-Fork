@@ -96,6 +96,50 @@ class JaccHelper
 			return ($a->ordering < $b->ordering) ? -1 : 1;
 	}
 
+
+	/**
+	 * Retrieves table information.
+	 *
+	 * @return  array  An array of tables for the database.
+	 *
+	 * @since   11.1
+	 * @throws  JDatabaseException
+	 */
+	public function getTablesStatus()
+	{
+		$result = array();
+
+		// Set the query to get the table fields statement.
+		$this->setQuery('SHOW TABLE STATUS');
+		$tables = $this->loadObjectList();
+
+		foreach ($tables as $table)
+		{
+			$result[$table->Name] = $table;
+		}
+
+		return $result;
+	}
+
+	public function acronym( $string = '', $delimiter = ' ')
+	{
+		$words = explode($delimiter, $string);
+
+		if ( ! $words )
+		{
+			return false;
+		}
+
+		$result = '';
+
+		foreach ( $words as $word )
+		{
+			$result .= $word[0];
+		}
+
+		return $result;
+	}
+
 	/**
 	 *
 	 * This Method creates an object of several field lists
@@ -112,7 +156,6 @@ class JaccHelper
 	 * @param array $tablefields - fields returned by $db->getTableFields($table, false);
 	 * @return JObject $fields
 	 */
-
 	public static function getSpecialFields ($tablefields)
 	{
 		global $alt_libdir;
@@ -124,7 +167,8 @@ class JaccHelper
 		$elements = $xml->xpath('fields');
 		$fields = $xml->fields->xpath('descendant-or-self::field');
 		$specialFields = array();
-		foreach ($fields  as $field) {
+		foreach ($fields as $field)
+		{
 			$fieldkey = (string) $field->key;
 			$specialFields[$fieldkey] = new JObject();
 			$specialFields[$fieldkey]->setProperties($field);
@@ -135,92 +179,232 @@ class JaccHelper
 		$primfield= null;
 		$firstVarcharField = null;
 		foreach ($tablefields as $tablefield) {
+			$field = $tablefield->Field;
+
 			$legal = '/[^A-Z0-9_]/i';
-			if (preg_match_all($legal, $tablefield->Field, $matches)) {
-				$suggest = (string) preg_replace( $legal, '', $tablefield->Field);
-				return 'Field '.$tablefield->Field. ' contains illegal characters. It\'s suggested to rename it as '.$suggest;
+			if (preg_match_all($legal, $field, $matches))
+			{
+				$suggest = (string) preg_replace( $legal, '', $field);
+				return 'Field '.$field. ' contains illegal characters. It\'s suggested to rename it as '.$suggest;
 			}
-			$tablefield->Type =  strtolower(preg_replace('/\(.*\)/i', '', $tablefield->Type));
+
+			$maxlength = 0;
+			if(preg_match_all('/[0-9]+/', (string) $tablefield->Type, $matches))
+			{
+				$maxlength = (int) $matches[0][0] + (isset($matches[0][1]) ? (1 + (int) $matches[0][1]) : 0);
+			}
+			if (strtolower($tablefield->Type) == 'int(1)' || strtolower($tablefield->Type) == 'tinyint(1)')
+			{
+				$tablefield->Type = 'boolean';
+			}
+			else
+			{
+				$tablefield->Type = strtolower(preg_replace('/\(.*\)/i', '', $tablefield->Type));
+			}
 
 			//find something like a title or a name or sku as a human comprehensible identifier for this item
-			if (strtolower($tablefield->Field) == 'title' || strtolower($tablefield->Field) == 'domain' || strtolower($tablefield->Field) == 'name' || strtolower($tablefield->Field) == 'sku') {
-				$hident = $tablefield->Field;
+			if (strtolower($field) == 'title' || strtolower($field) == 'domain' || strtolower($field) == 'name' || strtolower($field) == 'sku')
+			{
+				$hident = $field;
 			}
 
 			//find the first varchar. this may be the ident too
-			if ($tablefield->Type == 'varchar' && $firstVarcharField === null) {
-
-					$firstVarcharField = $tablefield->Field;
+			if ($tablefield->Type == 'varchar' && $firstVarcharField === null)
+			{
+					$firstVarcharField = $field;
 			}
 
 			//find it in the special fields
-			if (isset($specialFields[$tablefield->Field])) {
+			if (isset($specialFields[$field]))
+			{
 				//set delete to false. According parts of the templates will not be deleted
-				$specialFields[$tablefield->Field]->set('fieldtype', $tablefield->Type);
-				$specialFields[$tablefield->Field]->set('default', $tablefield->Default);
-				$specialFields[$tablefield->Field]->set('delete', false);
-			} else {
+				$specialFields[$field]->set('fieldtype', $tablefield->Type);
+				$specialFields[$field]->set('default', $tablefield->Default);
+				$specialFields[$field]->set('delete', false);
+			}
+			else
+			{
 				//this is not a special field. add it to the object.
 				if ($tablefield->Key == 'PRI') {
-					$primfield = $tablefield->Field;
+					$primfield = $field;
+					$field = 'primary';
+					//$specialFields['primary'] = new JObject();
+
 					$specialFields['primary']->set('key', $tablefield->Field);
 					$specialFields['primary']->set('group', '');
 					$specialFields['primary']->set('formfield', '');
+					$specialFields['primary']->set('filter', 'unset');
 					$specialFields['primary']->set('alt', '');
-					$specialFields['primary']->set('ordering', 1);
+					$specialFields['primary']->set('ordering', 99);
 					$specialFields['primary']->set('delete', false);
-				} else {
-						$specialFields[$tablefield->Field] = new JObject();
-						$specialFields[$tablefield->Field]->set('key', $tablefield->Field);
-						$specialFields[$tablefield->Field]->set('group', 'details');
-						$specialFields[$tablefield->Field]->set('alt', '');
-
-						//handle some special field types
-						switch($tablefield->Type) {
-							case 'text':
-							case 'mediumtext':
-							case 'longtext':
-								$specialFields[$tablefield->Field]->set('formfield', 'editor');
-								break;
-							case 'date':
-							case 'datetime':
-								$specialFields[$tablefield->Field]->set('formfield', 'calendar');
-								break;
-							case 'varchar':
-									$specialFields[$tablefield->Field]->set('list', true);
-							default:
-								$specialFields[$tablefield->Field]->set('formfield', 'text');
-						}
-
-						//set ordering
-						$specialFields[$tablefield->Field]->set('ordering', $ordering);
-
-						//set delete to false. According parts of the templates will not be deleted
-						$specialFields[$tablefield->Field]->set('delete', false);
-						//set the type
-						$specialFields[$tablefield->Field]->set('fieldtype', $tablefield->Type);
-						$specialFields[$tablefield->Field]->set('default', $tablefield->Default);
 				}
+				else
+				{
+					$specialFields[$field] = new JObject();
+					$specialFields[$field]->set('key', $tablefield->Field);
+					$specialFields[$field]->set('group', 'details');
+					$specialFields[$field]->set('alt', '');
+					//$specialFields[$field]->set('required', false);
+					//$specialFields[$field]->set('readonly', false);
+					//$specialFields[$field]->set('disabled', false);
+					$specialFields[$field]->set('delete', false);
+					$specialFields[$field]->set('class', 'inputbox');
+					$specialFields[$field]->set('list', true);
+					$specialFields[$field]->set('fieldtype', $tablefield->Type);
+					$specialFields[$field]->set('default', $tablefield->Default);
 
+					//handle some special field types
+					switch($tablefield->Type) {
+						case 'bool':
+						case 'boolean':
+							$specialFields[$field]->set('formfield', 'radio');
+							$specialFields[$field]->set('filter', 'boolean');
+							$specialFields[$field]->set('class', 'inputbox');
+							$options = "\t\t\t\t<option\n"
+								. "\t\t\t\t\tvalue=\"0\">JNO</option>\n"
+								. "\t\t\t\t<option\n"
+								. "\t\t\t\t\tvalue=\"1\">JYES</option>\n";
+							$specialFields[$field]->set('options', $options);
+							break;
+						case 'int unsigned':
+							$specialFields[$field]->set('formfield', 'text');
+							$specialFields[$field]->set('filter', 'uint');
+							$specialFields[$field]->set('class', 'inputbox validate-numeric');
+							$specialFields[$field]->set('size', $maxlength > 20 ? 20 : $maxlength);
+							break;
+						case 'int':
+						case 'integer':
+							$specialFields[$field]->set('formfield', 'text');
+							$specialFields[$field]->set('filter', 'integer');
+							$specialFields[$field]->set('class', 'inputbox validate-numeric');
+							$specialFields[$field]->set('size', $maxlength > 20 ? 20 : $maxlength);
+							break;
+						case 'float':
+						case 'double':
+						case 'decimal':
+							$specialFields[$field]->set('formfield', 'text');
+							$specialFields[$field]->set('filter', 'float');
+							$specialFields[$field]->set('class', 'inputbox validate-numeric');
+							$specialFields[$field]->set('size', $maxlength > 20 ? 20 : $maxlength);
+							break;
+						case 'varchar':
+							$specialFields[$field]->set('filter', 'string');
+							$specialFields[$field]->set('formfield', 'text');
+							$specialFields[$field]->set('size', $maxlength > 40 ? 40 : $maxlength);
+							break;
+						case 'text':
+							$specialFields[$field]->set('formfield', 'textarea');
+							$specialFields[$field]->set('filter', 'string');
+							$specialFields[$field]->set('rows', '3');
+							$specialFields[$field]->set('cols', '30');
+							break;
+						case 'mediumtext':
+						case 'longtext':
+							$specialFields[$field]->set('formfield', 'editor');
+							$specialFields[$field]->set('filter', 'safehtml');
+							$specialFields[$field]->set('rows', '3');
+							$specialFields[$field]->set('cols', '30');
+							break;
+						case 'date':
+							$specialFields[$field]->set('formfield', 'calendar');
+							$specialFields[$field]->set('filter', 'user_utc');
+							$specialFields[$field]->set('format', '%Y-%m-%d');
+							$specialFields[$field]->set('size', '13');
+							break;
+						case 'datetime':
+							$specialFields[$field]->set('formfield', 'calendar');
+							$specialFields[$field]->set('filter', 'user_utc');
+							$specialFields[$field]->set('format', '%Y-%m-%d %H:%M:%S');
+							$specialFields[$field]->set('size', '22');
+							break;
+						default:
+							$specialFields[$field]->set('formfield', 'text');
+							break;
+					}
+
+					//set ordering
+					$specialFields[$field]->set('ordering', $ordering);
+
+					//set delete to false. According parts of the templates will not be deleted
+					//set the type
+
+					if ($maxlength)
+					{
+						$specialFields[$field]->set('maxlength', $maxlength);
+					}
+				}
 				$ordering++;
 			}
+
+			$tablefield->Comment = trim($tablefield->Comment);
+			$backupLabel = $specialFields[$field]->get('label');
+			$backupDescription = $specialFields[$field]->get('description');
+			if ((substr($tablefield->Comment, 0, 1) == '{') && (substr($tablefield->Comment, -1, 1) == '}'))
+			{
+				$specialFields[$field]->setProperties(json_decode($tablefield->Comment, true));
+				if ($specialFields[$field]->get('hident', false))
+				{
+					$hident = $field;
+				}
+			}
+
+			$label = $specialFields[$field]->get('label');
+			if (!is_array($label))
+			{
+				$label = array();
+			}
+			if (!array_key_exists('en-GB', $label))
+			{
+				$label['en-GB'] = ($backupLabel ? $backupLabel : ucwords(strtr((substr(strrchr($tablefield->Field, '_'), 1) == 'id') ? substr($tablefield->Field, 0, -3) : $tablefield->Field,'_',' ')));
+			}
+			$specialFields[$field]->set('label', $label);
+
+			$description = $specialFields[$field]->get('description');
+			if (!is_array($description))
+			{
+				$description = array();
+			}
+			if (!array_key_exists('en-GB', $description))
+			{
+				$description['en-GB'] = ($backupDescription ? $backupDescription : '');
+			}
+			$specialFields[$field]->set('description', $description);
 		}
+
 		//find the human comprehensible identifier
-		if ($hident === null ) {
-			if ($firstVarcharField) {
+		if ($hident === null )
+		{
+			if ($firstVarcharField)
+			{
 				//we can use the first field of type varchar
 				$hident = $firstVarcharField;
-				unset ($specialFields[$firstVarcharField]);
-			} elseif ($primfield ) {
+				$specialFields['hident'] = clone($specialFields[$hident]);
+				unset ($specialFields[$hident]);
+			}
+			elseif ($primfield )
+			{
+				$specialFields['hident'] = clone($specialFields['primary']);
 				$hident = $primfield;
 			}
-		} else {
-				unset ($specialFields[$hident]);
+		}
+		else
+		{
+			$specialFields['hident'] = clone($specialFields[$hident]);
+			unset ($specialFields[$hident]);
 		}
 
 		//replace hident field
 		$specialFields['hident']->set('key', $hident);
 		$specialFields['hident']->set('delete', false);
+		$specialFields['hident']->set('group', 'details');
+		$specialFields['hident']->set('list', true);
+		$specialFields['hident']->set('required', true);
+
+		//$label['en-GB'] = ($specialFields['hident']->get('label') ? $specialFields['hident']->get('label') : ucwords(strtr($hident,'_',' ')));
+		//$specialFields['hident']->set('label', $label);
+		//$description['en-GB'] = ($specialFields['hident']->get('description') ? $specialFields['hident']->get('description') : '');
+		//$specialFields['hident']->set('description', $description);
+
 		if ($primfield) {
 			//add primary field as "additional" to the end
 			$specialFields[$primfield] = clone($specialFields['primary']);
@@ -271,8 +455,6 @@ class JaccHelper
 			}
 		}
 
-
-
 		$fields = new JObject();
 		//a list of all present fields
 		$fields->set('all', $specialFields);
@@ -319,7 +501,7 @@ class JaccHelper
 	 * @param string $table
 	 * @param string $break - OS specific line end
 	 */
-	public static function export_table_structure($table,  $break = "\n")
+	public static function export_table_structure($table, $break = "\n")
 	{
 
 		$db = JFactory::getDBO();
@@ -527,6 +709,7 @@ Replace INTO `#__".$lcomponent."_categories`  VALUES(1, 0, 0, 0, 5, 0, '', 'syst
 		**/
 		return $file;
 	}
+
 
 	public static function getcategorytask ()
 	{

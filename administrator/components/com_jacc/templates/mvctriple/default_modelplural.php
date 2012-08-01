@@ -41,6 +41,7 @@ class ##Component##Model##Nameplural####extra## extends JModelList
 		{
 			$config['filter_fields'] = array(
 				##fields##
+				##ifdefFieldcategory_idStart## 'category_title',##ifdefFieldcategory_idEnd####ifdefFieldcatidStart## 'category_title',##ifdefFieldcatidEnd####ifdefFieldaccessStart## 'access_level',##ifdefFieldaccessEnd##
 			);
 		}
 
@@ -210,11 +211,28 @@ class ##Component##Model##Nameplural####extra## extends JModelList
 				//'a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid' .
 				//', a.state, a.access, a.created, a.created_by, a.ordering, a.featured, a.language, a.hits' .
 				//', a.publish_up, a.publish_down'
+				##ifdefFieldmodified_timeStart##
+				##ifdefFieldcreated_timeStart##
+				'CASE WHEN a.modified_time = 0 THEN a.created_time ELSE a.modified_time END as modified_time,' .
+				##ifdefFieldcreated_timeEnd##
+				##ifdefFieldcreatedStart##
+				'CASE WHEN a.modified_time = 0 THEN a.created ELSE a.modified_time END as modified_time,' .
+				##ifdefFieldcreatedEnd##
+				##ifdefFieldmodified_timeEnd##
+				##ifdefFieldmodifiedStart##
+				##ifdefFieldcreatedStart##
+				'CASE WHEN a.modified = 0 THEN a.created ELSE a.modified END as modified,' .
+				##ifdefFieldcreatedEnd##
+				##ifdefFieldcreated_timeStart##
+				'CASE WHEN a.modified = 0 THEN a.created_time ELSE a.modified END as modified,' .
+				##ifdefFieldcreated_timeEnd##
+				##ifdefFieldmodifiedEnd##
 				'a.*'
 			)
 		);
 		$query->from($db->quoteName('##table##').' AS a');
 
+##fieldslist##
 		##ifdefFieldlanguageStart##
 		// Join over the language
 		$query->select('l.title AS language_title');
@@ -257,6 +275,18 @@ class ##Component##Model##Nameplural####extra## extends JModelList
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_user_id');
 
 		##ifdefFieldcreated_user_idEnd##
+		##ifdefFieldmodified_byStart##
+		// Join over the users for the author.
+		$query->select('uam.name AS modifier_name');
+		$query->join('LEFT', '#__users AS uam ON uam.id = a.modified_by');
+
+		##ifdefFieldmodified_byEnd##
+		##ifdefFieldmodified_user_idStart##
+		// Join over the users for the author.
+		$query->select('uam.name AS modifier_name');
+		$query->join('LEFT', '#__users AS uam ON uam.id = a.modified_user_id');
+
+		##ifdefFieldmodified_user_idEnd##
 		##ifdefFieldextensionStart##
 		// Filter by extension
 		//if ($extension = $this->getState('filter.extension')) {
@@ -290,12 +320,12 @@ class ##Component##Model##Nameplural####extra## extends JModelList
 		##ifdefFieldaccessEnd##
 		##ifdefFieldstateStart##
 		// Filter by published state
-		$published = $this->getState('filter.state');
-		if (is_numeric($published))
+		$state = $this->getState('filter.state');
+		if (is_numeric($state))
 		{
-			$query->where('a.state = ' . (int) $published);
+			$query->where('a.state = ' . (int) $state);
 		}
-		elseif ($published === '') {
+		elseif ($state === '') {
 			$query->where('(a.state IN (0, 1))');
 		}
 
@@ -311,7 +341,7 @@ class ##Component##Model##Nameplural####extra## extends JModelList
 			$query->where('(a.published IN (0, 1))');
 		}
 
-		##ifdefFieldstateEnd##
+		##ifdefFieldpublishedEnd##
 		##ifdefFieldcatidStart##
 		// Filter by published
 		// Filter by a single or group of categories.

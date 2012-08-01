@@ -40,9 +40,10 @@ JHtml::_('behavior.keepalive');
 <form action="##codestart## echo JRoute::_('index.php?option=##com_component##&layout=edit&id='.(int) $this->item->id);##codeend##" method="post" name="adminForm" id="##name##-form" class="form-validate">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
-			<legend>##codestart## echo empty($this->item->id) ? JText::_('COM_##COMPONENT##_NEW_##NAME##') : JText::sprintf('COM_##COMPONENT##_EDIT_##NAME##', $this->item->id);##codeend##</legend>
+			<legend>##codestart## echo empty($this->item->id) ? JText::_('COM_##COMPONENT##_##NAME##_NEW') : JText::sprintf('COM_##COMPONENT##_##NAME##_EDIT', $this->item->id);##codeend##</legend>
 			<ul class="adminformlist">
-				<?php if (isset($this->formfield['details']))
+<?php
+				if (isset($this->formfield['details']))
 				{
 					$fields = $this->formfield['details'];
 					foreach ($fields as $field)
@@ -53,9 +54,10 @@ JHtml::_('behavior.keepalive');
 							echo $this->loadTemplate('tmpl_admin_edit_fields');
 						}
 					}
-				} ?>
+				}
+?>
 			</ul>
-			<?php
+<?php
 			if (isset($this->formfield['details']))
 			{
 				$fields = $this->formfield['details'];
@@ -68,7 +70,7 @@ JHtml::_('behavior.keepalive');
 					}
 				}
 			}
-			?>
+?>
 		</fieldset>
 	</div>
 
@@ -92,6 +94,8 @@ JHtml::_('behavior.keepalive');
 				}
 				?>
 				##codestart## if ($this->canDo->get('core.admin')): ##codeend##
+
+				##ifdefFieldasset_idStart##
 				<li><span class="faux-label">##codestart## echo JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL'); ##codeend##</span>
 					<div class="button2-left"><div class="blank">
 						<button type="button" onclick="document.location.href='#access-rules';">
@@ -99,6 +103,7 @@ JHtml::_('behavior.keepalive');
 						</button>
 					</div></div>
 				</li>
+				##ifdefFieldasset_idEnd##
 				##codestart## endif; ##codeend##
 			</ul>
 			<?php
@@ -177,10 +182,10 @@ JHtml::_('behavior.keepalive');
 			##codestart## echo JHtml::_('sliders.end'); ##codeend##
 		</div>
 	##codestart## endif; ##codeend##
+	##ifdefFieldasset_idEnd##
 	<div>
 		<input type="hidden" name="task" value="" />
-		##codestart## echo JHtml::_('form.token');##codeend##
+		<input type="hidden" name="return" value="##codestart## echo JRequest::getCmd('return');##codeend##" />
+		##codestart## echo JHtml::_('form.token'); ##codeend##
 	</div>
-	##ifdefFieldasset_idEnd##
 </form>
-<div class="clr"></div>

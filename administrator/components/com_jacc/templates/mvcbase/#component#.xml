@@ -1,6 +1,6 @@
-<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD component 1.0//EN" "http://joomla.org/xml/dtd/1.5/component-install.dtd">
-<install type="component" method="upgrade" version="1.5.0">
-	<name>##Component##</name>
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5.0" method="upgrade">
+	<name>##COM_COMPONENT##</name>
 	<creationDate>##date##</creationDate>
 	<author>##author##</author>
 	<authorEmail>##email##</authorEmail>
@@ -9,55 +9,61 @@
 	<license>##license##</license>
 	<version>##version##</version>
 	<description>COM_##COMPONENT##_XML_DESCRIPTION</description>
-	<installfile></installfile>
-	<uninstallfile></uninstallfile>
+
+	<scriptfile>script.php</scriptfile>
+
 	<install>
 		<sql>
 			<file driver="mysql" charset="utf8">sql/install.mysql.sql</file>
 		</sql>
 	</install>
+
 	<uninstall>
 		<sql>
 			<file driver="mysql" charset="utf8">sql/uninstall.mysql.sql</file>
 		</sql>
 	</uninstall>
+
 	<files folder="site">
+			<filename>index.html</filename>
 			<filename>##component##.php</filename>
 			<filename>controller.php</filename>
-			<filename>index.html</filename>
 			<filename>router.php</filename>
+			<folder>views</folder>
+			<folder>models</folder>
 			<folder>controllers</folder>
 			<folder>helpers</folder>
-			<folder>models</folder>
-			<folder>views</folder>
-			<folder>assets</folder>
 	</files>
+
 	<languages folder="site">
-		<language tag="en-GB">language/en-GB.com_##component##.ini</language>
-		<language tag="de-DE">language/de-DE.com_##component##.ini</language>
+##languages_site##
 	</languages>
+
+	<media destination="##com_component##" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+
 	<administration>
 		<menu link="index.php?option=com_##component##" img="class:##component##">com_##component##</menu>
 ##submenu##
 		<files folder="admin">
+			<filename>index.html</filename>
 			<filename>config.xml</filename>
+			<filename>access.xml</filename>
 			<filename>##component##.php</filename>
 			<filename>controller.php</filename>
-			<filename>index.html</filename>
-			<filename>access.xml</filename>
-			<folder>assets</folder>
-			<folder>controllers</folder>
-			<folder>helpers</folder>
-			<folder>models</folder>
 			<folder>sql</folder>
 			<folder>tables</folder>
+			<folder>models</folder>
 			<folder>views</folder>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
 		</files>
+
 		<languages folder="admin">
-			<language tag="en-GB">language/en-GB.com_##component##.ini</language>
-			<language tag="de-DE">language/de-DE.com_##component##.ini</language>
-			<language tag="en-GB">language/en-GB.com_##component##.sys.ini</language>
-			<language tag="de-DE">language/de-DE.com_##component##.sys.ini</language>
+##languages_admin##
 		</languages>
 	</administration>
-</install>
+
+</extension>

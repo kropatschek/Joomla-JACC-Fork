@@ -557,6 +557,16 @@ class ##Component##Model##Name## extends JModelAdmin
 		return $form;
 	}
 
+	/**
+	 * Method to get the script that have to be included on the form
+	 *
+	 * @return string	Script files
+	 */
+	public function getScript()
+	{
+		return '/media/##com_component##/##name##/##name##.js';
+	}
+
 	##ifdefFieldparent_idStart##
 	##ifdefFieldextensionStart##
 	/**
@@ -750,16 +760,9 @@ class ##Component##Model##Name## extends JModelAdmin
 		##ifdefFieldurlsEnd##
 
 		if (JRequest::getVar('task') == 'save2copy') {
-			list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle(
-				##ifdefFieldcatidStart##$data['catid'], ##ifdefFieldcatidEnd##
-				##ifdefFieldcategory_idStart##$data['category_id'], ##ifdefFieldcategory_idEnd##
-				##ifdefFieldaliasStart##$data['alias'], ##ifdefFieldaliasEnd##
-				$data['##title##']
-			);
+			list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle(##ifdefFieldcatidStart##$data['catid'], ##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##$data['category_id'], ##ifdefFieldcategory_idEnd####ifnotdefFieldcategory_idStart####ifnotdefFieldcatidStart##'', ##ifnotdefFieldcatidEnd####ifnotdefFieldcategory_idEnd####ifdefFieldaliasStart##$data['alias'], ##ifdefFieldaliasEnd####ifnotdefFieldaliasStart##'', ##ifnotdefFieldaliasEnd##$data['##title##']);
 			$data['##title##']	= $title;
-			##ifdefFieldaliasStart##
-			$data['alias']	= $alias;
-			##ifdefFieldaliasEnd##
+			##ifdefFieldaliasStart##$data['alias']	= $alias;##ifdefFieldaliasEnd##
 		}
 
 		if (parent::save($data)) {
@@ -816,15 +819,9 @@ class ##Component##Model##Name## extends JModelAdmin
 
 			// Alter the title for save as copy
 			if (JRequest::getVar('task') == 'save2copy') {
-				list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle(
-					$data['parent_id'],
-					##ifdefFieldaliasStart##$data['alias'], ##ifdefFieldaliasEnd##
-					$data['##title##']
-				);
+				list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle($data['parent_id'],##ifdefFieldaliasStart##$data['alias'], ##ifdefFieldaliasEnd####ifnotdefFieldaliasStart##'', ##ifnotdefFieldaliasEnd##$data['##title##']);
 				$data['##title##']	= $title;
-				##ifdefFieldaliasStart##
-				$data['alias']	= $alias;
-				##ifdefFieldaliasEnd##
+				##ifdefFieldaliasStart##$data['alias']	= $alias;##ifdefFieldaliasEnd##
 			}
 
 			// Bind the data.
@@ -910,6 +907,7 @@ class ##Component##Model##Name## extends JModelAdmin
 	}
 
 	##ifdefFieldparent_idEnd##
+
 	##ifdefFieldparent_idStart##
 	/**
 	 * Method rebuild the entire nested set tree.
@@ -1171,11 +1169,7 @@ class ##Component##Model##Name## extends JModelAdmin
 			$table->rgt = null;
 
 			// Alter the ##title## & alias
-			list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle(
-				$table->parent_id,
-				##ifdefFieldaliasStart##$table->alias, ##ifdefFieldaliasEnd##
-				$table->##title##
-			);
+			list($title##ifdefFieldaliasStart##, $alias##ifdefFieldaliasEnd##) = $this->generateNewTitle($table->parent_id, ##ifdefFieldaliasStart##$table->alias, ##ifdefFieldaliasEnd####ifnotdefFieldaliasStart##'', ##ifnotdefFieldaliasEnd##$table->##title##);
 			$table->##title## = $title;
 			##ifdefFieldaliasStart##
 			$table->alias = $alias;
@@ -1298,7 +1292,7 @@ class ##Component##Model##Name## extends JModelAdmin
 			}
 
 			// Alter the ##title####ifdefFieldaliasStart## & alias##ifdefFieldaliasEnd##
-			$data = $this->generateNewTitle($categoryId, ##ifdefFieldaliasStart##$table->alias, ##ifdefFieldaliasEnd##$table->##title##);
+			$data = $this->generateNewTitle(##ifdefFieldcatidStart##$categoryId, ##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##$categoryId, ##ifdefFieldcategory_idEnd####ifnotdefFieldcategory_idStart####ifnotdefFieldcatidStart##'', ##ifnotdefFieldcatidEnd####ifnotdefFieldcategory_idEnd####ifdefFieldaliasStart##$table->alias, ##ifdefFieldaliasEnd####ifnotdefFieldaliasStart##'', ##ifnotdefFieldaliasEnd##$table->##title##);
 			$table->##title## = $data['0'];
 			##ifdefFieldaliasStart##
 			$table->alias = $data['1'];
@@ -1611,17 +1605,21 @@ class ##Component##Model##Name## extends JModelAdmin
 	/**
 	 * Method to change the title##ifdefFieldaliasStart## and alias##ifdefFieldaliasEnd##.
 	 *
-	##ifdefFieldparent_idStart## * @param   integer  $parent_id  The id of the parent.##ifdefFieldparent_idEnd##
+	##ifnotdefFieldparent_idStart##
 	##ifdefFieldcatidStart## * @param   integer  $category_id  The id of the category.##ifdefFieldcatidEnd##
 	##ifdefFieldcategory_idStart## * @param   integer  $category_id  The id of the category.##ifdefFieldcategory_idEnd##
+	##ifnotdefFieldparent_idEnd##
+	##ifdefFieldparent_idStart##
+	 * @param   integer  $parent_id  The id of the parent.
+	##ifdefFieldparent_idEnd##
 	##ifdefFieldaliasStart## * @param   string   $alias        The alias.##ifdefFieldaliasEnd##
-	##ifdefFieldaliasStart## * @param   string   $title        The title.##ifdefFieldaliasEnd##
+	 * @param   string   $title        The title.
 	 *
 	 * @return	array  Contains the modified title##ifdefFieldaliasStart## and alias##ifdefFieldaliasEnd##.
 	 *
 	 * @since	11.1
 	 */
-	protected function generateNewTitle(##ifnotdefFieldparent_idStart####ifdefFieldcatidStart##$category_id, ##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##$category_id, ##ifdefFieldcategory_idEnd####ifnotdefFieldparent_idEnd####ifdefFieldparent_idStart##$parent_id, ##ifdefFieldparent_idEnd####ifdefFieldaliasStart##$alias, ##ifdefFieldaliasEnd##$title)
+	protected function generateNewTitle(##ifnotdefFieldparent_idStart####ifdefFieldcatidStart##$category_id, ##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##$category_id, ##ifdefFieldcategory_idEnd####ifnotdefFieldcategory_idStart####ifnotdefFieldcatidStart##$dummy1 = '', ##ifnotdefFieldcatidEnd####ifnotdefFieldcategory_idEnd####ifnotdefFieldparent_idEnd####ifdefFieldparent_idStart##$parent_id, ##ifdefFieldparent_idEnd####ifdefFieldaliasStart##$alias, ##ifdefFieldaliasEnd####ifnotdefFieldaliasStart##$dummy2 = '', ##ifnotdefFieldaliasEnd##$title)
 	{
 		// Alter the title##ifdefFieldaliasStart## & alias##ifdefFieldaliasEnd##
 		$table = $this->getTable();

@@ -49,7 +49,7 @@ class JFormField##Component####Name## extends JFormFieldList
 
 		$query->select('##primary## AS value, ##hident## AS text');
 		$query->from('##table##');
-		$query->order('##hident## DESC');
+		$query->order('##hident## ASC');
 
 		// Get the options.
 		$db->setQuery($query->__toString());
@@ -65,7 +65,7 @@ class JFormField##Component####Name## extends JFormFieldList
 		//$options = array_merge(parent::getOptions(), $options);
 
 		// TODO: maybe to delete
-		//array_unshift($options, JHtml::_('select.option', '0', JText::_('COM_BANNERS_NO_CLIENT')));
+		//array_unshift($options, JHtml::_('select.option', '0', JText::_('##COM_COMPONENT##_NO_##NAME##')));
 
 		return $options;
 	}

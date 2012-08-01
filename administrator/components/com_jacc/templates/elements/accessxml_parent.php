@@ -1,4 +1,3 @@
-
 	<section name="##firstname##.##firstnameplural####firstextra##">
 		<action name="core.create" title="JACTION_CREATE" description="##COM_COMPONENT##_##FIRSTNAME##_ACCESS_CREATE_DESC" />
 		<action name="core.delete" title="JACTION_DELETE" description="##COM_COMPONENT##_##FIRSTNAME##_ACCESS_DELETE_DESC" />

@@ -1,7 +1,4 @@
-<?php defined('_JEXEC') or die;
-$format = '%Y-%m-%d';
-$datesize = 10;
-?>
+<?php defined('_JEXEC') or die;?>
 <<?php echo '?'?>xml version="1.0" encoding="utf-8"##codeend##
 <form>
 	<fields>
@@ -9,9 +6,6 @@ $datesize = 10;
 {
 	if ($field->get('additional')) continue;
 	if ($field->get('key') == 'params') continue;
-	$required = $field->get('required') ? $field->get('required') : 'false';
-	$size= $field->get('size') ? $field->get('size') : '40';
-	//$label= $field->get('label') ? $field->get('label') : ucfirst($field->get('key'));
 	$label = '##COM_COMPONENT##_##NAME##_FIELD_'.strtoupper($field->get('key')).'_LABEL';
 	$description = '##COM_COMPONENT##_##NAME##_FIELD_'.strtoupper($field->get('key')).'_DESC';
 
@@ -34,12 +28,20 @@ $datesize = 10;
 			break;
 		case 'parent_id':
 ?>
+		##ifdefFieldextensionStart##
+		<!-- <field
+			name="<?php echo $field->get('key') ?>"
+			type="##name##edit"
+			extension="##com_component##.##nameplural####extra##"
+			label="<?php echo $label ?>"
+			description="<?php echo $description ?>"
+			class="inputbox"
+			required="true">
+		</field> -->
+		##ifdefFieldextensionEnd##
 		<field
 			name="<?php echo $field->get('key') ?>"
 			type="##name##edit"
-			##ifdefFieldextensionStart##
-			extension="##com_component##.##nameplural####extra##"
-			##ifdefFieldextensionEnd##
 			label="<?php echo $label ?>"
 			description="<?php echo $description ?>"
 			class="inputbox"
@@ -216,141 +218,89 @@ $datesize = 10;
 <?php
 			break;
 		default:
-		switch (strtolower($field->get('formfield'))) {
-			case 'list':
-?>
-		<field
-			name="<?php echo $field->get('key') ?>"
-			type="list"
-			class="inputbox"
-			default="1"
-			required="<?php echo $required ?>"
-			size="1"
-			label="<?php echo $label ?>"
-			description="<?php echo $description ?>">
-			<option
-				value="0">
-				Option None</option>
-			<option
-				value="1">
-				First Option</option>
-			<option
-				value="2">
-				Second Option</option>
-			<option
-				value="3">
-				And so on</option>
-		</field>
-<?php
-				break;
-			case 'editor':
-?>
-		<field
-			name="<?php echo $field->get('key') ?>"
-			type="editor"
-			label="<?php echo $label ?>"
-			description="<?php echo $description ?>"
-			class="inputbox"
-			buttons="readmore,pagebreak"/>
-<?php
-				break;
-			case 'text':
-?>
-		<field
-			name="<?php echo $field->get('key') ?>"
-			type="text"
-			required="<?php echo $required ?>"
-			label="<?php echo $label ?>"
-			description="<?php echo $description ?>"
-			class="inputbox"
-			size="40"/>
-<?php
-				break;
-			case 'integer':
-?>
-		<field
-			name="<?php echo $field->get('key') ?>"
-			type="text"
-			required="<?php echo $required ?>"
-			label="<?php echo $label ?>"
-			description="<?php echo $description ?>"
-			class="inputbox"
-			size="10"/>
-<?php
-				break;
-			case 'float':
-?>
-		<field
-			name="<?php echo $field->get('key') ?>"
-			type="text"
-			required="<?php echo $required ?>"
-			label="<?php echo $label ?>"
-			description="<?php echo $description ?>"
-			class="inputbox"
-			size="10"/>
-<?php
-				break;
-			case 'calendar':
-				if ($field->get('fieldtype') == 'datetime')
-				{
-					$format = '%Y-%m-%d %H-%M-%S';
-					$datesize = 16;
-				}
-?>
-		<field
-			name="<?php echo $field->get('key') ?>"
-			type="calendar"
-			required="<?php echo $required ?>"
-			label="<?php echo $label ?>"
-			description="<?php echo $description ?>"
-			class="inputbox"
-			size="<?php echo $datesize ?>"
-			format="<?php echo $format ?>"/>
-<?php
-				break;
-			case 'boolean':
-?>
-			<field
-				name="<?php echo $field->get('key') ?>"
-				type="list"
-				default=""
-				label="<?php echo $label ?>"
-				description="<?php echo $description ?>">
-				<option
-					value="0">No</option>
-				<option
-					value="1">Yes</option>
-			</field>
-<?php
-				break;
-			case 'null':
+			switch (strtolower($field->get('formfield'))) {
+				case null:
+				case 'null':
 ?>
 		<field
 			name="<?php echo $field->get('key') ?>"
 			type="hidden"
 			filter="unset"/>
 <?php
-				break;
-			default:
+					break;
+				default:
 ?>
 		<field
 			name="<?php echo $field->get('key') ?>"
-			required="<?php echo $required ?>"
 			type="<?php echo $field->get('formfield') ?>"
+<?php
+					if ($field->get('formfield') != 'hidden')
+					{
+?>
 			label="<?php echo $label ?>"
 			description="<?php echo $description ?>"
-			class="inputbox"
-			size="<?php echo $size ?>"/>
+<?php
+					}
+					$element = clone $field;
+					unset($element->key);
+					unset($element->formfield);
+					unset($element->label);
+					unset($element->description);
+					unset($element->delete);
+					unset($element->alt);
+					unset($element->group);
+					unset($element->foreign);
+					unset($element->foreignkey);
+					unset($element->reltable);
+					unset($element->_errors);
+					unset($element->ordering);
+					unset($element->fieldtype);
+					unset($element->hident);
+					unset($element->comment);
+					unset($element->list);
+					unset($element->options);
+					unset($element->values);
+
+					foreach ($element as $attribute => $value)
+					{
+// 						if ($attribute == 'key') continue;
+// 						if ($attribute == 'formfield') continue;
+// 						if ($attribute == 'label') continue;
+// 						if ($attribute == 'description') continue;
+// 						if ($attribute == 'delete') continue;
+// 						if ($attribute == 'alt') continue;
+// 						if ($attribute == 'group') continue;
+// 						if ($attribute == 'foreign') continue;
+// 						if ($attribute == 'foreignkey') continue;
+// 						if ($attribute == 'reltable') continue;
+						if ($attribute == 'required' || $attribute == 'readonly' || $attribute == 'disabled')
+						{
+							$value = $value ? 'true' : 'false';
+						}
+?>
+			<?php echo $attribute; ?>="<?php echo $value; ?>"
+<?php
+					}
+?>
+		>
+<?php
+					if ($field->get('options')){
+						echo $field->get('options');
+					}
+?>
+		</field>
 <?php
 		}
 	}
 
 }
 ?>
+		##ifdefFieldasset_idEnd##
 		<field name="rules" type="rules" label="JFIELD_RULES_LABEL"
 		translate_label="false" class="inputbox" filter="rules"
-		component="##com_component##" section="##name##" validate="rules"
+		component="##com_component##" section="##name####ifdefFieldparent_idStart##.##nameplural####extra####ifdefFieldparrent_idEnd##" validate="rules"
 		/>
+		##ifdefFieldasset_idEnd##
 	</fields>
 <?php if (isset($this->formfield['params'])): ?>
 

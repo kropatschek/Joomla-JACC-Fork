@@ -51,7 +51,7 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 	<fieldset id="filter-bar">
 		<div class="filter-search fltlft">
 			<label class="filter-search-lbl" for="filter_search">##codestart## echo JText::_('JSEARCH_FILTER_LABEL'); ##codeend##</label>
-			<input type="text" name="filter_search" id="filter_search" value="##codestart## echo $this->escape($this->state->get('filter.search')); ##codeend##" title="##codestart## echo JText::_('COM_WEBLINKS_SEARCH_IN_TITLE'); ##codeend##" />
+			<input type="text" name="filter_search" id="filter_search" value="##codestart## echo $this->escape($this->state->get('filter.search')); ##codeend##" title="##codestart## echo JText::_('JFIELD_PLG_SEARCH_ALL_LABEL'); ##codeend##" />
 			<button type="submit">##codestart## echo JText::_('JSEARCH_FILTER_SUBMIT'); ##codeend##</button>
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();">##codestart## echo JText::_('JSEARCH_FILTER_CLEAR'); ##codeend##</button>
 		</div>

@@ -34,6 +34,7 @@ class ##Component##View##Nameplural####extra## extends JView
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
 		$this->authors		= $this->get('Authors');
+		$this->canDo		= ##Component##Helper::getActions(##ifdefFieldparent_idStart##'##nameplural####extra##.##name##', $this->state->get('filter.##name##_id')##ifdefFieldparent_idEnd####ifnotdefFieldparent_idStart####ifdefFieldcatidStart##'##nameplural####extra##.category', $this->state->get('filter.category_id')##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##'##nameplural####extra##.category', $this->state->get('filter.category_id')##ifdefFieldcategory_idEnd####ifnotdefFieldcatidStart####ifnotdefFieldcategory_idStart##'##name##'##ifnotdefFieldcategory_idEnd####ifnotdefFieldcatidEnd####ifnotdefFieldparent_idEnd##);
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
@@ -90,18 +91,12 @@ class ##Component##View##Nameplural####extra## extends JView
 	protected function addToolbar()
 	{
 		// Initialise variables.
-		##ifdefFieldcatidStart##
-		$categoryId	= $this->state->get('filter.category_id');
-		##ifdefFieldcatidEnd##
-		##ifdefFieldcategory_idStart##
-		$categoryId	= $this->state->get('filter.category_id');
-		##ifdefFieldcategory_idEnd##
 		##ifdefFieldextensionStart##
 		//$component	= $this->state->get('filter.component');
 		//$section	= $this->state->get('filter.section');
 		##ifdefFieldextensionEnd##
-		$canDo = ##Component##Helper::getActions('##name##'##ifdefFieldcatidStart##, $categoryId##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##, $categoryId##ifdefFieldcategory_idEnd##);
-		$user = JFactory::getUser();
+		$canDo	= $this->canDo;
+		$user	= JFactory::getUser();
 
 		##ifdefFieldextensionStart##
 		// Avoid nonsense situation.
@@ -110,7 +105,7 @@ class ##Component##View##Nameplural####extra## extends JView
 		//}
 
 		##ifdefFieldextensionEnd##
-		JToolBarHelper::title(JText::_('COM_##COMPONENT##_MANAGER_##NAMEPLURAL####EXTRA##'), 'generic.png');
+		JToolBarHelper::title(JText::_('COM_##COMPONENT##_##NAMEPLURAL####EXTRA##_MANAGER'), 'generic.png');
 
 		if ($canDo->get('core.create'))
 		{

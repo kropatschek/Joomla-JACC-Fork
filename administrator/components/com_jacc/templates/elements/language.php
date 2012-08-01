@@ -23,12 +23,17 @@ foreach ($this->formfield as $field)
 		case 'access':
 		case 'created_by':
 		case 'created_user_id':
+		case 'created':
 		case 'created_time':
 		case 'modified_by':
 		case 'modified_user_id':
 		case 'modified_time':
+		case 'modified':
 		case 'checked_out':
 		case 'checked_out_time':
+		case 'lft':
+		case 'rgt':
+		case 'extension':
 			break;
 		case 'featured':
 ?>

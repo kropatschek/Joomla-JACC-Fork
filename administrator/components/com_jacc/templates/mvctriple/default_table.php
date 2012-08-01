@@ -374,7 +374,7 @@ class ##Component##Table##Name## extends ##ifnotdefFieldparent_idStart##JTable##
 
 		##ifdefFieldaliasStart##
 		// Verify that the alias is unique
-		$table = JTable::getInstance('##Name##', '##Component##Table##');
+		$table = JTable::getInstance('##Name##', '##Component##Table');
 		##ifdefFieldextensionStart##//, 'extension' => $this->extension##ifdefFieldextensionEnd##
 		if ($table->load(array('alias' => $this->alias##ifdefFieldcatidStart##, 'catid' => $this->catid##ifdefFieldcatidEnd####ifdefFieldcategory_idStart##, 'category_id' => $this->category_id##ifdefFieldcategory_idEnd####ifdefFieldparent_idStart##, 'parent_id' => $this->parent_id##ifdefFieldparent_idEnd##)) && ($table->id != $this->id || $this->id == 0))
 		{
